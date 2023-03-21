@@ -5,10 +5,9 @@ import styles from './styles.module.scss'
 export default function AffiliateChatSkeleton() {
 	return (
 		<>
-			{[...Array(13).keys()].map(id => (
+			{[...Array(15).keys()].map(id => (
 				<li key={id} className={styles.container}>
 					<Skeleton key={id} animation="wave" variant="circular" width={40} height={36} className={styles.avatar}/>
-
 					<div className={styles.content}>
 						<div className={styles.affiliateName}>
 							<Skeleton
@@ -19,7 +18,7 @@ export default function AffiliateChatSkeleton() {
 							/>
 						</div>
 						<div className={styles.latestChat}>
-							<Skeleton animation="wave" height={10} width="100%"/>
+							<Skeleton animation="wave" height={10} width={ id % 2 === 0 ? '70%' : '100%' }/>
 						</div>
 					</div>
 				</li>

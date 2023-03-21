@@ -1,0 +1,25 @@
+.container {
+  background-color: #fff;
+  border-radius: 4px;
+  width: 80%;
+  border: 1px solid #BBBFC3;
+  display: flex;
+  align-items: center;
+
+  .searchIcon {
+    display: flex;
+    padding: 0 10px;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 4px;
+
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+}

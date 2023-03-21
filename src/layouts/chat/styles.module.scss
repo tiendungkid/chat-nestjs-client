@@ -4,10 +4,11 @@
 }
 
 .header {
-  height: 10vh;
+  height: 60px;
   width: 100%;
   display: flex;
   flex-direction: row;
+  min-height: 50px;
 
   .searchAffiliateContainer {
     width: 25%;
@@ -19,6 +20,10 @@
 
   .affiliateInfoContainer {
     width: 75%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
 
@@ -27,15 +32,16 @@
   display: flex;
   flex-direction: row;
   border-top: 1px solid #ccc;
-  height: 90vh;
+  height: 100%;
+  background-color: #fff;
 
   .affiliateList {
     margin: 5px 0;
     width: 25%;
-    background-color: #fff;
     border-right: 1px solid #ccc;
-    padding: 0;
+    padding: 0 0 70px 0;
     overflow-y: auto;
+    background-color: #fff;
   }
 
   .content {

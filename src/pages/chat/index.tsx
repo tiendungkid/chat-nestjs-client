@@ -1,13 +1,10 @@
 import React, {useState} from 'react'
 import ChatLayout from '../../layouts/chat/chat-layout'
-import AffiliateChat from '../../types/affiliate-chat'
+import Affiliate from '../../types/affiliate-chat'
 
 function Chat() {
-	const [currentConversation, setCurrentConversation] = useState<number | null>(null)
-	const onAffiliateClicked = (id: number) => {
-		setCurrentConversation(id)
-	}
-	const affiliates: AffiliateChat[] = [
+	const [currentConversation, setCurrentConversation] = useState<Affiliate | null>(null)
+	const affiliates: Affiliate[] = [
 		{
 			id: 1,
 			name: 'Tien Dung',
@@ -16,7 +13,7 @@ function Chat() {
 		},
 		{
 			id: 2,
-			name: 'Misthy',
+			name: 'Anthony Phan',
 			latestChat: 'Doan xem'
 		},
 		{
@@ -40,7 +37,7 @@ function Chat() {
 		{
 			id: 6,
 			name: 'Affiliate 6',
-			avatar: 'https://i.pinimg.com/564x/28/12/0c/28120c7e1ec63519bb8cbf9a5431dea2.jpg',
+			avatar: 'https://i.pinimg.com/originals/c3/70/d8/c370d84b40c8a5eef57862db9d6580a4.gif',
 		},
 		{
 			id: 7,
@@ -55,7 +52,7 @@ function Chat() {
 		{
 			id: 9,
 			name: 'Affiliate 9',
-			avatar: 'https://i.pinimg.com/564x/4a/f2/c1/4af2c1e6fff8e0212a663c297c0c5549.jpg',
+			avatar: 'https://i.pinimg.com/originals/f0/e0/58/f0e058827a6e830a17f6ef7c0dc405ac.gif',
 		},
 		{
 			id: 10,
@@ -70,7 +67,7 @@ function Chat() {
 		{
 			id: 12,
 			name: 'Affiliate 12',
-			avatar: 'https://i.pinimg.com/564x/53/b8/eb/53b8eb5399ca776634d5a2e2e5834856.jpg'
+			avatar: 'https://i.pinimg.com/564x/a4/63/96/a4639678dbb43dee3b50c70ec21e9c64.jpg'
 		},
 		{
 			id: 13,
@@ -78,15 +75,21 @@ function Chat() {
 			avatar: 'https://i.pinimg.com/736x/d2/9c/4d/d29c4db51bfa64f02322207f17b74cba.jpg'
 		}
 	]
+	const onAffiliateClicked = (id: number) => {
+		setCurrentConversation(
+			affiliates.find(aff => aff.id === id) || null
+		)
+		console.log(affiliates.find(aff => aff.id === id) || null)
+	}
 	return (
 		<ChatLayout
 			affiliates={affiliates}
 			loadingAffiliate={false}
-			loadingConversation={false}
+			loadingConversation={true}
 			activeConversation={currentConversation}
 			onAffiliateClicked={onAffiliateClicked}
 			onSearchChange={(e) => {
-				console.log()
+				console.log(e)
 			}}
 		/>
 	)

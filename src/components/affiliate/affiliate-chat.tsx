@@ -1,24 +1,7 @@
 import React from 'react'
 import {Avatar} from '@mui/material'
 import styles from './styles.module.scss'
-
-const stringAvatar = (name: string) => {
-	if (!name.includes(' ')) {
-		return {
-			children: name.slice(0, 1)
-		}
-	}
-	return {
-		children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-	}
-}
-const splitLatestChat = (affiliateName: string, latestChat?: string | null) => {
-	if (!latestChat) return `Say hi with ${affiliateName}`
-	if (latestChat.length > 40) {
-		return latestChat.slice(0, 40) + ' ...'
-	}
-	return latestChat
-}
+import {stringAvatar, splitLatestChat} from '../../utils/affiliate-chat-utils/helpers'
 
 interface Props {
 	id: number;
