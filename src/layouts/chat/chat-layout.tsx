@@ -1,10 +1,11 @@
 import React from 'react'
 import styles from './styles.module.scss'
 import Affiliate from '../../types/affiliate-chat'
-import {AffiliateChatSkeleton, AffiliateChat} from '../../components/affiliate'
+import {AffiliateChatSkeleton, AffiliateChat} from './components/affiliate'
 import SearchBox from './components/search-box'
 import ConversationLoading from './components/conversation-loading'
 import AffiliateHeader from './components/affiliate-header'
+import ChatConversation from './components/chat-conversation'
 
 interface Props {
 	affiliates: Affiliate[],
@@ -13,10 +14,21 @@ interface Props {
 	activeConversation: Affiliate | null;
 	onAffiliateClicked: (id: number) => void;
 	onSearchChange: (val: string) => void;
+	chatValue: string;
+	setChatValue: (text: string) => void;
 }
 
 export default function ChatLayout(props: Props) {
-	const {affiliates, loadingAffiliate, loadingConversation, activeConversation, onAffiliateClicked, onSearchChange} = props
+	const {
+		affiliates,
+		loadingAffiliate,
+		loadingConversation,
+		activeConversation,
+		onAffiliateClicked,
+		onSearchChange,
+		chatValue,
+		setChatValue
+	} = props
 
 
 	const affiliateList = () => {
@@ -40,7 +52,7 @@ export default function ChatLayout(props: Props) {
 					<SearchBox onChange={onSearchChange}/>
 				</div>
 				<div className={styles.affiliateInfoContainer}>
-					{ activeConversation && <AffiliateHeader affiliate={activeConversation} /> }
+					{activeConversation && <AffiliateHeader affiliate={activeConversation}/>}
 				</div>
 			</div>
 			<div className={styles.body}>
@@ -50,8 +62,9 @@ export default function ChatLayout(props: Props) {
 				<div className={styles.conversation}>
 					{
 						(loadingConversation && activeConversation)
-							? <ConversationLoading />
-							: ''
+							? <ConversationLoading/>
+							: (activeConversation &&
+								<ChatConversation chatValue={chatValue} setChatValue={setChatValue}/>)
 					}
 				</div>
 			</div>

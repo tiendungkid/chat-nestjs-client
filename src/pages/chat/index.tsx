@@ -3,7 +3,10 @@ import ChatLayout from '../../layouts/chat/chat-layout'
 import Affiliate from '../../types/affiliate-chat'
 
 function Chat() {
+
 	const [currentConversation, setCurrentConversation] = useState<Affiliate | null>(null)
+	const [chatValue, setChatValue] = useState('')
+	const [loadingConversation, setLoadingConversation] = useState(false)
 	const affiliates: Affiliate[] = [
 		{
 			id: 1,
@@ -14,7 +17,7 @@ function Chat() {
 		{
 			id: 2,
 			name: 'Anthony Phan',
-			latestChat: 'Doan xem'
+			latestChat: 'Doan xem hihi'
 		},
 		{
 			id: 3,
@@ -79,18 +82,23 @@ function Chat() {
 		setCurrentConversation(
 			affiliates.find(aff => aff.id === id) || null
 		)
-		console.log(affiliates.find(aff => aff.id === id) || null)
+		setLoadingConversation(true)
+		setTimeout(() => {
+			setLoadingConversation(false)
+		}, 4000)
 	}
 	return (
 		<ChatLayout
 			affiliates={affiliates}
 			loadingAffiliate={false}
-			loadingConversation={true}
+			loadingConversation={loadingConversation}
 			activeConversation={currentConversation}
 			onAffiliateClicked={onAffiliateClicked}
 			onSearchChange={(e) => {
 				console.log(e)
 			}}
+			chatValue={chatValue}
+			setChatValue={setChatValue}
 		/>
 	)
 }
