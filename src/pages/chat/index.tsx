@@ -1,6 +1,11 @@
 import React, {useState} from 'react'
-import ChatLayout from '../../layouts/chat/chat-layout'
-import Affiliate from '../../types/affiliate-chat'
+import ChatLayout from 'layouts/chat-layout/chat-layout'
+import Affiliate from 'types/affiliate-chat'
+import {groupChatMessages} from 'utils/affiliate-chat-utils/helpers'
+import {MessageType} from 'types/conversation/message-type'
+import {Sender} from 'types/conversation/sender'
+import {ChatMessage as Messages} from 'types/conversation/chat-message'
+import Typing from '../../layouts/chat-layout/components/typing'
 
 function Chat() {
 
@@ -78,6 +83,184 @@ function Chat() {
 			avatar: 'https://i.pinimg.com/736x/d2/9c/4d/d29c4db51bfa64f02322207f17b74cba.jpg'
 		}
 	]
+	const chatMessages: Messages[] = [
+		{
+			id: 1,
+			message: 'E thằng kia mày trả tiền cho tau đi',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		},
+		{
+			id: 2,
+			message: 'Tao còn đi mua cơm nữa, đói vk',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		},
+		{
+			id: 3,
+			message: 'Tao xin lỗi tao hết tiền rồi 😀',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 4,
+			message: 'Để sang tháng tao trả nhé, Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 5,
+			message: 'Đc không ?',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 6,
+			message: 'Nhớ mà trat sớm cho tao đừng để tao nhắc lần nữa',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		},
+		{
+			id: 7,
+			message: 'Oke',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 8,
+			message: 'Tháng sau t trả 1 nửa thôi',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 9,
+			message: 'Dạo này đói kém lắm',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 10,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 11,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 12,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 13,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 14,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 15,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 16,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 17,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 18,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 19,
+			message: 'nhé',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.AFFILIATE
+		},
+		{
+			id: 20,
+			message: 'Ờ đc r, đm nhắn ít thôi',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		},
+		{
+			id: 21,
+			message: 'như thằng điên ý 🤬',
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		},
+		{
+			id: 21,
+			message: <Typing/>,
+			message_type: MessageType.TEXT,
+			read: true,
+			sent_at: 'Today',
+			sender: Sender.MERCHANT
+		}
+	]
 	const onAffiliateClicked = (id: number) => {
 		setCurrentConversation(
 			affiliates.find(aff => aff.id === id) || null
@@ -85,7 +268,7 @@ function Chat() {
 		setLoadingConversation(true)
 		setTimeout(() => {
 			setLoadingConversation(false)
-		}, 4000)
+		}, 500)
 	}
 	return (
 		<ChatLayout
@@ -99,6 +282,7 @@ function Chat() {
 			}}
 			chatValue={chatValue}
 			setChatValue={setChatValue}
+			messages={groupChatMessages(chatMessages)}
 		/>
 	)
 }

@@ -41,6 +41,7 @@
     "no-mixed-spaces-and-tabs": [
       "error",
       "smart-tabs"
-    ]
+    ],
+    "@typescript-eslint/no-explicit-any": 0
   }
 }

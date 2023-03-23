@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  .avatar {
+    margin-right: 12px;
+  }
+  .affiliateName {
+    font-weight: 600;
+  }
+}

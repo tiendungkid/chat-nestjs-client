@@ -1,11 +1,12 @@
 import React from 'react'
 import styles from './styles.module.scss'
-import Affiliate from '../../types/affiliate-chat'
+import Affiliate from 'types/affiliate-chat'
 import {AffiliateChatSkeleton, AffiliateChat} from './components/affiliate'
 import SearchBox from './components/search-box'
 import ConversationLoading from './components/conversation-loading'
 import AffiliateHeader from './components/affiliate-header'
 import ChatConversation from './components/chat-conversation'
+import {ChatMessage} from 'types/conversation/chat-message'
 
 interface Props {
 	affiliates: Affiliate[],
@@ -16,6 +17,7 @@ interface Props {
 	onSearchChange: (val: string) => void;
 	chatValue: string;
 	setChatValue: (text: string) => void;
+	messages: ChatMessage[][]
 }
 
 export default function ChatLayout(props: Props) {
@@ -27,7 +29,8 @@ export default function ChatLayout(props: Props) {
 		onAffiliateClicked,
 		onSearchChange,
 		chatValue,
-		setChatValue
+		setChatValue,
+		messages
 	} = props
 
 
@@ -64,7 +67,11 @@ export default function ChatLayout(props: Props) {
 						(loadingConversation && activeConversation)
 							? <ConversationLoading/>
 							: (activeConversation &&
-								<ChatConversation chatValue={chatValue} setChatValue={setChatValue}/>)
+								<ChatConversation
+									affiliate={activeConversation}
+									messages={messages}
+									chatValue={chatValue}
+									setChatValue={setChatValue}/>)
 					}
 				</div>
 			</div>
