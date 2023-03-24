@@ -3,12 +3,18 @@ import styles from './styles.module.scss'
 import {Avatar, Grid, Tooltip, Typography} from '@mui/material'
 import {stringAvatar} from 'utils/affiliate-chat-utils/helpers'
 import {ChatMessage as Messages} from 'types/conversation/chat-message'
+import {MessageType} from 'types/conversation/message-type'
+import Typing from '../typing'
+import ImageMessage from '../image-message'
+import FileMessage from '../file-message'
 
 interface Props {
 	affiliateName: string
 	avatar?: string
 	messages: Messages[]
 	side: 'left' | 'right'
+	setMessageImageUrl: (imageUrl: string) => void
+	setOpenImagePreviewDialog: (open: boolean) => void
 }
 
 export default function ChatMessage(props: Props) {
@@ -16,7 +22,10 @@ export default function ChatMessage(props: Props) {
 		affiliateName,
 		avatar,
 		messages,
-		side
+		side,
+		setMessageImageUrl,
+		setOpenImagePreviewDialog
+
 	} = props
 	const attachClass = (index: number, side: 'left' | 'right'): string[] => {
 		const rowClass = index === 0
@@ -24,6 +33,37 @@ export default function ChatMessage(props: Props) {
 			: (index === messages.length - 1 ? styles[side + 'Last'] : '')
 		return [styles.message, rowClass, styles[side]]
 	}
+	const onImageMessageClicked = (imageUrl: string) => {
+		setMessageImageUrl(imageUrl)
+		setOpenImagePreviewDialog(true)
+	}
+
+	const renderMessage = (msg: Messages, index: number) => {
+		if (msg.message_type === MessageType.TYPING) {
+			return (
+				<div className={attachClass(index, side).join(' ')}>
+					<Typing/>
+				</div>
+			)
+		}
+		if (msg.message_type === MessageType.IMAGE) {
+			return <ImageMessage message={msg} onImageClick={onImageMessageClicked}/>
+		}
+		if (msg.message_type === MessageType.FILE) {
+			return <FileMessage message={msg}/>
+		}
+		return (
+			<Tooltip title={msg.sent_at} placement={'right-start'}>
+				<Typography
+					align={'left'}
+					className={attachClass(index, side).join(' ')}
+				>
+					{msg.message}
+				</Typography>
+			</Tooltip>
+		)
+	}
+
 	return (
 		<Grid
 			container
@@ -46,14 +86,7 @@ export default function ChatMessage(props: Props) {
 				{messages.map((message, index) => {
 					return (
 						<div key={message.id} className={styles[side + 'Row']}>
-							<Tooltip title={message.sent_at} placement={'right-end'}>
-								<Typography
-									align={'left'}
-									className={attachClass(index, side).join(' ')}
-								>
-									{message.message}
-								</Typography>
-							</Tooltip>
+							{renderMessage(message, index)}
 						</div>
 					)
 				})}

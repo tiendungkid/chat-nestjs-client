@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import styles from './styles.module.scss'
 import EmojiPicker, {EmojiClickData} from 'emoji-picker-react'
 import {Popover} from '@mui/material'
@@ -9,6 +9,7 @@ import ChatMessage from '../chat-message/chat-message'
 import {ChatMessage as Messages} from 'types/conversation/chat-message'
 import Affiliate from 'types/affiliate-chat'
 import {Sender} from 'types/conversation/sender'
+import ImagePreviewDialog from 'components/chat/image-preview-dialog'
 
 interface Props {
 	affiliate: Affiliate,
@@ -25,13 +26,12 @@ const ChatConversation = (props: Props) => {
 		messages
 	} = props
 
+	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false)
+	const [messageImageUrl, setMessageImageUrl] = useState('')
 	const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
-	const handleClick = (event: React.MouseEvent) => {
-		setAnchorEl(event.currentTarget)
-	}
-	const handleClose = () => {
-		setAnchorEl(null)
-	}
+	const handleClick = (event: React.MouseEvent) => setAnchorEl(event.currentTarget)
+	const handleClose = () => setAnchorEl(null)
+
 	const open = Boolean(anchorEl)
 	const id = open ? 'emoji-popover' : undefined
 
@@ -56,11 +56,14 @@ const ChatConversation = (props: Props) => {
 				<DropzoneOverlay open={isDragActive}/>
 				<div className={styles.conversation}>
 					{
-						messages.map((chatList,index) => (
+						messages.map((chatList, index) => (
 							<ChatMessage key={index} affiliateName={affiliate.name}
 										 avatar={affiliate.avatar}
 										 messages={chatList}
-										 side={chatList?.[0].sender === Sender.MERCHANT ? 'left' : 'right'}/>
+										 side={chatList?.[0].sender === Sender.MERCHANT ? 'right' : 'left'}
+										 setOpenImagePreviewDialog={setOpenImagePreviewDialog}
+										 setMessageImageUrl={setMessageImageUrl}
+							/>
 						))
 					}
 				</div>
@@ -95,6 +98,11 @@ const ChatConversation = (props: Props) => {
 			>
 				<EmojiPicker onEmojiClick={onClickEmojiIcon}/>
 			</Popover>
+			<ImagePreviewDialog
+				open={openImagePreviewDialog}
+				imageUrl={messageImageUrl}
+				setOpen={setOpenImagePreviewDialog}
+			/>
 		</React.Fragment>
 	)
 }

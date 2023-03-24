@@ -1,11 +1,11 @@
 import React from 'react'
 import styles from './styles.module.scss'
 import Affiliate from 'types/affiliate-chat'
-import {AffiliateChatSkeleton, AffiliateChat} from './components/affiliate'
-import SearchBox from './components/search-box'
-import ConversationLoading from './components/conversation-loading'
-import AffiliateHeader from './components/affiliate-header'
-import ChatConversation from './components/chat-conversation'
+import {AffiliateChatSkeleton, AffiliateChat} from 'components/chat/affiliate'
+import SearchBox from 'components/chat/search-box'
+import ConversationLoading from 'components/chat/conversation-loading'
+import AffiliateHeader from 'components/chat/affiliate-header'
+import ChatConversation from 'components/chat/chat-conversation'
 import {ChatMessage} from 'types/conversation/chat-message'
 
 interface Props {

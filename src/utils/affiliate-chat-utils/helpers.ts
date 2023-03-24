@@ -44,6 +44,7 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 		subset = chats.takeUntil(filterSender)
 	} while (subset.count())
 
+
 	return grouped
 }
 

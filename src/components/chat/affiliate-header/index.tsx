@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './styles.module.scss'
-import Affiliate from '../../../../types/affiliate-chat'
+import Affiliate from 'types/affiliate-chat'
 import {Avatar} from '@mui/material'
-import {stringAvatar} from '../../../../utils/affiliate-chat-utils/helpers'
+import {stringAvatar} from 'utils/affiliate-chat-utils/helpers'
 
 interface Props {
 	affiliate: Affiliate;
