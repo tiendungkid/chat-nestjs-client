@@ -1,9 +1,55 @@
+@use "scss/_vars.scss";
+@use "scss/_mixin.scss";
+
 .container {
   background: #F6F6F7;
-  height: 100vh;
+  height: 100svh;
+  //height: calc(100svh - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+
+  &.mobileConversation {
+
+    .searchAffiliateContainer {
+      width: 0;
+    }
+
+    .affiliateList {
+      width: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    .affiliateInfoContainer {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .conversation {
+      flex: 0 1 100%;
+    }
+  }
+
+  &.mobileAffiliate {
+
+    .searchAffiliateContainer {
+      width: 100%;
+    }
+
+    .affiliateList {
+      width: 100%;
+    }
+
+    .affiliateInfoContainer {
+      width: 0;
+    }
+
+    .conversation {
+      flex: 0 0 0;
+      max-width: 0;
+      opacity: 0;
+    }
+  }
 }
 
 .header {
@@ -19,6 +65,7 @@
     justify-content: center;
     align-items: center;
     border-right: 1px solid #ccc;
+    transition: width vars.$collapseMobileDuration;
   }
 
   .affiliateInfoContainer {
@@ -27,6 +74,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: width vars.$collapseMobileDuration;
   }
 }
 
@@ -46,6 +94,7 @@
     border-right: 1px solid #ccc;
     padding: 0;
     background-color: #fff;
+    transition: all vars.$collapseMobileDuration;
   }
 
   .content {
@@ -55,5 +104,6 @@
   .conversation {
     background-color: #fff;
     flex: 0 1 75%;
+    transition: width vars.$collapseMobileDuration;
   }
 }

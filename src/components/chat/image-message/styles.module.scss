@@ -1,0 +1,10 @@
+.imageContainer {
+  border-radius: 16px;
+
+  img {
+    border-radius: 16px;
+    max-height: 300px;
+    max-width: 100%;
+    cursor: pointer;
+  }
+}

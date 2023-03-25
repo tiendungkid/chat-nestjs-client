@@ -1,10 +1,20 @@
+@use "./src/scss/mixin";
+
 .container {
   display: flex;
   align-items: center;
   padding-left: 20px;
+
+
+  .backIcon {
+    padding: 8px 10px;
+    margin-right: 13px;
+  }
+
   .avatar {
     margin-right: 12px;
   }
+
   .affiliateName {
     font-weight: 600;
   }

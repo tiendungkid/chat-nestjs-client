@@ -19,6 +19,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    padding-top: 10px;
     min-height: 50px;
 
     .media {
@@ -30,9 +31,10 @@
       .mediaOption {
         font-size: 16px;
         cursor: pointer;
+        display: flex;
 
         &:first-child {
-          margin-right: 15px;
+          margin-right: 10px;
         }
 
         .mediaIcon {

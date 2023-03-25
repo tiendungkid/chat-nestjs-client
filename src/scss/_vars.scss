@@ -1,1 +1,11 @@
 $text-dark: rgba(9, 44, 76, 1);
+
+$collapseMobileDuration: .3s;
+
+
+/**
+ * Media query
+ */
+$screen-mobileSmall: 'screen and (max-width: 390px)';
+$screen-mobile: 'screen and (min-width: 390px) and (max-width: 992px)';
+

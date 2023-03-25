@@ -4,35 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea9f61dd-23a5-49f5-b08f-aba4889fa32d" name="Changes" comment="">
+    <list default="true" id="ae51bf3c-f108-4b28-945a-cfdd0daf98b0" name="Changes" comment="Add Redux to store conversation">
+      <change afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/file-message/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/file-message/styles.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/image-message/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/image-message/styles.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/image-preview-dialog/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/not-allow-file-type-dialog/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/chat/test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/hooks/window.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scss/_mixin.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/hook/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/reducers/conversationSlice.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/device-mode.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/constants/files.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/constants/screen.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webpack.dev.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/affiliate-header/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate-header/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/affiliate-header/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate-header/styles.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/affiliate/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate/styles.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/chat-conversation/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-conversation/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/chat-conversation/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-conversation/styles.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chat/search-box/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/search-box/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/chat-layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/chat-layout/chat-layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate-header/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate-header/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate-header/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate-header/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate/affiliate-chat-skeleton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate/affiliate-chat-skeleton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate/affiliate-chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate/affiliate-chat.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/affiliate/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/affiliate/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/chat-conversation/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-conversation/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/chat-conversation/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-conversation/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/chat-message/chat-message.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-message/chat-message.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/chat-message/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/chat-message/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/conversation-loading/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/conversation-loading/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/conversation-loading/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/conversation-loading/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/dropzon-overlay/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/dropzon-overlay/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/dropzon-overlay/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/dropzon-overlay/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/search-box/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/search-box/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/search-box/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/search-box/styles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/typing/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/typing/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/components/typing/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/typing/styles.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/chat-layout/styles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/chat-layout/styles.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/chat/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/chat/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/conversation/chat-message.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/conversation/chat-message.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/conversation/message-type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/conversation/message-type.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/affiliate-chat-utils/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/affiliate-chat-utils/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/_vars.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/scss/_vars.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,57 +45,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Sass File" />
-        <option value="TypeScript File" />
-        <option value="TypeScript JSX File" />
-        <option value="SCSS File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
     <option name="projectConfigVersion" value="5" />
-    <option name="recentBranches">
-      <RecentBranches>
-        <option name="branchesForRepo">
-          <list>
-            <RecentBranchesForRepo>
-              <option name="branches">
-                <list>
-                  <RecentBranch>
-                    <option name="branchName" value="main" />
-                    <option name="lastUsedInstant" value="1679049910" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1679049909" />
-                  </RecentBranch>
-                </list>
-              </option>
-              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
-            </RecentBranchesForRepo>
-          </list>
-        </option>
-      </RecentBranches>
-    </option>
-  </component>
-  <component name="JsbtTreeLayoutManager">
-    <layout place="tools.popupGrunt">
-      <scroll-view-position x="0" y="0" />
-    </layout>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="PackageJsonUpdateNotifier">
-    <dismissed value="$PROJECT_DIR$/package.json" />
-  </component>
-  <component name="ProjectId" id="2N7oPUkB6WqEhgeM47qufyzHHBf" />
+  <component name="ProjectId" id="2NW0pmlQyUSySk1CK2Mug9opZm9" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -98,120 +62,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.7.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.15.3&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/tiendungkid/Workspace/secomus/chat-nest-client&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;SCSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/tiendungkid/Workspace/secomus/chat-nest-client/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/tiendungkid/Workspace/secomus/chat-nest-client/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/tiendungkid/Workspace/secomus/chat-nest-client/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/layouts/chat/components" />
-      <recent name="$PROJECT_DIR$/src/components" />
-      <recent name="$PROJECT_DIR$/src/helpers" />
-      <recent name="$PROJECT_DIR$/src/layouts" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/components/chat/image-preview-dialog" />
-      <recent name="$PROJECT_DIR$/src/components/chat" />
-      <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/types/conversation" />
-      <recent name="$PROJECT_DIR$/src/layouts/chat/components/search-box" />
-    </key>
-  </component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ea9f61dd-23a5-49f5-b08f-aba4889fa32d" name="Changes" comment="" />
-      <created>1679024457202</created>
+      <changelist id="ae51bf3c-f108-4b28-945a-cfdd0daf98b0" name="Changes" comment="Add Redux to store conversation" />
+      <created>1679764725771</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1679024457202</updated>
-      <workItem from="1679024458733" duration="284000" />
-      <workItem from="1679025646162" duration="4009000" />
-      <workItem from="1679035343810" duration="1268000" />
-      <workItem from="1679037254481" duration="5617000" />
-      <workItem from="1679047317505" duration="2504000" />
-      <workItem from="1679049837002" duration="1599000" />
-      <workItem from="1679131649466" duration="17000" />
-      <workItem from="1679132936963" duration="274000" />
-      <workItem from="1679133220944" duration="255000" />
-      <workItem from="1679286245155" duration="16593000" />
-      <workItem from="1679367372344" duration="5646000" />
-      <workItem from="1679373265139" duration="7250000" />
-      <workItem from="1679395049911" duration="11263000" />
-      <workItem from="1679417167138" duration="5467000" />
-      <workItem from="1679460922752" duration="1855000" />
-      <workItem from="1679471269937" duration="1891000" />
-      <workItem from="1679539299348" duration="33391000" />
-      <workItem from="1679623378090" duration="18145000" />
-      <workItem from="1679656000506" duration="807000" />
+      <updated>1679764725771</updated>
+      <workItem from="1679764728073" duration="7035000" />
     </task>
-    <task id="LOCAL-00001" summary="Update config typing">
-      <created>1679368048371</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1679368048371</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Update .gitignore">
-      <created>1679368071089</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1679368071089</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Update layout">
-      <created>1679392849104</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1679392849104</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Add webpack config">
-      <created>1679422996772</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1679422996772</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Update Chat UI">
-      <created>1679587810820</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1679587810820</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update config typing" />
-    <MESSAGE value="Update .gitignore" />
-    <MESSAGE value="Update layout" />
-    <MESSAGE value="Add webpack config" />
-    <MESSAGE value="Update Chat UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Chat UI" />
   </component>
 </project>
