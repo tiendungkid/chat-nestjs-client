@@ -2,20 +2,29 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-
 module.exports = {
-	mode: 'production',
+	mode: 'development',
+	watch: true,
 	entry: {
 		app: './src/index.tsx',
 	},
+	output: {
+		filename: '[name].js',
+		path: path.resolve(__dirname, '../chat-nest/public'),
+		clean: false
+	},
 	devtool: 'inline-source-map',
 	devServer: {
-		static: './dist',
+		static: path.resolve(__dirname, '../chat-nest/public'),
 		hot: true,
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: './src/index.html'
+			template: './src/static/index.html',
+			filename: 'index.html',
+			minify: false,
+			cache: false,
+			favicon: './src/static/logo.png'
 		}),
 		new BundleAnalyzerPlugin()
 	],
@@ -57,14 +66,11 @@ module.exports = {
 			'src'
 		]
 	},
-	output: {
-		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		clean: true,
-	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
+			filename: 'vendors.js'
 		}
 	}
 }
+

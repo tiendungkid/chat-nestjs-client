@@ -6,14 +6,23 @@ module.exports = {
 	entry: {
 		app: './src/index.tsx',
 	},
+	output: {
+		filename: '[name].js',
+		path: path.resolve(__dirname, '../chat-nest/public'),
+		clean: false,
+	},
 	devtool: 'inline-source-map',
 	devServer: {
-		static: './dist',
+		static: path.resolve(__dirname, '../chat-nest/public'),
 		hot: true,
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: './src/index.html'
+			template: './src/static/index.html',
+			filename: 'index.html',
+			minify: true,
+			cache: true,
+			favicon: './src/static/logo.png'
 		}),
 	],
 	module: {
@@ -54,14 +63,10 @@ module.exports = {
 			'src'
 		]
 	},
-	output: {
-		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		clean: true,
-	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
+			filename: 'vendors.js'
 		}
 	}
 }

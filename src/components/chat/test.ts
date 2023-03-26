@@ -331,14 +331,14 @@ const chatMessages: Messages[] = [
 		sent_at: 'Today',
 		sender: Sender.MERCHANT
 	},
-	{
-		id: Math.random(),
-		message: '',
-		message_type: MessageType.TYPING,
-		read: true,
-		sent_at: 'Typing...',
-		sender: Sender.AFFILIATE
-	},
+	// {
+	// 	id: Math.random(),
+	// 	message: '',
+	// 	message_type: MessageType.TYPING,
+	// 	read: true,
+	// 	sent_at: 'Typing...',
+	// 	sender: Sender.AFFILIATE
+	// },
 ]
 
 export {affiliates, chatMessages}
