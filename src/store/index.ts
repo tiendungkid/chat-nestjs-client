@@ -1,9 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit'
 import ConversationSlice from './reducers/conversationSlice'
+import SocketSlice from "./reducers/socketSlice";
 
 export const store = configureStore({
 	reducer: {
-		conversation: ConversationSlice
+		conversation: ConversationSlice,
+		socket: SocketSlice
 	}
 })
 

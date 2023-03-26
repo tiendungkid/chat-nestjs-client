@@ -4,11 +4,9 @@ import {ChatMessage} from 'types/conversation/chat-message'
 import {MessageType} from 'types/conversation/message-type'
 
 const initialState: {
-	chatMessages: ChatMessage[],
-	justPushNewMessage: boolean
+    chatMessages: ChatMessage[],
 } = {
 	chatMessages: [],
-	justPushNewMessage: false
 }
 
 const conversationSlice = createSlice({
@@ -17,7 +15,7 @@ const conversationSlice = createSlice({
 	reducers: {
 		setChatMessages: (state, action: PayloadAction<ChatMessage[]>) => {
 			state.chatMessages = action.payload
-			// return state
+			return state
 		},
 		pushTyping: (state, action) => {
 			state.chatMessages = [
@@ -33,7 +31,7 @@ const conversationSlice = createSlice({
 			]
 			return state
 		},
-		pushJustSentMessage: (state, action: PayloadAction<ChatMessage>) => {
+		pushNewMessage: (state, action: PayloadAction<ChatMessage>) => {
 			const newMessage = action.payload
 			state.chatMessages = [
 				...state.chatMessages,
@@ -47,22 +45,15 @@ const conversationSlice = createSlice({
 				}
 			]
 			return state
-		},
-		setJustPushNewMessage: (state, action: PayloadAction<boolean>) => {
-			state.justPushNewMessage = action.payload
-			return state
-		},
+		}
 	},
 })
 
 export const {
 	setChatMessages,
-	pushJustSentMessage,
-	pushTyping,
-	setJustPushNewMessage
+	pushNewMessage,
 } = conversationSlice.actions
 export const selectChatMessages = (state: RootState) => state.conversation.chatMessages
-export const selectJustPushNewMessage = (state: RootState) => state.conversation.justPushNewMessage
 
 export default conversationSlice.reducer
 

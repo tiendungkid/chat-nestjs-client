@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import styles from './styles.module.scss'
 import Affiliate from 'types/affiliate-chat'
 import {AffiliateChat, AffiliateChatSkeleton} from 'components/chat/affiliate'
@@ -9,38 +9,52 @@ import ChatConversation from 'components/chat/chat-conversation'
 import {DeviceMode} from 'types/device-mode'
 import {useWindowSize} from 'hooks/window'
 import {MOBILE_BREAK_POINT} from 'utils/constants/screen'
+import {chatMessages} from 'components/chat/test'
+import {setChatMessages} from 'store/reducers/conversationSlice'
+import {useDispatch} from 'react-redux'
 
 interface Props {
-	affiliates: Affiliate[],
-	loadingAffiliate: boolean;
-	loadingConversation: boolean;
-	activeConversation: Affiliate | null;
-	onAffiliateClicked: (id: number) => void;
-	onSearchChange: (val: string) => void;
-	chatValue: string;
-	setChatValue: (text: string) => void;
+    affiliates: Affiliate[],
+    loadingAffiliate: boolean;
+    onSearchChange: (val: string) => void;
+    chatValue: string;
+    setChatValue: (text: string) => void;
 }
 
 export default function ChatLayout(props: Props) {
 	const {
 		affiliates,
 		loadingAffiliate,
-		loadingConversation,
-		activeConversation,
-		onAffiliateClicked,
 		onSearchChange,
 		chatValue,
 		setChatValue
 	} = props
 
-	const onAffiliateClickedHandler = (id: number) => {
-		onAffiliateClicked(id)
+	const dispatch = useDispatch()
+	const screenSize = useWindowSize()
+	const [deviceMode, setDeviceMode] =
+        useState<DeviceMode>(
+        	(screenSize.width && (screenSize.width <= MOBILE_BREAK_POINT))
+        		? DeviceMode.MOBILE_AFFILIATE
+        		: DeviceMode.DESKTOP)
+
+	const [currentAffiliate, setCurrentAffiliate] = useState<Affiliate | null>(null)
+	const [loadingConversation, setLoadingConversation] = useState(false)
+
+	const onAffiliateClickedHandler = useCallback((affiliate: Affiliate) => {
+		setCurrentAffiliate(affiliate)
+		setLoadingConversation(true)
 		if (deviceMode === DeviceMode.MOBILE_AFFILIATE) {
 			setDeviceMode(DeviceMode.MOBILE_CONVERSATION)
 		}
-	}
-
-	const screenSize = useWindowSize()
+		const timer = setTimeout(() => {
+			setLoadingConversation(false)
+			dispatch(setChatMessages(chatMessages))
+		}, 500)
+		return () => {
+			clearTimeout(timer)
+		}
+	}, [currentAffiliate])
 
 	const affiliateList = () => {
 		return affiliates.map(affiliate => (
@@ -50,26 +64,21 @@ export default function ChatLayout(props: Props) {
 				affiliateName={affiliate.name}
 				avatar={affiliate.avatar}
 				latestChat={affiliate.latestChat}
-				active={affiliate.id === activeConversation?.id}
-				onClick={onAffiliateClickedHandler}
+				active={affiliate.id === currentAffiliate?.id}
+				onClick={() => onAffiliateClickedHandler(affiliate)}
 			/>))
 	}
 
-	const [deviceMode, setDeviceMode] =
-		useState<DeviceMode>(
-			(screenSize.width && (screenSize.width <= MOBILE_BREAK_POINT))
-				? DeviceMode.MOBILE_AFFILIATE
-				: DeviceMode.DESKTOP
-		)
-
 	useEffect(() => {
 		if (!screenSize.width) return
-		if (screenSize.width <= MOBILE_BREAK_POINT) {
-			setDeviceMode(DeviceMode.MOBILE_AFFILIATE)
-			return
-		}
-		setDeviceMode(DeviceMode.DESKTOP)
+		const newMode = screenSize.width <= MOBILE_BREAK_POINT
+			? DeviceMode.MOBILE_AFFILIATE
+			: DeviceMode.DESKTOP
+		if (newMode === deviceMode) return
+		setDeviceMode(newMode)
 	}, [screenSize.width])
+
+	console.log(111)
 
 	return (
 		<div className={[styles.container, styles[deviceMode]].join(' ')}>
@@ -78,9 +87,9 @@ export default function ChatLayout(props: Props) {
 					<SearchBox onChange={onSearchChange}/>
 				</div>
 				<div className={styles.affiliateInfoContainer}>
-					{activeConversation &&
-						<AffiliateHeader affiliate={activeConversation} deviceMode={deviceMode}
-										 setDeviceMode={setDeviceMode}/>}
+					{currentAffiliate &&
+                        <AffiliateHeader affiliate={currentAffiliate} deviceMode={deviceMode}
+                        	setDeviceMode={setDeviceMode}/>}
 				</div>
 			</div>
 			<div className={styles.body}>
@@ -89,13 +98,13 @@ export default function ChatLayout(props: Props) {
 				</ul>
 				<div className={styles.conversation}>
 					{
-						(loadingConversation && activeConversation)
+						(loadingConversation && currentAffiliate)
 							? <ConversationLoading/>
-							: (activeConversation &&
-								<ChatConversation
-									affiliate={activeConversation}
-									chatValue={chatValue}
-									setChatValue={setChatValue}/>)
+							: (currentAffiliate &&
+                                <ChatConversation
+                                	affiliate={currentAffiliate}
+                                	chatValue={chatValue}
+                                	setChatValue={setChatValue}/>)
 					}
 				</div>
 			</div>
