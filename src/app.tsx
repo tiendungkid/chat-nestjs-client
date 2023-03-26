@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import {Provider} from "react-redux";
-import {store} from "./store";
-import Chat from "./pages/chat";
-import {socket} from "./utils/socket.io";
+import React, {lazy, Suspense, useEffect, useState} from 'react'
+import {Provider} from "react-redux"
+import {store} from "./store"
+import {socket} from "./utils/socket.io"
+import Loading from "./components/loading";
+
+const Chat = lazy(() => import(/* webpackChunkName: "chat" */ "./pages/chat"))
 
 export default function App() {
     const [isConnected, setIsConnected] = useState(socket.connected);
@@ -26,7 +28,9 @@ export default function App() {
 
     return (
         <Provider store={store}>
-            <Chat/>
+            <Suspense fallback={<Loading pageName={'Chat'}/>}>
+                <Chat/>
+            </Suspense>
         </Provider>
     )
 }

@@ -11,7 +11,7 @@ module.exports = {
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, '../chat-nest/public'),
-		clean: false
+		clean: true
 	},
 	devtool: 'inline-source-map',
 	devServer: {
@@ -69,7 +69,7 @@ module.exports = {
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
-			filename: 'vendors.js'
+			filename:'[name].js'
 		}
 	}
 }
