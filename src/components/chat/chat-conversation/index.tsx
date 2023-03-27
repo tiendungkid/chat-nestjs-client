@@ -16,21 +16,34 @@ import {groupChatMessages} from 'utils/affiliate-chat-utils/helpers'
 import {MessageType} from 'types/conversation/message-type'
 import {ALLOW_IMAGE_EXTENSIONS} from 'utils/constants/files'
 import {pushNewMessage, selectChatMessages} from 'store/reducers/conversationSlice'
+import ConversationLoading from '../conversation-loading'
 
 const EmojiPicker = React.lazy(() => import('emoji-picker-react'))
 
 interface Props {
-    affiliate: Affiliate,
-    chatValue: string;
+    affiliate: Affiliate | null
+    chatValue: string
     setChatValue: (text: string) => void
+    loading: boolean
 }
 
 const ChatConversation = (props: Props) => {
 	const {
 		affiliate,
 		chatValue,
-		setChatValue
+		setChatValue,
+		loading
 	} = props
+
+	console.log('render chat conversation')
+
+	if (!affiliate) {
+		return <></>
+	}
+
+	if (loading) {
+		return <ConversationLoading/>
+	}
 
 	const dispatch = useDispatch()
 
@@ -80,6 +93,8 @@ const ChatConversation = (props: Props) => {
 	useEffect(() => {
 		chatMessageRef.current?.scrollTo(0, chatMessageRef.current?.scrollHeight)
 	}, [chatMessages])
+
+
 	return (
 		<React.Fragment>
 			<div className={styles.container}  {...getRootProps()}>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {memo} from 'react'
 import styles from './styles.module.scss'
 import Affiliate from 'types/affiliate-chat'
 import {Avatar, IconButton} from '@mui/material'
@@ -7,13 +7,15 @@ import {DeviceMode} from 'types/device-mode'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
 interface Props {
-	affiliate: Affiliate;
-	deviceMode: DeviceMode;
-	setDeviceMode: (mode: DeviceMode) => void;
+    affiliate: Affiliate | null;
+    deviceMode: DeviceMode;
+    setDeviceMode: (mode: DeviceMode) => void;
 }
 
-export default function AffiliateHeader(props: Props) {
+export default memo(function AffiliateHeader(props: Props) {
 	const {affiliate, deviceMode, setDeviceMode} = props
+	console.log('Affiliate header rendered')
+	if (!affiliate) return <></>
 	return (
 		<div className={styles.container}>
 			{
@@ -38,4 +40,4 @@ export default function AffiliateHeader(props: Props) {
 			<div className={styles.affiliateName}>{affiliate.name}</div>
 		</div>
 	)
-}
+})

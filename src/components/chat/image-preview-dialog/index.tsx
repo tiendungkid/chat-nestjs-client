@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {memo} from 'react'
 import {Dialog} from '@mui/material'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 	setOpen: (open: boolean) => void;
 }
 
-export default function ImagePreviewDialog(props: Props) {
+export default memo(function ImagePreviewDialog(props: Props) {
 	const {open, imageUrl, setOpen} = props
 	return (
 		<Dialog open={open} onClose={() => setOpen(false)}>
@@ -15,3 +15,4 @@ export default function ImagePreviewDialog(props: Props) {
 		</Dialog>
 	)
 }
+)

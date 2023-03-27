@@ -213,7 +213,7 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'https://w.wallhaven.cc/full/l8/wallhaven-l8yl6q.jpg',
+		message: 'https://i.pinimg.com/564x/16/8d/4f/168d4f40dd83181727bb608ad32416a3.jpg',
 		message_type: MessageType.IMAGE,
 		read: true,
 		sent_at: 'Jul, 28',

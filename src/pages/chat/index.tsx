@@ -4,6 +4,7 @@ import {affiliates} from 'components/chat/test'
 
 function Chat() {
 	const [chatValue, setChatValue] = useState('')
+	console.log('Chat page rendered')
 	return (
 		<ChatLayout
 			affiliates={affiliates}
