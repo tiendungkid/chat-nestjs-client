@@ -51,7 +51,7 @@ const affiliates: Affiliate[] = [
 	{
 		id: 9,
 		name: 'Nguyễn Trà My',
-		avatar: 'https://scontent.xx.fbcdn.net/v/t39.30808-1/305974115_2524347461041322_584733939415468727_n.jpg?stp=dst-jpg_p200x200&_nc_cat=106&ccb=1-7&_nc_sid=7206a8&_nc_ohc=nQzQA0zQ0VIAX9DxCuA&_nc_ht=scontent.fhan3-3.fna&oh=00_AfCBKokOp2OUDVLwyfoaP6gEkeYrpdllcINJqdvJImIWsw&oe=6421C259&_nc_fr=fhan3c03',
+		avatar: 'https://i.pinimg.com/564x/00/4d/f1/004df1cd89b71e93d66856d38eed8e6e.jpg',
 	},
 	{
 		id: 10,
@@ -331,14 +331,14 @@ const chatMessages: Messages[] = [
 		sent_at: 'Today',
 		sender: Sender.MERCHANT
 	},
-	// {
-	// 	id: Math.random(),
-	// 	message: '',
-	// 	message_type: MessageType.TYPING,
-	// 	read: true,
-	// 	sent_at: 'Typing...',
-	// 	sender: Sender.AFFILIATE
-	// },
+	{
+		id: Math.random(),
+		message: '',
+		message_type: MessageType.TYPING,
+		read: true,
+		sent_at: 'Typing...',
+		sender: Sender.AFFILIATE
+	},
 ]
 
 export {affiliates, chatMessages}

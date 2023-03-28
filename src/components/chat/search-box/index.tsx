@@ -1,22 +1,22 @@
-import React, {memo, useState} from 'react'
+import React, {memo, useCallback} from 'react'
 import styles from './styles.module.scss'
 import SearchIcon from '@mui/icons-material/Search'
+import {useDispatch, useSelector} from 'react-redux'
+import {selectSearchAffiliateQuery, setSearchAffiliateQuery} from 'store/reducers/conversationSlice'
 
-interface Props {
-    onChange: (value: string) => void;
-}
+export default memo(function SearchBox() {
+	const dispatch = useDispatch()
+	const searchValue = useSelector(selectSearchAffiliateQuery)
 
-export default memo(function SearchBox(props: Props) {
-	const {onChange} = props
-	console.log('Search box rendered')
-	const [value, setValue] = useState('')
+	const updateSearchAffiliateQuery = useCallback((value: string) => {
+		dispatch(setSearchAffiliateQuery(value))
+	}, [searchValue])
+
 	return (
 		<div className={styles.container}>
 			<SearchIcon fontSize="medium" className={styles.searchIcon}/>
-			<input placeholder="Search affiliates" type="text" value={value} onChange={e => {
-				setValue(e.target.value)
-				onChange(e.target.value)
-			}}/>
+			<input placeholder="Search affiliates" type="text" value={searchValue}
+				onChange={e => updateSearchAffiliateQuery(e.target.value)}/>
 		</div>
 	)
 })

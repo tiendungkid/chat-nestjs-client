@@ -1,21 +1,36 @@
-import React, {memo} from 'react'
-import Affiliate from 'types/affiliate-chat'
+import React, {memo, useCallback} from 'react'
 import {AffiliateChat, AffiliateChatSkeleton} from '../affiliate'
+import {useDispatch, useSelector} from 'react-redux'
+import {
+	selectAffiliates,
+	selectCurrentAffiliate,
+	selectLoadingAffiliateList, setChatMessages,
+	setLoadingConversation
+} from 'store/reducers/conversationSlice'
+import {setCurrentAffiliate} from 'store/reducers/conversationSlice'
+import Affiliate from 'types/affiliate-chat'
+import {chatMessages} from 'components/chat/test'
 
-interface Props {
-    affiliates: Affiliate[];
-    loading: boolean;
-    currentAffiliate: Affiliate | null;
-    onAffiliateClicked: (affiliate: Affiliate) => void;
-}
+export default memo(function AffiliateList() {
+	const dispatch = useDispatch()
+	const loadingAffiliate = useSelector(selectLoadingAffiliateList)
+	const currentAffiliate = useSelector(selectCurrentAffiliate)
+	const affiliates = useSelector(selectAffiliates)
 
-export default memo(function AffiliateList(props: Props) {
-	const {affiliates, loading, currentAffiliate, onAffiliateClicked} = props
-	console.log('Affiliate list rendered')
-	if (loading) {
-		return <AffiliateChatSkeleton/>
-	}
+	const onAffiliateClicked = useCallback((affiliate: Affiliate | null) => {
+		dispatch(setCurrentAffiliate(affiliate))
+		dispatch(setLoadingConversation(true))
 
+		const timeout = setTimeout(() => {
+			dispatch(setLoadingConversation(false))
+			dispatch(setChatMessages(chatMessages))
+			clearTimeout(timeout)
+		}, 3000)
+	}, [affiliates])
+
+	if (loadingAffiliate) return <AffiliateChatSkeleton/>
+
+	console.log('render affiliates')
 	return (
 		<>
 			{

@@ -1,21 +1,22 @@
-import React, {useState} from 'react'
-import ChatLayout from 'layouts/chat-layout/chat-layout'
+import React, {useEffect} from 'react'
+import Index from 'layouts/chat-layout'
+import {setAffiliates, setLoadingAffiliateList} from 'store/reducers/conversationSlice'
+import {useDispatch} from 'react-redux'
 import {affiliates} from 'components/chat/test'
 
 function Chat() {
-	const [chatValue, setChatValue] = useState('')
+	const dispatch = useDispatch()
 	console.log('Chat page rendered')
-	return (
-		<ChatLayout
-			affiliates={affiliates}
-			loadingAffiliate={false}
-			onSearchChange={(e) => {
-				console.log(e)
-			}}
-			chatValue={chatValue}
-			setChatValue={setChatValue}
-		/>
-	)
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			dispatch(setLoadingAffiliateList(false))
+			dispatch(setAffiliates(affiliates))
+		}, 2000)
+		return () => {
+			clearTimeout(timeout)
+		}
+	}, [])
+	return <Index/>
 }
 
 export default Chat

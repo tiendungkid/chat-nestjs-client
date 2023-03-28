@@ -1,21 +1,24 @@
-import React, {memo} from 'react'
+import React, {memo, useCallback} from 'react'
 import styles from './styles.module.scss'
-import Affiliate from 'types/affiliate-chat'
 import {Avatar, IconButton} from '@mui/material'
 import {stringAvatar} from 'utils/affiliate-chat-utils/helpers'
 import {DeviceMode} from 'types/device-mode'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import {useDispatch, useSelector} from 'react-redux'
+import {selectCurrentAffiliate} from 'store/reducers/conversationSlice'
+import {selectDeviceMode, setDeviceMode} from 'store/reducers/screenSlice'
 
-interface Props {
-    affiliate: Affiliate | null;
-    deviceMode: DeviceMode;
-    setDeviceMode: (mode: DeviceMode) => void;
-}
+export default memo(function AffiliateHeader() {
+	const dispatch = useDispatch()
+	const currentAffiliate = useSelector(selectCurrentAffiliate)
+	const deviceMode = useSelector(selectDeviceMode)
 
-export default memo(function AffiliateHeader(props: Props) {
-	const {affiliate, deviceMode, setDeviceMode} = props
+	const changeDeviceMode = useCallback(() => {
+		dispatch(setDeviceMode(DeviceMode.MOBILE_AFFILIATE))
+	}, [deviceMode])
+
 	console.log('Affiliate header rendered')
-	if (!affiliate) return <></>
+	if (!currentAffiliate) return <></>
 	return (
 		<div className={styles.container}>
 			{
@@ -26,18 +29,18 @@ export default memo(function AffiliateHeader(props: Props) {
 						color="primary"
 						aria-label="Affiliate list"
 						className={styles.backIcon}
-						onClick={() => setDeviceMode(DeviceMode.MOBILE_AFFILIATE)}
+						onClick={changeDeviceMode}
 					>
 						<ChevronLeftIcon/>
 					</IconButton>
 				)
 			}
 			{
-				affiliate.avatar
-					? <Avatar alt={affiliate.name} src={affiliate.avatar} className={styles.avatar}/>
-					: <Avatar {...stringAvatar(affiliate.name)} className={styles.avatar}></Avatar>
+				currentAffiliate.avatar
+					? <Avatar alt={currentAffiliate.name} src={currentAffiliate.avatar} className={styles.avatar}/>
+					: <Avatar {...stringAvatar(currentAffiliate.name)} className={styles.avatar}></Avatar>
 			}
-			<div className={styles.affiliateName}>{affiliate.name}</div>
+			<div className={styles.affiliateName}>{currentAffiliate.name}</div>
 		</div>
 	)
 })
