@@ -33,7 +33,7 @@ export default function ChatPanel(props: Props) {
 		if (e.key !== 'Enter') return
 		console.log('Pushed new message')
 	}, [chatValue])
-
+	console.log('chat panel rendered')
 	return (
 		<div className={styles.chatPanel}>
 			<div className={styles.media}>

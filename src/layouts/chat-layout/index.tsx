@@ -6,7 +6,7 @@ import ChatConversation from 'components/chat/chat-conversation'
 import {DeviceMode} from 'types/device-mode'
 import AffiliateList from 'components/chat/affiliate-list'
 
-export default function Index() {
+export default function ChatLayout() {
 	return (
 		<div className={[styles.container, styles[DeviceMode.DESKTOP]].join(' ')}>
 			<div className={styles.header}>

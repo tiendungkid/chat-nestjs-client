@@ -1,6 +1,8 @@
 import {Collection} from 'collect.js'
 import {Sender} from 'types/conversation/sender'
 import {ChatMessage} from 'types/conversation/chat-message'
+import {AffiliatesResponse} from '../../types/response-instances/affiliates-response'
+import Affiliate from '../../types/affiliate-chat'
 
 export const MAX_PREVIEW_LATEST_CHAT = 35
 
@@ -44,8 +46,20 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 		subset = chats.takeUntil(filterSender)
 	} while (subset.count())
 
-
 	return grouped
+}
+
+const parseAffiliateListByResponse = (affiliateResponse: AffiliatesResponse): Affiliate[] => {
+	const affiliates = affiliateResponse.rows
+	if (!affiliates.length) return []
+	return affiliates.map((affiliate) => {
+		return {
+			id: affiliate.id,
+			name: `${affiliate.first_name} ${affiliate.last_name}`,
+			avatar: affiliate.avatar,
+			latestChat: ''
+		}
+	})
 }
 
 const getTextOfChatMessages = (chatMessages: ChatMessage[]): unknown[] => {
@@ -54,4 +68,4 @@ const getTextOfChatMessages = (chatMessages: ChatMessage[]): unknown[] => {
 	return messages.all()
 }
 
-export {splitLatestChat, stringAvatar, groupChatMessages, getTextOfChatMessages}
+export {splitLatestChat, stringAvatar, groupChatMessages, getTextOfChatMessages, parseAffiliateListByResponse}

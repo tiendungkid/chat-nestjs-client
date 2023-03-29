@@ -4,6 +4,8 @@ import './scss/base.scss'
 import Loading from './components/loading'
 import {store} from './store'
 import {Provider} from 'react-redux'
+import {QueryClientProvider} from 'react-query'
+import {queryClient} from './services'
 
 const App = lazy(() => import('./app'))
 
@@ -12,8 +14,10 @@ const root = ReactDOM.createRoot(
 )
 root.render(
 	<Provider store={store}>
-		<Suspense fallback={<Loading pageName={'App'}/>}>
-			<App/>
-		</Suspense>
+		<QueryClientProvider client={queryClient}>
+			<Suspense fallback={<Loading pageName={'App'}/>}>
+				<App/>
+			</Suspense>
+		</QueryClientProvider>
 	</Provider>
 )

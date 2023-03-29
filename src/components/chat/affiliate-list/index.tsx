@@ -1,21 +1,26 @@
-import React, {memo, useCallback} from 'react'
+import React, {memo, useCallback, useEffect} from 'react'
 import {AffiliateChat, AffiliateChatSkeleton} from '../affiliate'
 import {useDispatch, useSelector} from 'react-redux'
 import {
 	selectAffiliates,
 	selectCurrentAffiliate,
-	selectLoadingAffiliateList, setChatMessages,
+	selectLoadingAffiliateList, selectSearchAffiliateQuery, setAffiliates, setChatMessages, setLoadingAffiliateList,
 	setLoadingConversation
 } from 'store/reducers/conversationSlice'
 import {setCurrentAffiliate} from 'store/reducers/conversationSlice'
 import Affiliate from 'types/affiliate-chat'
 import {chatMessages} from 'components/chat/test'
+import {useSearchAffiliate} from 'services/affiliates/query'
+import {parseAffiliateListByResponse} from 'utils/affiliate-chat-utils/helpers'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
 	const loadingAffiliate = useSelector(selectLoadingAffiliateList)
 	const currentAffiliate = useSelector(selectCurrentAffiliate)
 	const affiliates = useSelector(selectAffiliates)
+	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery)
+
+	const { data } = useSearchAffiliate({query: searchAffiliateQuery, page: 0})
 
 	const onAffiliateClicked = useCallback((affiliate: Affiliate | null) => {
 		dispatch(setCurrentAffiliate(affiliate))
@@ -27,6 +32,13 @@ export default memo(function AffiliateList() {
 			clearTimeout(timeout)
 		}, 3000)
 	}, [affiliates])
+
+
+	useEffect(() => {
+		if (!data) return
+		dispatch(setLoadingAffiliateList(false))
+		dispatch(setAffiliates(parseAffiliateListByResponse(data)))
+	}, [data])
 
 	if (loadingAffiliate) return <AffiliateChatSkeleton/>
 
