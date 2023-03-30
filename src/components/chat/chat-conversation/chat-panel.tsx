@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, {memo, useCallback, useState} from 'react'
 import styles from './styles.module.scss'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
 import ImageIcon from '@mui/icons-material/Image'
@@ -12,7 +12,7 @@ interface Props {
     openDropzone: () => void,
 }
 
-export default function ChatPanel(props: Props) {
+const ChatPanel = (props: Props) => {
 	const {openDropzone} = props
 	const [chatValue, setChatValue] = useState('')
 
@@ -65,3 +65,4 @@ export default function ChatPanel(props: Props) {
 		</div>
 	)
 }
+export default memo(ChatPanel)

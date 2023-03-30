@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react'
+import React, {memo, useEffect, useState} from 'react'
 import styles from './styles.module.scss'
 import SearchIcon from '@mui/icons-material/Search'
 import {useDispatch, useSelector} from 'react-redux'
@@ -7,22 +7,26 @@ import {
 	setLoadingAffiliateList,
 	setSearchAffiliateQuery
 } from 'store/reducers/conversationSlice'
+import {useDebounce} from 'ahooks'
 
 export default memo(function SearchBox() {
 	const dispatch = useDispatch()
-	const searchValue = useSelector(selectSearchAffiliateQuery)
+	const [searchValue, setSearchValue] = useState(useSelector(selectSearchAffiliateQuery))
+	const debouncedSearchValue = useDebounce(searchValue, {
+		wait: 700
+	})
 
-	const updateSearchAffiliateQuery = useCallback((value: string) => {
-		dispatch(setSearchAffiliateQuery(value))
+	useEffect(() => {
+		dispatch(setSearchAffiliateQuery(debouncedSearchValue))
 		dispatch(setLoadingAffiliateList(true))
-	}, [searchValue])
+	}, [debouncedSearchValue])
 
 
 	return (
 		<div className={styles.container}>
 			<SearchIcon fontSize="medium" className={styles.searchIcon}/>
 			<input placeholder="Search affiliates" type="text" value={searchValue}
-				onChange={e => updateSearchAffiliateQuery(e.target.value)}/>
+				onChange={e => setSearchValue(e.target.value)}/>
 		</div>
 	)
 })
