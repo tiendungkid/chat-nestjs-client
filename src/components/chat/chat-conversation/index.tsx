@@ -13,8 +13,11 @@ import {
 } from 'store/reducers/conversationSlice'
 import ConversationLoading from '../conversation-loading'
 import ChatPanel from './chat-panel'
+import {selectDeviceMode} from 'store/reducers/screenSlice'
 
 const ChatConversation = () => {
+
+	const deviceMode = useSelector(selectDeviceMode)
 	const currentAffiliate = useSelector(selectCurrentAffiliate)
 	const loading = useSelector(selectLoadingConversation)
 
@@ -46,7 +49,7 @@ const ChatConversation = () => {
 	if (loading) return <ConversationLoading/>
 
 	return (
-		<>
+		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
 			<div className={styles.container}  {...getRootProps()}>
 				<input {...getInputProps()} />
 				<DropzoneOverlay open={isDragActive}/>
@@ -72,7 +75,7 @@ const ChatConversation = () => {
 				setOpen={setOpenImagePreviewDialog}
 			/>
 			<NotAllowFileTypeDialog open={openNotAllowFileMine} setOpen={setOpenNotAllowFileMine}/>
-		</>
+		</div>
 	)
 }
 

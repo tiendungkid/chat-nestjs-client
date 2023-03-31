@@ -1,0 +1,22 @@
+@use "scss/vars";
+
+.container {
+  width: 25%;
+  margin: 0;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+  padding: 0;
+  background-color: #fff;
+  transition: all vars.$collapseMobileDuration;
+
+  &.mobileConversation {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  &.mobileAffiliate {
+    width: 100%;
+  }
+
+}

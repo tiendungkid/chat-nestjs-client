@@ -18,6 +18,9 @@ import {useSearchAffiliate} from 'services/affiliates/query'
 import {parseAffiliateListByResponse} from 'utils/affiliate-chat-utils/helpers'
 import {selectDeviceMode, setDeviceMode} from 'store/reducers/screenSlice'
 import {DeviceMode} from 'types/device-mode'
+import {useInfiniteScroll} from 'ahooks'
+import {searchAffiliate} from 'services/affiliates/services'
+import styles from './styles.module.scss'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
@@ -28,6 +31,10 @@ export default memo(function AffiliateList() {
 	const deviceMode = useSelector(selectDeviceMode)
 
 	const {data} = useSearchAffiliate({query: searchAffiliateQuery, page: 0})
+	const {data: tData} = useInfiniteScroll(
+		() => searchAffiliate({query: searchAffiliateQuery, page: 0}),
+		{}
+	)
 
 	const onAffiliateClicked = useCallback((affiliate: Affiliate | null) => {
 		if (affiliate?.id === currentAffiliate?.id) return
@@ -42,7 +49,7 @@ export default memo(function AffiliateList() {
 			dispatch(setLoadingConversation(false))
 			dispatch(setChatMessages(chatMessages))
 			clearTimeout(timeout)
-		}, 3000)
+		}, 1e3)
 	}, [affiliates, deviceMode, currentAffiliate])
 
 
@@ -56,7 +63,7 @@ export default memo(function AffiliateList() {
 
 	console.log('render affiliates')
 	return (
-		<>
+		<ul className={[styles[deviceMode], styles.container].join(' ')}>
 			{
 				affiliates.map(affiliate => (
 					<AffiliateChat
@@ -69,6 +76,6 @@ export default memo(function AffiliateList() {
 						onClick={() => onAffiliateClicked(affiliate)}
 					/>))
 			}
-		</>
+		</ul>
 	)
 })

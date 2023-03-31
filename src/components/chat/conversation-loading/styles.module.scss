@@ -1,6 +1,19 @@
+@use "scss/vars";
 .loadingContainer {
   display: flex;
   justify-content: center;
   height: 100%;
   align-items: center;
+  flex: 0 1 75%;
+  transition: width vars.$collapseMobileDuration;
+
+  &.mobileAffiliate {
+    flex: 0 0 0;
+    max-width: 0;
+    opacity: 0;
+  }
+
+  &.mobileConversation {
+    flex: 0 1 100%;
+  }
 }

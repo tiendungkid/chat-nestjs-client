@@ -20,27 +20,29 @@ export default memo(function AffiliateHeader() {
 	console.log('Affiliate header rendered')
 	if (!currentAffiliate) return <></>
 	return (
-		<div className={styles.container}>
-			{
-				deviceMode === DeviceMode.MOBILE_CONVERSATION && (
-					<IconButton
-						size="large"
-						edge="start"
-						color="primary"
-						aria-label="Affiliate list"
-						className={styles.backIcon}
-						onClick={changeDeviceMode}
-					>
-						<ChevronLeftIcon/>
-					</IconButton>
-				)
-			}
-			{
-				currentAffiliate.avatar
-					? <Avatar alt={currentAffiliate.name} src={currentAffiliate.avatar} className={styles.avatar}/>
-					: <Avatar {...stringAvatar(currentAffiliate.name)} className={styles.avatar}></Avatar>
-			}
-			<div className={styles.affiliateName}>{currentAffiliate.name}</div>
+		<div className={[styles.affiliateInfoContainer, styles[deviceMode]].join(' ')}>
+			<div className={styles.container}>
+				{
+					deviceMode === DeviceMode.MOBILE_CONVERSATION && (
+						<IconButton
+							size="large"
+							edge="start"
+							color="primary"
+							aria-label="Affiliate list"
+							className={styles.backIcon}
+							onClick={changeDeviceMode}
+						>
+							<ChevronLeftIcon/>
+						</IconButton>
+					)
+				}
+				{
+					currentAffiliate.avatar
+						? <Avatar alt={currentAffiliate.name} src={currentAffiliate.avatar} className={styles.avatar}/>
+						: <Avatar {...stringAvatar(currentAffiliate.name)} className={styles.avatar}></Avatar>
+				}
+				<div className={styles.affiliateName}>{currentAffiliate.name}</div>
+			</div>
 		</div>
 	)
 })

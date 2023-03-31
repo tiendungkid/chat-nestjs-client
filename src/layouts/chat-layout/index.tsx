@@ -29,20 +29,12 @@ export default function ChatLayout() {
 	return (
 		<div className={[styles.container, styles[deviceMode]].join(' ')}>
 			<div className={styles.header}>
-				<div className={styles.searchAffiliateContainer}>
-					<SearchBox/>
-				</div>
-				<div className={styles.affiliateInfoContainer}>
-					<AffiliateHeader/>
-				</div>
+				<SearchBox/>
+				<AffiliateHeader/>
 			</div>
 			<div className={styles.body}>
-				<ul className={styles.affiliateList}>
-					<AffiliateList/>
-				</ul>
-				<div className={styles.conversation}>
-					<ChatConversation/>
-				</div>
+				<AffiliateList/>
+				<ChatConversation/>
 			</div>
 		</div>
 	)
