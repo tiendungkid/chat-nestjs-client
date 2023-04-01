@@ -3,6 +3,7 @@ import styles from './styles.module.scss'
 import SearchIcon from '@mui/icons-material/Search'
 import {useDispatch, useSelector} from 'react-redux'
 import {
+	clearAffiliateList,
 	selectSearchAffiliateQuery,
 	setLoadingAffiliateList,
 	setSearchAffiliateQuery
@@ -20,6 +21,7 @@ export default memo(function SearchBox() {
 
 	useEffect(() => {
 		dispatch(setSearchAffiliateQuery(debouncedSearchValue))
+		dispatch(clearAffiliateList)
 		dispatch(setLoadingAffiliateList(true))
 	}, [debouncedSearchValue])
 

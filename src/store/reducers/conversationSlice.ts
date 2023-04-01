@@ -31,8 +31,13 @@ const conversationSlice = createSlice({
 			return state
 		},
 
-		setAffiliates(state, action: PayloadAction<Affiliate[]>) {
-			state.affiliates = action.payload
+		pushAffiliateList(state, action: PayloadAction<Affiliate[]>) {
+			state.affiliates = [...action.payload]
+			return state
+		},
+
+		clearAffiliateList(state) {
+			state.affiliates = []
 			return state
 		},
 
@@ -90,7 +95,8 @@ const conversationSlice = createSlice({
 
 export const {
 	setSearchAffiliateQuery,
-	setAffiliates,
+	pushAffiliateList,
+	clearAffiliateList,
 	setCurrentAffiliate,
 	setLoadingAffiliateList,
 	setLoadingConversation,

@@ -1,10 +1,13 @@
 import React from 'react'
 import {Skeleton} from '@mui/material'
 import styles from './styles.module.scss'
+import {useSelector} from 'react-redux'
+import {selectDeviceMode} from 'store/reducers/screenSlice'
 
 export default function AffiliateChatSkeleton() {
+	const deviceMode = useSelector(selectDeviceMode)
 	return (
-		<>
+		<ul className={[styles[deviceMode], styles.affiliateLoading].join(' ')}>
 			{[...Array(15).keys()].map(id => (
 				<li key={id} className={styles.container}>
 					<Skeleton key={id} animation="wave" variant="circular" width={40} height={36} className={styles.avatar}/>
@@ -23,6 +26,6 @@ export default function AffiliateChatSkeleton() {
 					</div>
 				</li>
 			))}
-		</>
+		</ul>
 	)
 }

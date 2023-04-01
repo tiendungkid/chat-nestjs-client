@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect} from 'react'
+import React, {memo, useCallback, useRef, useState} from 'react'
 import {AffiliateChat, AffiliateChatSkeleton} from '../affiliate'
 import {useDispatch, useSelector} from 'react-redux'
 import {
@@ -6,15 +6,12 @@ import {
 	selectCurrentAffiliate,
 	selectLoadingAffiliateList,
 	selectSearchAffiliateQuery,
-	setAffiliates,
 	setChatMessages,
-	setCurrentAffiliate,
-	setLoadingAffiliateList,
+	setCurrentAffiliate, setLoadingAffiliateList,
 	setLoadingConversation
 } from 'store/reducers/conversationSlice'
 import Affiliate from 'types/affiliate-chat'
 import {chatMessages} from 'components/chat/test'
-import {useSearchAffiliate} from 'services/affiliates/query'
 import {parseAffiliateListByResponse} from 'utils/affiliate-chat-utils/helpers'
 import {selectDeviceMode, setDeviceMode} from 'store/reducers/screenSlice'
 import {DeviceMode} from 'types/device-mode'
@@ -29,11 +26,20 @@ export default memo(function AffiliateList() {
 	const affiliates = useSelector(selectAffiliates)
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery)
 	const deviceMode = useSelector(selectDeviceMode)
+	const affiliateListRef = useRef<HTMLUListElement>(null)
 
-	const {data} = useSearchAffiliate({query: searchAffiliateQuery, page: 0})
-	const {data: tData} = useInfiniteScroll(
-		() => searchAffiliate({query: searchAffiliateQuery, page: 0}),
-		{}
+	const [page, setPage] = useState(1)
+	const [isNoMore, setIsNoMore] = useState(false)
+
+	const {
+		data
+	} = useInfiniteScroll(
+		() => searchAffiliate({query: searchAffiliateQuery, page}),
+		{
+			target: affiliateListRef,
+			threshold: 200,
+			isNoMore: () => isNoMore
+		}
 	)
 
 	const onAffiliateClicked = useCallback((affiliate: Affiliate | null) => {
@@ -52,20 +58,13 @@ export default memo(function AffiliateList() {
 		}, 1e3)
 	}, [affiliates, deviceMode, currentAffiliate])
 
-
-	useEffect(() => {
-		if (!data) return
-		dispatch(setLoadingAffiliateList(false))
-		dispatch(setAffiliates(parseAffiliateListByResponse(data)))
-	}, [data])
-
 	if (loadingAffiliate) return <AffiliateChatSkeleton/>
 
 	console.log('render affiliates')
 	return (
-		<ul className={[styles[deviceMode], styles.container].join(' ')}>
+		<ul className={[styles[deviceMode], styles.container].join(' ')} ref={affiliateListRef}>
 			{
-				affiliates.map(affiliate => (
+				parseAffiliateListByResponse(data).map(affiliate => (
 					<AffiliateChat
 						key={affiliate.id}
 						id={affiliate.id}
