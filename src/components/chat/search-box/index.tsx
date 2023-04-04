@@ -3,9 +3,7 @@ import styles from './styles.module.scss'
 import SearchIcon from '@mui/icons-material/Search'
 import {useDispatch, useSelector} from 'react-redux'
 import {
-	clearAffiliateList,
 	selectSearchAffiliateQuery,
-	setLoadingAffiliateList,
 	setSearchAffiliateQuery
 } from 'store/reducers/conversationSlice'
 import {useDebounce} from 'ahooks'
@@ -14,24 +12,30 @@ import {selectDeviceMode} from 'store/reducers/screenSlice'
 export default memo(function SearchBox() {
 	const dispatch = useDispatch()
 	const deviceMode = useSelector(selectDeviceMode)
-	const [searchValue, setSearchValue] = useState(useSelector(selectSearchAffiliateQuery))
-	const debouncedSearchValue = useDebounce(searchValue, {
+	const [searchParams, setSearchParams] = useState(useSelector(selectSearchAffiliateQuery))
+
+
+	const debouncedSearchParams = useDebounce(searchParams, {
 		wait: 700
 	})
 
-	useEffect(() => {
-		dispatch(setSearchAffiliateQuery(debouncedSearchValue))
-		dispatch(clearAffiliateList)
-		dispatch(setLoadingAffiliateList(true))
-	}, [debouncedSearchValue])
+	const handleChangeValue = (searchValue: string) => {
+		setSearchParams({
+			query: searchValue,
+			page: 1
+		})
+	}
 
+	useEffect(() => {
+		dispatch(setSearchAffiliateQuery(debouncedSearchParams))
+	}, [debouncedSearchParams])
 
 	return (
 		<div className={[styles[deviceMode], styles.container].join(' ')}>
 			<div className={styles.searchBox}>
 				<SearchIcon fontSize="medium" className={styles.searchIcon}/>
-				<input placeholder="Search affiliates" type="text" value={searchValue}
-					onChange={e => setSearchValue(e.target.value)}/>
+				<input placeholder="Search affiliates" type="text" value={searchParams.query}
+					onChange={e => handleChangeValue(e.target.value)}/>
 			</div>
 		</div>
 	)

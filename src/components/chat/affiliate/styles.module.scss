@@ -48,6 +48,10 @@
 
     .latestChat {
       font-size: 14px;
+
+      &.notChatYet {
+        color: #8090a07a;
+      }
     }
   }
 

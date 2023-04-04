@@ -25,7 +25,7 @@ export default function AffiliateChat(props: Props) {
 			}
 			<div className={styles.content}>
 				<div className={styles.affiliateName}>{affiliateName}</div>
-				<div className={styles.latestChat}>
+				<div className={[styles.latestChat, (!latestChat && styles.notChatYet)].join(' ')}>
 					{splitLatestChat(affiliateName, latestChat)}
 				</div>
 			</div>

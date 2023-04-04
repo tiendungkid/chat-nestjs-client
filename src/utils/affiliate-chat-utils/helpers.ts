@@ -1,13 +1,13 @@
 import {Collection} from 'collect.js'
 import {Sender} from 'types/conversation/sender'
 import {ChatMessage} from 'types/conversation/chat-message'
-import {AffiliatesResponse} from '../../types/response-instances/affiliates-response'
-import Affiliate from '../../types/affiliate-chat'
+import {AffiliatesResponse} from 'types/response-instances/affiliates-response'
+import Affiliate from 'types/affiliate-chat'
 
 export const MAX_PREVIEW_LATEST_CHAT = 35
 
 const splitLatestChat = (affiliateName: string, latestChat?: string | null) => {
-	if (!latestChat) return `Say hi with ${affiliateName}`
+	if (!latestChat) return 'Click to start conversation'
 	if (latestChat.length > MAX_PREVIEW_LATEST_CHAT) {
 		return latestChat.slice(0, MAX_PREVIEW_LATEST_CHAT) + '...'
 	}
@@ -50,7 +50,7 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 }
 
 const parseAffiliateListByResponse = (affiliateResponse: AffiliatesResponse): Affiliate[] => {
-	const affiliates = affiliateResponse.rows
+	const affiliates = affiliateResponse.list
 	if (!affiliates.length) return []
 	return affiliates.map((affiliate) => {
 		return {
@@ -62,10 +62,4 @@ const parseAffiliateListByResponse = (affiliateResponse: AffiliatesResponse): Af
 	})
 }
 
-const getTextOfChatMessages = (chatMessages: ChatMessage[]): unknown[] => {
-	const collection = new Collection(chatMessages)
-	const messages = collection.pluck('message')
-	return messages.all()
-}
-
-export {splitLatestChat, stringAvatar, groupChatMessages, getTextOfChatMessages, parseAffiliateListByResponse}
+export {splitLatestChat, stringAvatar, groupChatMessages, parseAffiliateListByResponse}

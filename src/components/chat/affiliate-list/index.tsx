@@ -1,14 +1,13 @@
-import React, {memo, useCallback, useRef, useState} from 'react'
-import {AffiliateChat, AffiliateChatSkeleton} from '../affiliate'
+import React, {memo, useCallback, useRef} from 'react'
+import {AffiliateChat} from '../affiliate'
 import {useDispatch, useSelector} from 'react-redux'
 import {
 	selectAffiliates,
 	selectCurrentAffiliate,
-	selectLoadingAffiliateList,
 	selectSearchAffiliateQuery,
 	setChatMessages,
-	setCurrentAffiliate, setLoadingAffiliateList,
-	setLoadingConversation
+	setCurrentAffiliate,
+	setLoadingConversation, setSearchAffiliateQuery
 } from 'store/reducers/conversationSlice'
 import Affiliate from 'types/affiliate-chat'
 import {chatMessages} from 'components/chat/test'
@@ -18,27 +17,30 @@ import {DeviceMode} from 'types/device-mode'
 import {useInfiniteScroll} from 'ahooks'
 import {searchAffiliate} from 'services/affiliates/services'
 import styles from './styles.module.scss'
+import AffiliateSkeleton from '../affiliate/skeleton'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
-	const loadingAffiliate = useSelector(selectLoadingAffiliateList)
 	const currentAffiliate = useSelector(selectCurrentAffiliate)
 	const affiliates = useSelector(selectAffiliates)
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery)
 	const deviceMode = useSelector(selectDeviceMode)
 	const affiliateListRef = useRef<HTMLUListElement>(null)
 
-	const [page, setPage] = useState(1)
-	const [isNoMore, setIsNoMore] = useState(false)
-
-	const {
-		data
-	} = useInfiniteScroll(
-		() => searchAffiliate({query: searchAffiliateQuery, page}),
+	const {data, loadingMore} = useInfiniteScroll(
+		() => searchAffiliate(searchAffiliateQuery),
 		{
 			target: affiliateListRef,
-			threshold: 200,
-			isNoMore: () => isNoMore
+			isNoMore: (dataList) => {
+				return dataList?.count === dataList?.list.length || dataList?.list.length === 0
+			},
+			onFinally: ()=> {
+				dispatch(setSearchAffiliateQuery({
+					...searchAffiliateQuery,
+					page: searchAffiliateQuery.page + 1
+				}))
+			},
+			reloadDeps: [searchAffiliateQuery.query]
 		}
 	)
 
@@ -58,13 +60,11 @@ export default memo(function AffiliateList() {
 		}, 1e3)
 	}, [affiliates, deviceMode, currentAffiliate])
 
-	if (loadingAffiliate) return <AffiliateChatSkeleton/>
-
 	console.log('render affiliates')
 	return (
 		<ul className={[styles[deviceMode], styles.container].join(' ')} ref={affiliateListRef}>
 			{
-				parseAffiliateListByResponse(data).map(affiliate => (
+				data && parseAffiliateListByResponse(data).map(affiliate => (
 					<AffiliateChat
 						key={affiliate.id}
 						id={affiliate.id}
@@ -74,6 +74,11 @@ export default memo(function AffiliateList() {
 						active={affiliate.id === currentAffiliate?.id}
 						onClick={() => onAffiliateClicked(affiliate)}
 					/>))
+			}
+			{
+				loadingMore && [1, 2, 3].map(skeletonIndex => (
+					<AffiliateSkeleton key={`skeleton-${skeletonIndex}`} id={skeletonIndex}/>
+				))
 			}
 		</ul>
 	)

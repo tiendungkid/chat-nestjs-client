@@ -1,6 +1,6 @@
 export interface AffiliatesResponse {
     count: number
-    rows: AffiliateRowResponse[]
+    list: AffiliateRowResponse[]
 }
 
 export interface AffiliateRowResponse {
