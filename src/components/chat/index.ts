@@ -1,4 +1,4 @@
-import {AffiliateChat, AffiliateChatSkeleton} from './affiliate'
+import {AffiliateChat} from './affiliate'
 import AffiliateHeader from './affiliate-header'
 import ChatConversation from './chat-conversation'
 import ChatMessage from './chat-message/chat-message'
@@ -13,7 +13,6 @@ import Typing from './typing'
 
 export {
 	AffiliateChat,
-	AffiliateChatSkeleton,
 	AffiliateHeader,
 	ChatConversation,
 	ChatMessage,
