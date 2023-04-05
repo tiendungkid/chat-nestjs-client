@@ -157,63 +157,7 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'nhé',
-		message_type: MessageType.TEXT,
-		read: true,
-		sent_at: 'Today',
-		sender: Sender.AFFILIATE
-	},
-	{
-		id: Math.random(),
-		message: 'https://i.pinimg.com/564x/16/8d/4f/168d4f40dd83181727bb608ad32416a3.jpg',
+		message: 'https://i.pinimg.com/736x/5b/f1/45/5bf1459bb961c2268f01c39703fe83a2.jpg',
 		message_type: MessageType.IMAGE,
 		read: true,
 		sent_at: 'Jul, 28',
@@ -269,14 +213,6 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'https://i.pinimg.com/564x/06/65/58/0665586777e191ea9eba036c403e895d.jpg',
-		message_type: MessageType.IMAGE,
-		read: true,
-		sent_at: 'Jul, 28',
-		sender: Sender.MERCHANT
-	},
-	{
-		id: Math.random(),
 		message: 'Vai lin con meo pho',
 		message_type: MessageType.TEXT,
 		read: true,
@@ -285,7 +221,7 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'https://i.pinimg.com/originals/1a/ff/72/1aff7269b6171da49a7b882887480120.gif',
+		message: 'https://i.pinimg.com/564x/dd/25/18/dd2518418a893547ba113d68d8c0278d.jpg',
 		message_type: MessageType.IMAGE,
 		read: true,
 		sent_at: 'Today',
@@ -317,7 +253,7 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'https://i.pinimg.com/originals/91/1e/b1/911eb1f2cff48f9a4179835007eb7fbd.gif',
+		message: 'https://i.pinimg.com/564x/b3/ef/0d/b3ef0dc3cdb41db32c0be700bee8dc9d.jpg',
 		message_type: MessageType.IMAGE,
 		read: true,
 		sent_at: 'Today',

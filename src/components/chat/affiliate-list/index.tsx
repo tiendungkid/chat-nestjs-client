@@ -70,7 +70,6 @@ export default memo(function AffiliateList() {
 						id={affiliate.id}
 						affiliateName={affiliate.name}
 						avatar={affiliate.avatar}
-						latestChat={affiliate.latestChat}
 						active={affiliate.id === currentAffiliate?.id}
 						onClick={() => onAffiliateClicked(affiliate)}
 					/>))

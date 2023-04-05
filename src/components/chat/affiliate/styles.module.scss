@@ -29,20 +29,38 @@
   border-bottom: 1px solid #d9d9d970;
   cursor: pointer;
 
+  &.unread {
+    .affiliateName {
+      font-weight: 600;
+    }
+
+    .latestChat {
+      color: #000 !important;
+    }
+  }
+
   .avatar {
     margin-right: 12px;
     align-self: center;
     width: 40px;
   }
 
+  .contentWrapper {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .isUnreadMessage {
+    align-self: center;
+  }
+
   .content {
     display: flex;
     flex-direction: column;
-    width: 100%;
     justify-content: center;
 
     .affiliateName {
-      font-weight: 600;
       color: vars.$text-dark;
     }
 

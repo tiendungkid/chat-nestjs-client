@@ -9,4 +9,5 @@ export interface AffiliateRowResponse {
     last_name: string | null
     email: string
     avatar?: string
+    hasUnreadMessage?: boolean
 }

@@ -56,8 +56,7 @@ const parseAffiliateListByResponse = (affiliateResponse: AffiliatesResponse): Af
 		return {
 			id: affiliate.id,
 			name: `${affiliate.first_name} ${affiliate.last_name}`,
-			avatar: affiliate.avatar,
-			latestChat: ''
+			avatar: affiliate.avatar
 		}
 	})
 }
