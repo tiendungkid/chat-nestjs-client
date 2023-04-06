@@ -49,16 +49,17 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 	return grouped
 }
 
-const parseAffiliateListByResponse = (affiliateResponse: AffiliatesResponse): Affiliate[] => {
-	const affiliates = affiliateResponse.list
+const convertAffiliateFromResponse = (affiliateResponse: AffiliatesResponse): Affiliate[] => {
+	const affiliates = affiliateResponse.rows
 	if (!affiliates.length) return []
 	return affiliates.map((affiliate) => {
 		return {
 			id: affiliate.id,
 			name: `${affiliate.first_name} ${affiliate.last_name}`,
-			avatar: affiliate.avatar
+			avatar: affiliate.avatar,
+			latestMessage: affiliate.latestMessage
 		}
 	})
 }
 
-export {splitLatestChat, stringAvatar, groupChatMessages, parseAffiliateListByResponse}
+export {splitLatestChat, stringAvatar, groupChatMessages, convertAffiliateFromResponse}

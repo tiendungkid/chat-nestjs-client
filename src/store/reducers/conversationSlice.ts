@@ -8,7 +8,6 @@ interface ConversationState {
         query: string,
         page: number
     },
-    affiliates: Affiliate[],
     currentAffiliate: Affiliate | null,
     loadingConversation: boolean,
     chatMessages: ChatMessage[],
@@ -19,7 +18,6 @@ const initialState: ConversationState = {
 		query: '',
 		page: 1
 	},
-	affiliates: [],
 	currentAffiliate: null,
 	loadingConversation: false,
 	chatMessages: [],
@@ -31,11 +29,6 @@ const conversationSlice = createSlice({
 	reducers: {
 		setSearchAffiliateQuery(state, action: PayloadAction<{ query: string, page: number }>) {
 			state.searchAffiliateQuery = action.payload
-			return state
-		},
-
-		clearAffiliateList(state) {
-			state.affiliates = []
 			return state
 		},
 
@@ -63,7 +56,6 @@ export const {
 	setChatMessages,
 } = conversationSlice.actions
 export const selectSearchAffiliateQuery = (state: RootState) => state.conversation.searchAffiliateQuery
-export const selectAffiliates = (state: RootState) => state.conversation.affiliates
 export const selectCurrentAffiliate = (state: RootState) => state.conversation.currentAffiliate
 export const selectLoadingConversation = (state: RootState) => state.conversation.loadingConversation
 export const selectChatMessages = (state: RootState) => state.conversation.chatMessages

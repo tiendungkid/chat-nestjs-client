@@ -1,8 +1,9 @@
 import React from 'react'
 import {Avatar, Badge} from '@mui/material'
 import styles from './styles.module.scss'
-import {stringAvatar, splitLatestChat} from 'utils/affiliate-chat-utils/helpers'
+import {splitLatestChat, stringAvatar} from 'utils/affiliate-chat-utils/helpers'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
+import {AffiliateChatStatus, AffiliateMessage} from 'types/affiliate-chat'
 
 interface Props {
     id: number;
@@ -10,7 +11,7 @@ interface Props {
     affiliateName: string;
     active?: boolean;
     onClick: (id: number) => void;
-    hasUnreadMessage?: boolean;
+    latestMessage?: AffiliateMessage;
 }
 
 export default function AffiliateChat(props: Props) {
@@ -20,13 +21,24 @@ export default function AffiliateChat(props: Props) {
 		affiliateName,
 		active,
 		onClick,
-		hasUnreadMessage
-	} = props
+		latestMessage
+	}
+    = props
 	const classes = [styles.container]
-	if (hasUnreadMessage) {
+	if (active) classes.push(styles.active)
+
+	let hasUnreadMessage = false
+
+	if (!latestMessage) {
+		classes.push(styles.notChatYet)
+	}
+
+	if (latestMessage && [AffiliateChatStatus.SEND, AffiliateChatStatus.READ_NOTIFY].includes(latestMessage.status)) {
+		hasUnreadMessage = true
 		classes.push(styles.unread)
 	}
-	if (active) classes.push(styles.active)
+
+
 
 	return (
 		<li className={classes.join(' ')} onClick={() => onClick(id)}>
@@ -38,13 +50,13 @@ export default function AffiliateChat(props: Props) {
 			<div className={styles.contentWrapper}>
 				<div className={styles.content}>
 					<div className={styles.affiliateName}>{affiliateName}</div>
-					<div className={[styles.latestChat, styles.notChatYet].join(' ')}>
-						{splitLatestChat(affiliateName, '')}
+					<div className={styles.latestChat}>
+						{splitLatestChat(affiliateName, latestMessage?.msg || '')}
 					</div>
 				</div>
 				{
 					hasUnreadMessage && (
-						<Badge color="secondary" className={styles.isUnreadMessage} variant="dot" invisible={true}>
+						<Badge color="secondary" className={styles.unreadBadge} variant="dot" invisible={true}>
 							<FiberManualRecordIcon color={'info'} fontSize="small"/>
 						</Badge>
 					)
@@ -53,3 +65,4 @@ export default function AffiliateChat(props: Props) {
 		</li>
 	)
 }
+

@@ -39,10 +39,20 @@
     }
   }
 
+  &.notChatYet {
+    .latestChat {
+      color: #8090a07a;
+    }
+  }
+
   .avatar {
     margin-right: 12px;
     align-self: center;
     width: 40px;
+  }
+
+  .unreadBadge {
+    align-self: center;
   }
 
   .contentWrapper {
@@ -51,11 +61,8 @@
     justify-content: space-between;
   }
 
-  .isUnreadMessage {
-    align-self: center;
-  }
-
   .content {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,10 +73,6 @@
 
     .latestChat {
       font-size: 14px;
-
-      &.notChatYet {
-        color: #8090a07a;
-      }
     }
   }
 

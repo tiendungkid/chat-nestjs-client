@@ -7,11 +7,7 @@ const searchAffiliate = async (queries: { query: string, page: number }):Promise
 			params: queries
 		})
 		.catch(err => err)
-	const data = await response.data
-	return {
-		list: data.rows,
-		count: data.count
-	}
+	return await response.data
 }
 
 export {searchAffiliate}

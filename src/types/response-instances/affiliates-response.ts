@@ -1,6 +1,8 @@
+import {AffiliateMessage} from '../affiliate-chat'
+
 export interface AffiliatesResponse {
     count: number
-    list: AffiliateRowResponse[]
+    rows: AffiliateRowResponse[]
 }
 
 export interface AffiliateRowResponse {
@@ -9,5 +11,5 @@ export interface AffiliateRowResponse {
     last_name: string | null
     email: string
     avatar?: string
-    hasUnreadMessage?: boolean
+    latestMessage?: AffiliateMessage
 }
