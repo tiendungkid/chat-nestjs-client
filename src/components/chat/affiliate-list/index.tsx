@@ -15,7 +15,7 @@ import {DeviceMode} from 'types/device-mode'
 import styles from './styles.module.scss'
 import AffiliateSkeleton from '../affiliate/skeleton'
 import {useSearchAffiliate} from 'services/affiliates/query'
-import {convertAffiliateFromResponse} from '../../../utils/affiliate-chat-utils/helpers'
+import {convertAffiliateFromResponse} from 'utils/affiliate-chat-utils/helpers'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
@@ -25,7 +25,7 @@ export default memo(function AffiliateList() {
 	const [affiliates, setAffiliates] = useState<Affiliate[]>([])
 	const [page, setPage] = useState(1)
 
-	const {data, isLoading, refetch} = useSearchAffiliate({
+	const {data, isLoading} = useSearchAffiliate({
 		query: searchAffiliateQuery,
 		page
 	})
@@ -36,10 +36,10 @@ export default memo(function AffiliateList() {
 			...affiliates,
 			...convertAffiliateFromResponse(data.pages?.[0] || [])
 		])
-	}, [data, searchAffiliateQuery])
+	}, [data])
 
 	useEffect(() => {
-		setAffiliates(() => [])
+		setAffiliates([])
 		setPage(1)
 	}, [searchAffiliateQuery])
 
@@ -68,9 +68,6 @@ export default memo(function AffiliateList() {
 			clearTimeout(timeout)
 		}, 1e3)
 	}, [deviceMode, currentAffiliate, affiliates])
-
-	// console.log('render affiliates')
-
 	const renderAffiliateList = useMemo(() => {
 		return (
 			<>
@@ -94,7 +91,7 @@ export default memo(function AffiliateList() {
 			</>
 		)
 	}, [affiliates, currentAffiliate, isLoading])
-
+	// console.log('render affiliates')
 	return (
 		<ul className={[styles[deviceMode], styles.container].join(' ')} onScroll={scrollAffiliateListHandler}>
 			{renderAffiliateList}
