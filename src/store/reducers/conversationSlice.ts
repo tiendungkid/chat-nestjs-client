@@ -4,20 +4,14 @@ import {ChatMessage} from 'types/conversation/chat-message'
 import Affiliate from 'types/affiliate-chat'
 
 interface ConversationState {
-    searchAffiliateQuery: {
-        query: string,
-        page: number
-    },
+    searchAffiliateQuery: string,
     currentAffiliate: Affiliate | null,
     loadingConversation: boolean,
     chatMessages: ChatMessage[],
 }
 
 const initialState: ConversationState = {
-	searchAffiliateQuery: {
-		query: '',
-		page: 1
-	},
+	searchAffiliateQuery: '',
 	currentAffiliate: null,
 	loadingConversation: false,
 	chatMessages: [],
@@ -27,7 +21,7 @@ const conversationSlice = createSlice({
 	name: 'conversation',
 	initialState,
 	reducers: {
-		setSearchAffiliateQuery(state, action: PayloadAction<{ query: string, page: number }>) {
+		setSearchAffiliateQuery(state, action: PayloadAction<string>) {
 			state.searchAffiliateQuery = action.payload
 			return state
 		},

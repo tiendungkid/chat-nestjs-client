@@ -14,16 +14,12 @@ export default memo(function SearchBox() {
 	const deviceMode = useSelector(selectDeviceMode)
 	const [searchParams, setSearchParams] = useState(useSelector(selectSearchAffiliateQuery))
 
-
 	const debouncedSearchParams = useDebounce(searchParams, {
 		wait: 700
 	})
 
 	const handleChangeValue = (searchValue: string) => {
-		setSearchParams({
-			query: searchValue,
-			page: 1
-		})
+		setSearchParams(searchValue)
 	}
 
 	useEffect(() => {
@@ -34,7 +30,7 @@ export default memo(function SearchBox() {
 		<div className={[styles[deviceMode], styles.container].join(' ')}>
 			<div className={styles.searchBox}>
 				<SearchIcon fontSize="medium" className={styles.searchIcon}/>
-				<input placeholder="Search affiliates" type="text" value={searchParams.query}
+				<input placeholder="Search affiliates" type="text" value={searchParams}
 					onChange={e => handleChangeValue(e.target.value)}/>
 			</div>
 		</div>

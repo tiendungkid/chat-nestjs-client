@@ -3,6 +3,10 @@ import {AffiliateMessage} from '../affiliate-chat'
 export interface AffiliatesResponse {
     count: number
     rows: AffiliateRowResponse[]
+    currentPage: number | null;
+    lastPage: number | null;
+    nextPage: number | null;
+    prevPage: number | null;
 }
 
 export interface AffiliateRowResponse {
