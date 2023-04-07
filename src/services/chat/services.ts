@@ -12,3 +12,9 @@ export const getConversations = async (queries: GetConversationsQuery) => {
 	)
 	return (await response).data
 }
+
+export const markAsAllRead = async (affiliateId: number): Promise<void> => {
+	await (await getAxiosInstance()).put(
+		`chat/mark-as-all-read/${affiliateId}`,
+	)
+}

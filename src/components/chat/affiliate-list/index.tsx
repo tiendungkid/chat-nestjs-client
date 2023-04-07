@@ -16,30 +16,40 @@ import styles from './styles.module.scss'
 import AffiliateSkeleton from '../affiliate/skeleton'
 import {useSearchAffiliate} from 'services/affiliates/query'
 import {convertAffiliateFromResponse} from 'utils/affiliate-chat-utils/helpers'
+import {AffiliatesResponse} from 'types/response-instances/affiliates-response'
+import {InfiniteData} from 'react-query'
+import {useMarkAsAllReadMutation} from 'services/chat/mutation'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
 	const currentAffiliate = useSelector(selectCurrentAffiliate)
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery)
 	const deviceMode = useSelector(selectDeviceMode)
+	const markAsAllReadMutation = useMarkAsAllReadMutation()
 	const [affiliates, setAffiliates] = useState<Affiliate[]>([])
 	const [page, setPage] = useState(1)
 
 	const {data, isLoading} = useSearchAffiliate({
 		query: searchAffiliateQuery,
 		page
+	}, {
+		onSuccess(response: InfiniteData<AffiliatesResponse>) {
+			setAffiliates((prevAffiliates) => {
+				if (searchAffiliateQuery && page === 1) {
+					return convertAffiliateFromResponse(response.pages?.[0] || [])
+				}
+				return [
+					...prevAffiliates,
+					...convertAffiliateFromResponse(response.pages?.[0] || [])
+				]
+			})
+		}
 	})
 
 	useEffect(() => {
-		if (!data) return
-		setAffiliates([
-			...affiliates,
-			...convertAffiliateFromResponse(data.pages?.[0] || [])
-		])
-	}, [data])
-
-	useEffect(() => {
-		setAffiliates([])
+		if (!searchAffiliateQuery) {
+			setAffiliates([])
+		}
 		setPage(1)
 	}, [searchAffiliateQuery])
 
@@ -52,11 +62,13 @@ export default memo(function AffiliateList() {
 	const onAffiliateClicked = useCallback((clickedAffiliate: Affiliate) => {
 		if (clickedAffiliate.id === currentAffiliate?.id && deviceMode !== DeviceMode.MOBILE_AFFILIATE) return
 		const clickedAffiliateIndex = affiliates.findIndex(aff => clickedAffiliate.id === aff.id)
+		const affiliateListCurrent = affiliates
 		if (clickedAffiliateIndex !== -1) {
-			affiliates[clickedAffiliateIndex].latestMessage = clickedAffiliate.latestMessage
+			affiliateListCurrent[clickedAffiliateIndex].latestMessage = clickedAffiliate.latestMessage
 				? {...clickedAffiliate.latestMessage, status: AffiliateChatStatus.READ}
 				: undefined
-			setAffiliates(affiliates)
+			setAffiliates(affiliateListCurrent)
+			markAsAllReadMutation.mutateAsync(clickedAffiliate.id).then()
 		}
 		dispatch(setCurrentAffiliate(clickedAffiliate))
 		dispatch(setLoadingConversation(true))
@@ -67,14 +79,14 @@ export default memo(function AffiliateList() {
 			dispatch(setChatMessages(chatMessages))
 			clearTimeout(timeout)
 		}, 1e3)
-	}, [deviceMode, currentAffiliate, affiliates])
-	const renderAffiliateList = useMemo(() => {
+	}, [deviceMode, currentAffiliate, affiliates, data])
+	const affiliateList = useMemo(() => {
 		return (
 			<>
 				{
 					affiliates && affiliates.map(affiliate => (
 						<AffiliateChat
-							key={affiliate.id}
+							key={`${affiliate.id}-${searchAffiliateQuery}`}
 							id={affiliate.id}
 							affiliateName={affiliate.name}
 							avatar={affiliate.avatar}
@@ -94,7 +106,7 @@ export default memo(function AffiliateList() {
 	// console.log('render affiliates')
 	return (
 		<ul className={[styles[deviceMode], styles.container].join(' ')} onScroll={scrollAffiliateListHandler}>
-			{renderAffiliateList}
+			{affiliateList}
 		</ul>
 	)
 })
