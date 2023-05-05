@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useDropzone} from 'react-dropzone'
 import {DropzoneOverlay, ImagePreviewDialog, ChatMessage, NotAllowFileTypeDialog} from '..'
@@ -16,10 +16,14 @@ import ChatPanel from './chat-panel'
 import {selectDeviceMode} from 'store/reducers/screenSlice'
 
 const ChatConversation = () => {
-
 	const deviceMode = useSelector(selectDeviceMode)
 	const currentAffiliate = useSelector(selectCurrentAffiliate)
 	const loading = useSelector(selectLoadingConversation)
+
+	// const { data } = useGetConversation({
+	// 	affiliateId: currentAffiliate?.id,
+	// 	page: 1
+	// })
 
 	// Image preview
 	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false)
@@ -28,7 +32,7 @@ const ChatConversation = () => {
 
 	// Chat message handler
 	const chatMessages = groupChatMessages(useSelector(selectChatMessages))
-	const chatMessageRef = useRef<null | HTMLDivElement>(null)
+	const chatMessageRef = useRef<HTMLDivElement>(null)
 
 	// Upload file handler
 	const [openNotAllowFileMine, setOpenNotAllowFileMine] = useState(false)
@@ -39,6 +43,17 @@ const ChatConversation = () => {
 			return
 		}
 	}, [])
+
+
+	useEffect(() => {
+		if (chatMessageRef && chatMessageRef.current) {
+			chatMessageRef.current.addEventListener('DOMNodeInserted', (event) => {
+				const target = event.currentTarget as HTMLDivElement
+				target.scroll({ top: target.scrollHeight, behavior: 'smooth' })
+			})
+		}
+	}, [chatMessages])
+
 	const {open: openDropzone, getRootProps, getInputProps, isDragActive} = useDropzone({
 		onDrop,
 		noClick: true,

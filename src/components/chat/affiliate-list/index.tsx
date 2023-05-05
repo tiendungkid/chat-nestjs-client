@@ -3,13 +3,11 @@ import {AffiliateChat} from '../affiliate'
 import {useDispatch, useSelector} from 'react-redux'
 import {
 	selectCurrentAffiliate,
-	selectSearchAffiliateQuery,
-	setChatMessages,
+	selectSearchAffiliateQuery, setChatMessages,
 	setCurrentAffiliate,
 	setLoadingConversation,
 } from 'store/reducers/conversationSlice'
 import Affiliate, {AffiliateChatStatus} from 'types/affiliate-chat'
-import {chatMessages} from 'components/chat/test'
 import {selectDeviceMode, setDeviceMode} from 'store/reducers/screenSlice'
 import {DeviceMode} from 'types/device-mode'
 import styles from './styles.module.scss'
@@ -19,6 +17,7 @@ import {convertAffiliateFromResponse} from 'utils/affiliate-chat-utils/helpers'
 import {AffiliatesResponse} from 'types/response-instances/affiliates-response'
 import {InfiniteData} from 'react-query'
 import {useMarkAsAllReadMutation} from 'services/chat/mutation'
+import {chatMessages} from '../test'
 
 export default memo(function AffiliateList() {
 	const dispatch = useDispatch()
@@ -71,15 +70,12 @@ export default memo(function AffiliateList() {
 			markAsAllReadMutation.mutateAsync(clickedAffiliate.id).then()
 		}
 		dispatch(setCurrentAffiliate(clickedAffiliate))
-		dispatch(setLoadingConversation(true))
-		if (deviceMode === DeviceMode.MOBILE_AFFILIATE) dispatch(setDeviceMode(DeviceMode.MOBILE_CONVERSATION))
+		dispatch(setChatMessages(chatMessages))
+		// dispatch(setLoadingConversation(true))
 
-		const timeout = setTimeout(() => {
-			dispatch(setLoadingConversation(false))
-			dispatch(setChatMessages(chatMessages))
-			clearTimeout(timeout)
-		}, 1e3)
+		if (deviceMode === DeviceMode.MOBILE_AFFILIATE) dispatch(setDeviceMode(DeviceMode.MOBILE_CONVERSATION))
 	}, [deviceMode, currentAffiliate, affiliates, data])
+
 	const affiliateList = useMemo(() => {
 		return (
 			<>
