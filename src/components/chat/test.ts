@@ -13,7 +13,7 @@ const chatMessages: Messages[] = [
 	},
 	{
 		id: Math.random(),
-		message: 'Tao còn đi mua cơm nữa, đói vk',
+		message: 'Tao còn đi mua cơm nữa, đói vkhjgjh',
 		message_type: MessageType.TEXT,
 		read: true,
 		sent_at: 'Today',

@@ -1,0 +1,18 @@
+{
+	"[typescript]": {
+		"editor.formatOnSave": false
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"i18n-ally.localesPaths": ["src/locales"],
+	"i18n-ally.keystyle": "nested",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/vendor": true
+  },
+  "files.eol": "\n"
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
+}

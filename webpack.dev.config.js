@@ -10,15 +10,11 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, '../chat-nest/public'),
+		path: path.resolve(__dirname, '../chat-nestjs/public'),
 		clean: true,
 		cssFilename: '[name].css'
 	},
 	devtool: 'inline-source-map',
-	devServer: {
-		static: path.resolve(__dirname, '../chat-nest/public'),
-		hot: true,
-	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: './src/static/index.html',
@@ -27,7 +23,7 @@ module.exports = {
 			cache: false,
 			favicon: './src/static/logo.png'
 		}),
-		new BundleAnalyzerPlugin()
+		// new BundleAnalyzerPlugin()
 	],
 	module: {
 		rules: [
