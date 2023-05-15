@@ -3,9 +3,7 @@ import {useQuery} from 'react-query'
 import {getConversations} from './services'
 
 export const useGetConversation = (queries: GetConversationsQuery) => {
-	return useQuery({
-		queryKey: ['getConversations'],
-		queryFn: () => getConversations(queries),
-		refetchOnWindowFocus: false,
+	return useQuery(['getConversations'], () => getConversations(queries), {
+		staleTime: 5 * 1000 * 60,   
 	})
 }

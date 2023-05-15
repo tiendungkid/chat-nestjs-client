@@ -1,27 +1,34 @@
 import React, { useEffect } from 'react';
 import ChatLayout from 'layouts/chat-layout';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCredentials } from 'store/reducers/credentialSlice';
+import { RootState } from 'store';
 
-function Chat() {
-	console.log('Chat page rendered');
-
-	const handleClick = () => {
-		window.parent.postMessage('def', '*');
-	};
+const Chat = () => {
+	const dispatch = useDispatch();
+	const accessToken = useSelector(
+		(state: RootState) => state.credential.access_token,
+	);
 
 	useEffect(() => {
 		const handle = (event: any) => {
-			// …
-			console.log(event.data);
+			dispatch(updateCredentials(event.data));
 		};
 
 		window.addEventListener('message', handle);
+
+		return () => {
+			window.removeEventListener('message', handle);
+		};
 	}, []);
+
+	if (!accessToken) return <></>;
 
 	return (
 		<>
-			<button onClick={() => handleClick()}>def</button> <ChatLayout />
+			<ChatLayout />
 		</>
 	);
-}
+};
 
 export default Chat;
