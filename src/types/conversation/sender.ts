@@ -1,4 +1,4 @@
 export enum Sender {
-	AFFILIATE = 'AFF',
-	MERCHANT = 'MERCHANT'
+	AFFILIATE = 'affiliate',
+	MERCHANT = 'merchant'
 }

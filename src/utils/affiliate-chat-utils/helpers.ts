@@ -32,8 +32,8 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 	let chats = new Collection(chatMessages)
 
 	const filterSender = (message: ChatMessage) => {
-		if (message.sender !== currentSender) {
-			currentSender = message.sender
+		if (message.acc_send !== currentSender) {
+			currentSender = message.acc_send
 			return true
 		}
 		return false
@@ -41,7 +41,7 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 	let subset: Collection<ChatMessage> = chats.takeUntil(filterSender)
 
 	do {
-		grouped.push(subset.all())
+		grouped.push(subset.all().reverse())
 		chats = chats.slice(subset.count())
 		subset = chats.takeUntil(filterSender)
 	} while (subset.count())

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import SearchBox from 'components/chat/search-box';
 import AffiliateHeader from 'components/chat/affiliate-header';
@@ -9,11 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
 import { useWindowSize } from 'hooks/window';
 import { MOBILE_BREAK_POINT } from 'utils/constants/screen';
+import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 
 export default function ChatLayout() {
 	const dispatch = useDispatch();
 	const deviceMode = useSelector(selectDeviceMode);
 	const screenSize = useWindowSize();
+	const [selectedAff, setSelectedAff] = useState<
+		AffiliateRowResponse | undefined
+	>(undefined);
 
 	useEffect(() => {
 		if (!screenSize.width) return;
@@ -25,7 +29,6 @@ export default function ChatLayout() {
 		dispatch(setDeviceMode(newMode));
 	}, [screenSize.width]);
 
-	console.log('rendered CHAT LAYOUT', deviceMode);
 	return (
 		<div className={[styles.container, styles[deviceMode]].join(' ')}>
 			<div className={styles.header}>
@@ -33,8 +36,10 @@ export default function ChatLayout() {
 				<AffiliateHeader />
 			</div>
 			<div className={styles.body}>
-				<AffiliateList />
-				<ChatConversation />
+				<AffiliateList changeSelectedAff={setSelectedAff} />
+				{!!selectedAff && (
+					<ChatConversation key={selectedAff.id} selectedAff={selectedAff} />
+				)}
 			</div>
 		</div>
 	);

@@ -2,15 +2,15 @@ import {getAxiosInstance} from 'utils/axios'
 import {GetConversationsQuery} from './interface'
 
 export const getConversations = async (queries: GetConversationsQuery) => {
-	const response = (await getAxiosInstance()).get(
-		`chat/${queries.affiliateId}`,
+	const response = await (await getAxiosInstance()).get(
+		`chat/messages/${queries.affiliateId}`,
 		{
 			params: {
 				page: queries.page
 			}
 		}
 	)
-	return (await response).data
+	return await response.data;
 }
 
 export const markAsAllRead = async (affiliateId: number): Promise<void> => {

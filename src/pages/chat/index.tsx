@@ -11,24 +11,26 @@ const Chat = () => {
 	);
 
 	useEffect(() => {
+		let interval: any = null;
 		const handle = (event: any) => {
-			dispatch(updateCredentials(event.data));
+			dispatch(updateCredentials(event.data.access_token));
+
+			interval = setInterval(() => {
+				window.parent.postMessage('refresh_token', '*');
+			}, 60000 * event.data.expires);
 		};
 
 		window.addEventListener('message', handle);
 
 		return () => {
 			window.removeEventListener('message', handle);
+			if (interval) clearInterval(interval);
 		};
 	}, []);
 
 	if (!accessToken) return <></>;
 
-	return (
-		<>
-			<ChatLayout />
-		</>
-	);
+	return <ChatLayout />;
 };
 
 export default Chat;

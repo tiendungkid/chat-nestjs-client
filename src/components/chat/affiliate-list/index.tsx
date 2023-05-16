@@ -30,9 +30,13 @@ import { useMarkAsAllReadMutation } from 'services/chat/mutation';
 import { chatMessages } from '../test';
 import { flatten } from 'lodash';
 
-export default memo(function AffiliateList() {
-	const dispatch = useDispatch();
+interface Props {
+	changeSelectedAff: (aff: AffiliateRowResponse) => void;
+}
 
+export default memo(function AffiliateList(props: Props) {
+	const dispatch = useDispatch();
+	const { changeSelectedAff } = props;
 	const observer = useRef<IntersectionObserver | null>(null);
 
 	const currentAffiliate = useSelector(selectCurrentAffiliate);
@@ -65,9 +69,7 @@ export default memo(function AffiliateList() {
 			[],
 		);
 
-		setAffiliates((prev) => {
-			return [...prev, ...dataAff];
-		});
+		setAffiliates(dataAff);
 	}, [data]);
 
 	// useEffect(() => {
@@ -172,12 +174,16 @@ export default memo(function AffiliateList() {
 							? lastAffiliateRef
 							: undefined
 					}
-					key={`${affiliate.id}`}
+					key={affiliate.id}
 					id={affiliate.id}
 					affiliateName={`${affiliate.first_name} ${affiliate.last_name}`}
 					avatar={affiliate.avatar}
 					active={affiliate.id === currentAffiliate?.id}
-					onClick={() => {}}
+					onClick={(id: number) =>
+						changeSelectedAff(
+							affiliates.find((v) => v.id === id) as AffiliateRowResponse,
+						)
+					}
 					latestMessage={affiliate.latestMessage}
 				/>
 			))}
