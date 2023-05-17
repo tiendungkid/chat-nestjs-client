@@ -9,7 +9,10 @@ import {
 } from '..';
 import styles from './styles.module.scss';
 import { Sender } from 'types/conversation/sender';
-import { groupChatMessages } from 'utils/affiliate-chat-utils/helpers';
+import {
+	groupChatMessages,
+	stringAvatar,
+} from 'utils/affiliate-chat-utils/helpers';
 import { ALLOW_IMAGE_EXTENSIONS } from 'utils/constants/files';
 import {
 	selectChatMessages,
@@ -23,6 +26,7 @@ import { useGetConversation } from 'services/chat/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
 import { flatten } from 'lodash';
+import { Avatar } from '@mui/material';
 
 interface Props {
 	selectedAff: AffiliateRowResponse;
@@ -95,11 +99,25 @@ const ChatConversation = (props: Props) => {
 		multiple: false,
 	});
 
+	const fullName = selectedAff.first_name + ' ' + selectedAff.last_name;
+
 	// if (!messages.length) return <></>;
 	// if (loading) return <ConversationLoading />;
 
 	return (
 		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
+			<div className={styles.affInfo}>
+				{selectedAff.avatar ? (
+					<Avatar src={selectedAff.avatar} className={styles.avatar} />
+				) : (
+					<Avatar
+						{...stringAvatar(fullName)}
+						src={selectedAff.avatar}
+						className={styles.avatar}
+					/>
+				)}
+				<span className={styles.affName}>{fullName}</span>
+			</div>
 			<div className={styles.container} {...getRootProps()}>
 				<input {...getInputProps()} />
 				<DropzoneOverlay open={isDragActive} />

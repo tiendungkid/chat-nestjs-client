@@ -1,19 +1,20 @@
 @use 'scss/vars';
+@use 'scss/mixin';
 
 .chatConversation {
 	background-color: #fff;
-	flex: 0 1 75%;
-	transition: width vars.$collapseMobileDuration;
+	height: 100%;
+	// transition: width vars.$collapseMobileDuration;
 
-	&.mobileAffiliate {
-		flex: 0 0 0;
-		max-width: 0;
-		opacity: 0;
-	}
+	// &.mobileAffiliate {
+	// 	flex: 0 0 0;
+	// 	max-width: 0;
+	// 	opacity: 0;
+	// }
 
-	&.mobileConversation {
-		flex: 0 1 100%;
-	}
+	// &.mobileConversation {
+	// 	flex: 0 1 100%;
+	// }
 }
 
 .container {
@@ -23,6 +24,10 @@
 	position: relative;
 	outline: none;
 	justify-content: flex-end;
+
+	@include mixin.mobile {
+		height: calc(100% - 60px);
+	}
 
 	.loadMore {
 		// margin-top: auto !important;
@@ -89,6 +94,31 @@
 				cursor: pointer;
 				align-self: center;
 			}
+		}
+	}
+}
+
+.affInfo {
+	display: none;
+	@include mixin.mobile {
+		display: flex;
+		align-items: center;
+		height: 60px;
+		padding: 0px 10px;
+		gap: 8px;
+		border-bottom: 1px solid #d9d9d9;
+		color: #092c4c;
+		box-sizing: border-box;
+
+		.avatar {
+			align-self: center;
+			width: 33px;
+			height: 33px;
+			font-size: 15px;
+		}
+		.affName {
+			font-weight: 600;
+			font-size: 12px;
 		}
 	}
 }

@@ -32,14 +32,15 @@ import { flatten } from 'lodash';
 
 interface Props {
 	changeSelectedAff: (aff: AffiliateRowResponse) => void;
+	className?: string;
+	selectedAff?: AffiliateRowResponse;
 }
 
 export default memo(function AffiliateList(props: Props) {
 	const dispatch = useDispatch();
-	const { changeSelectedAff } = props;
+	const { changeSelectedAff, className = '', selectedAff } = props;
 	const observer = useRef<IntersectionObserver | null>(null);
 
-	const currentAffiliate = useSelector(selectCurrentAffiliate);
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
 	const deviceMode = useSelector(selectDeviceMode);
 	const markAsAllReadMutation = useMarkAsAllReadMutation();
@@ -165,7 +166,7 @@ export default memo(function AffiliateList(props: Props) {
 	// }, [affiliates, currentAffiliate, isLoading]);
 
 	return (
-		<ul className={[styles[deviceMode], styles.container].join(' ')}>
+		<ul className={[styles[deviceMode], styles.container, className].join(' ')}>
 			{/* {affiliateList} */}
 			{affiliates.map((affiliate, index) => (
 				<AffiliateChat
@@ -178,7 +179,7 @@ export default memo(function AffiliateList(props: Props) {
 					id={affiliate.id}
 					affiliateName={`${affiliate.first_name} ${affiliate.last_name}`}
 					avatar={affiliate.avatar}
-					active={affiliate.id === currentAffiliate?.id}
+					active={affiliate.id === selectedAff?.id}
 					onClick={(id: number) =>
 						changeSelectedAff(
 							affiliates.find((v) => v.id === id) as AffiliateRowResponse,

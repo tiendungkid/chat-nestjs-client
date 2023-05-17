@@ -1,82 +1,93 @@
-@use "scss/vars";
+@use 'scss/vars';
+@use 'scss/mixin';
 
 .affiliateLoading {
-  width: 25%;
-  margin: 0;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  padding: 0;
-  background-color: #fff;
-  transition: all vars.$collapseMobileDuration;
+	width: 25%;
+	margin: 0;
+	overflow-y: auto;
+	border-right: 1px solid #ccc;
+	padding: 0;
+	background-color: #fff;
+	transition: all vars.$collapseMobileDuration;
 
-  &.mobileConversation {
-    width: 0;
-    opacity: 0;
-    overflow: hidden;
-  }
+	&.mobileConversation {
+		width: 0;
+		opacity: 0;
+		overflow: hidden;
+	}
 
-  &.mobileAffiliate {
-    width: 100%;
-  }
-
+	&.mobileAffiliate {
+		width: 100%;
+	}
 }
 
 .container {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  margin: 0 5px 0;
-  border-bottom: 1px solid #d9d9d970;
-  cursor: pointer;
+	padding: 10px;
+	display: flex;
+	flex-direction: row;
+	margin: 0 5px 0;
+	border-bottom: 1px solid #d9d9d970;
+	cursor: pointer;
 
-  &.unread {
-    .affiliateName {
-      font-weight: 600;
-    }
+	@include mixin.mobile {
+		margin: 0;
+		font-size: 12px;
+	}
 
-    .latestChat {
-      color: #000 !important;
-    }
-  }
+	&.unread {
+		.affiliateName {
+			font-weight: 600;
+		}
 
-  &.notChatYet {
-    .latestChat {
-      color: #8090a07a;
-    }
-  }
+		.latestChat {
+			color: #000 !important;
+		}
+	}
 
-  .avatar {
-    margin-right: 12px;
-    align-self: center;
-    width: 40px;
-  }
+	&.notChatYet {
+		.latestChat {
+			color: #8090a07a;
+		}
+	}
 
-  .unreadBadge {
-    align-self: center;
-  }
+	.avatar {
+		margin-right: 12px;
+		align-self: center;
+		width: 40px;
 
-  .contentWrapper {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
+		@include mixin.mobile {
+			width: 33px;
+			height: 33px;
+			font-size: 15px;
+		}
+	}
 
-  .content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+	.unreadBadge {
+		align-self: center;
+	}
 
-    .affiliateName {
-      color: vars.$text-dark;
-    }
+	.contentWrapper {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+	}
 
-    .latestChat {
-      font-size: 14px;
-    }
-  }
+	.content {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 
-  &.active {
-    background-color: #1D85E838;
-  }
+		.affiliateName {
+			color: vars.$text-dark;
+		}
+
+		.latestChat {
+			font-size: 14px;
+		}
+	}
+
+	&.active {
+		background-color: #1d85e838;
+	}
 }

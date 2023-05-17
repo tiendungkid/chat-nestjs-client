@@ -11,11 +11,12 @@ const Chat = () => {
 	);
 
 	useEffect(() => {
-		let interval: any = null;
+		let intervalRefreshToken: any = null;
 		const handle = (event: any) => {
 			dispatch(updateCredentials(event.data.access_token));
-
-			interval = setInterval(() => {
+			window.parent.postMessage('access_token', '*');
+			// request refresh token
+			intervalRefreshToken = setInterval(() => {
 				window.parent.postMessage('refresh_token', '*');
 			}, 60000 * event.data.expires);
 		};
@@ -24,7 +25,7 @@ const Chat = () => {
 
 		return () => {
 			window.removeEventListener('message', handle);
-			if (interval) clearInterval(interval);
+			if (intervalRefreshToken) clearInterval(intervalRefreshToken);
 		};
 	}, []);
 

@@ -1,6 +1,6 @@
 export enum MessageType {
 	TEXT = 'text',
 	FILE = 'file',
-	IMAGE = 'image',
+	IMAGE = 'img',
 	TYPING = 'typing'
 }

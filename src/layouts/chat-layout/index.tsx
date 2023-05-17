@@ -35,11 +35,21 @@ export default function ChatLayout() {
 				<SearchBox />
 				<AffiliateHeader />
 			</div>
-			<div className={styles.body}>
-				<AffiliateList changeSelectedAff={setSelectedAff} />
-				{!!selectedAff && (
-					<ChatConversation key={selectedAff.id} selectedAff={selectedAff} />
-				)}
+			<div
+				className={`${styles.body} ${
+					selectedAff ? styles.showConversation : ''
+				}`}
+			>
+				<AffiliateList
+					changeSelectedAff={setSelectedAff}
+					className={'aff-list'}
+					selectedAff={selectedAff}
+				/>
+				<div className={`${styles.chatConversation} conversation`}>
+					{selectedAff && (
+						<ChatConversation key={selectedAff.id} selectedAff={selectedAff} />
+					)}
+				</div>
 			</div>
 		</div>
 	);

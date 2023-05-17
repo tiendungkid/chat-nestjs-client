@@ -1,12 +1,18 @@
 import React from 'react';
 import styles from './styles.module.scss';
 import { Avatar, Grid, Tooltip, Typography } from '@mui/material';
-import { stringAvatar } from 'utils/affiliate-chat-utils/helpers';
+import {
+	convertTimeSend,
+	stringAvatar,
+} from 'utils/affiliate-chat-utils/helpers';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
 import { MessageType } from 'types/conversation/message-type';
 import Typing from '../typing';
 import ImageMessage from '../image-message';
 import FileMessage from '../file-message';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { DeviceMode } from 'types/device-mode';
 
 interface Props {
 	affiliateName: string;
@@ -26,6 +32,11 @@ export default function ChatMessage(props: Props) {
 		setMessageImageUrl,
 		setOpenImagePreviewDialog,
 	} = props;
+
+	const isMobile =
+		useSelector((state: RootState) => state.screen.deviceMode) ===
+		DeviceMode.MOBILE_AFFILIATE;
+
 	const attachClass = (index: number, side: 'left' | 'right'): string[] => {
 		const rowClass =
 			index === 0
@@ -57,7 +68,7 @@ export default function ChatMessage(props: Props) {
 			return <FileMessage message={msg} />;
 		}
 		return (
-			<Tooltip title={msg.time_send} placement={'right-start'}>
+			<Tooltip title={convertTimeSend(msg.time_send)} placement={'right-start'}>
 				<Typography
 					align={'left'}
 					className={attachClass(index, side).join(' ')}
@@ -75,7 +86,7 @@ export default function ChatMessage(props: Props) {
 			justifyContent={side === 'right' ? 'flex-end' : 'flex-start'}
 			className={styles.chatMessage}
 		>
-			{side === 'left' && (
+			{!isMobile && side === 'left' && (
 				<Grid item>
 					<Tooltip title={affiliateName} placement="top-start">
 						{avatar ? (
@@ -93,7 +104,7 @@ export default function ChatMessage(props: Props) {
 					</Tooltip>
 				</Grid>
 			)}
-			<Grid item xs={8}>
+			<Grid item xs={10}>
 				{messages.map((message, index) => {
 					return (
 						<div key={message.id} className={styles[side + 'Row']}>
