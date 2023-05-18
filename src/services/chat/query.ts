@@ -7,8 +7,7 @@ export const useGetConversation = (affiliateId: number) => {
 		({pageParam = 1}) => getConversations({affiliateId, page: pageParam}), 
 		{
 			staleTime: 5 * 1000 * 60,   
-			refetchOnWindowFocus: false,
-			retry: 5,
+			refetchOnWindowFocus: false,			
 			keepPreviousData: true,
       getNextPageParam: lastItem => {
         if (lastItem.lastPage === lastItem.currentPage) return undefined;

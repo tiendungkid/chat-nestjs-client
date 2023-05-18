@@ -36,7 +36,6 @@ export default function SocketManager(props: Props) {
 
 	useEffect(() => {
 		if (!accessToken) return;
-		console.log(accessToken);
 		socket.io.opts.extraHeaders! = { Authorization: `Bearer ${accessToken}` };
 		socket.connect();
 		socket.on('connect', onConnect);
@@ -59,16 +58,10 @@ export default function SocketManager(props: Props) {
 			console.log('event', data);
 		});
 
-		setTimeout(() => {
-			socket.emit('send_message', {
-				from_id: 21,
-				to_id: 544,
-			});
-		}, 3000);
-
 		return () => {
 			socket.off('connect', onConnect);
 			socket.off('disconnect', onDisconnect);
+			socket.off('receive_message');
 			socket.disconnect();
 		};
 	}, [accessToken]);

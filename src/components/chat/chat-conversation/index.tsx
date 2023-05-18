@@ -147,7 +147,7 @@ const ChatConversation = (props: Props) => {
 						ref={hasNextPage ? loadMore : undefined}
 					/>
 				</div>
-				<ChatPanel openDropzone={openDropzone} />
+				<ChatPanel openDropzone={openDropzone} selectedAff={selectedAff} />
 			</div>
 			<ImagePreviewDialog
 				open={openImagePreviewDialog}
