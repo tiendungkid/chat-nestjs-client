@@ -12,7 +12,7 @@ export interface AffiliateMessage {
 	msg: string;
 	msg_type: string;
 	time_send: number;
-	acc_type: AffiliateAccType;
+	acc_send: AffiliateAccType;
 	status: AffiliateChatStatus
 }
 

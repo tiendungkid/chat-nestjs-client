@@ -1,19 +1,18 @@
 import {useInfiniteQuery} from 'react-query'
 import {getConversations} from './services'
+import { ChatMessage } from 'types/conversation/chat-message'
 
 export const useGetConversation = (affiliateId: number) => {
 	return useInfiniteQuery(
-		['getConversations', affiliateId], 
-		({pageParam = 1}) => getConversations({affiliateId, page: pageParam}), 
+		['conversations', affiliateId], 
+		({pageParam = 0}) => getConversations({affiliateId, lastMessageId: pageParam}), 
 		{
-			staleTime: 5 * 1000 * 60,   
+			staleTime: Infinity,   
 			refetchOnWindowFocus: false,			
 			keepPreviousData: true,
-      getNextPageParam: lastItem => {
-        if (lastItem.lastPage === lastItem.currentPage) return undefined;
-
-        return lastItem.nextPage;
-      },      
+			getNextPageParam: (lastItem: ChatMessage[]) => {											
+				return lastItem[lastItem.length - 1]?.id;
+			},
 		}
 	)
 }

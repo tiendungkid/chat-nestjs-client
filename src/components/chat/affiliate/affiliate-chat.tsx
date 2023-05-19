@@ -6,7 +6,11 @@ import {
 	stringAvatar,
 } from 'utils/affiliate-chat-utils/helpers';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { AffiliateChatStatus, AffiliateMessage } from 'types/affiliate-chat';
+import {
+	AffiliateAccType,
+	AffiliateChatStatus,
+	AffiliateMessage,
+} from 'types/affiliate-chat';
 
 interface Props {
 	id: number;
@@ -32,7 +36,8 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 		latestMessage &&
 		[AffiliateChatStatus.SEND, AffiliateChatStatus.READ_NOTIFY].includes(
 			latestMessage.status,
-		)
+		) &&
+		latestMessage.acc_send === AffiliateAccType.AFFILIATE
 	) {
 		hasUnreadMessage = true;
 		classes.push(styles.unread);

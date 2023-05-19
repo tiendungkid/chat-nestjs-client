@@ -10,6 +10,7 @@ import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
 import { useWindowSize } from 'hooks/window';
 import { MOBILE_BREAK_POINT } from 'utils/constants/screen';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
+import { socket } from 'utils/socket.io';
 
 export default function ChatLayout() {
 	const dispatch = useDispatch();

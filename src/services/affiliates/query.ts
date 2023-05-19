@@ -3,16 +3,16 @@ import {searchAffiliate} from './services'
 
 export const useSearchAffiliate = (queries: { query: string }) => {
 	return useInfiniteQuery(
-    ['getAffiliates', {...queries}], 
+    ['affiliates', {...queries}], 
     ({pageParam = 1}) => searchAffiliate({query: queries.query, page: pageParam}), 
     {
       refetchOnWindowFocus: false,
       retry: 5,
       keepPreviousData: true,
-      getNextPageParam: lastItem => {
-        if (lastItem.lastPage === lastItem.currentPage) return undefined;
+      getNextPageParam: (lastItem, allPages) => {
+        if (lastItem.length === 0) return undefined;
 
-        return lastItem.nextPage;
+        return allPages.length + 1;
       }
     }
   )

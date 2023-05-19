@@ -1,12 +1,13 @@
 import {getAxiosInstance} from 'utils/axios'
 import {GetConversationsQuery} from './interface'
+import { ChatMessage } from 'types/conversation/chat-message';
 
-export const getConversations = async (queries: GetConversationsQuery) => {
+export const getConversations = async (queries: GetConversationsQuery): Promise<ChatMessage[]> => {
 	const response = await (await getAxiosInstance()).get(
 		`chat/messages/${queries.affiliateId}`,
 		{
 			params: {
-				page: queries.page
+				lastMessageId: queries.lastMessageId
 			}
 		}
 	)

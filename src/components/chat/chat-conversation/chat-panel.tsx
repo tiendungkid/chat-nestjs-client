@@ -44,8 +44,10 @@ const ChatPanel = (props: Props) => {
 			msg_type: MessageType.TEXT,
 			acc_send: Sender.MERCHANT,
 		});
+
+		setChatValue('');
 	};
-	console.log('chat panel rendered');
+
 	return (
 		<div className={styles.chatPanel}>
 			<div className={styles.media}>

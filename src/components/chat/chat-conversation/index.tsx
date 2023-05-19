@@ -37,6 +37,7 @@ const ChatConversation = (props: Props) => {
 	// const currentAffiliate = useSelector(selectCurrentAffiliate);
 	const loading = useSelector(selectLoadingConversation);
 	const { selectedAff } = props;
+
 	const { data, fetchNextPage, hasNextPage, isLoading } = useGetConversation(
 		selectedAff.id,
 	);
@@ -78,14 +79,8 @@ const ChatConversation = (props: Props) => {
 	useEffect(() => {
 		if (!data) return;
 		const messagePaginate = flatten(data.pages);
-		const messageList: Message[] = messagePaginate.reduce(
-			(prev: Message[], v) => {
-				return prev.concat(v.rows);
-			},
-			[],
-		);
 
-		setMessages(messageList);
+		setMessages(messagePaginate);
 	}, [data]);
 
 	const {
@@ -144,7 +139,7 @@ const ChatConversation = (props: Props) => {
 							})}
 					<div
 						className={styles.loadMore}
-						ref={hasNextPage ? loadMore : undefined}
+						ref={hasNextPage && messages.length > 0 ? loadMore : undefined}
 					/>
 				</div>
 				<ChatPanel openDropzone={openDropzone} selectedAff={selectedAff} />

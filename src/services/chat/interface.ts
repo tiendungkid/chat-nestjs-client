@@ -1,4 +1,4 @@
 export interface GetConversationsQuery {
     affiliateId: number;
-    page: number
+    lastMessageId: number
 }
