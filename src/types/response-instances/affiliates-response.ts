@@ -11,6 +11,7 @@ export interface AffiliatesResponse {
 
 export interface AffiliateRowResponse {
     id: number
+    shop_id: number,
     first_name: string | null
     last_name: string | null
     email: string

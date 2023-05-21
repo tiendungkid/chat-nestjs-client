@@ -37,7 +37,8 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 		[AffiliateChatStatus.SEND, AffiliateChatStatus.READ_NOTIFY].includes(
 			latestMessage.status,
 		) &&
-		latestMessage.acc_send === AffiliateAccType.AFFILIATE
+		latestMessage.acc_send === AffiliateAccType.AFFILIATE &&
+		!active
 	) {
 		hasUnreadMessage = true;
 		classes.push(styles.unread);

@@ -1,24 +1,23 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ImageIcon from '@mui/icons-material/Image';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { Popover } from '@mui/material';
-import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
-import { Sender } from 'types/conversation/sender';
+import { queryClient } from 'services';
 
 // const EmojiPicker = React.lazy(() => import('emoji-picker-react'))
 
 interface Props {
 	openDropzone: () => void;
-	selectedAff: AffiliateRowResponse;
+	toId: number;
 }
 
 const ChatPanel = (props: Props) => {
-	const { openDropzone, selectedAff } = props;
+	const { openDropzone, toId } = props;
 	const [chatValue, setChatValue] = useState('');
 
 	// Emoji handler
@@ -28,7 +27,12 @@ const ChatPanel = (props: Props) => {
 	const popoverEmojiId = openPopoverEmoji ? 'emoji-popover' : undefined;
 
 	const onClickEmojiIcon = (emoji: EmojiClickData) => {
-		setChatValue(chatValue + emoji.emoji);
+		setChatValue((prev) => {
+			const result = prev + emoji.emoji;
+			actionTyping(prev, result);
+
+			return result;
+		});
 	};
 
 	const handleClosePopoverEmoji = () => setPopoverEmojiAnchorEl(null);
@@ -39,14 +43,51 @@ const ChatPanel = (props: Props) => {
 	const onEnterPressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key !== 'Enter') return;
 		socket.emit('send_message', {
-			to_id: selectedAff.id,
+			to_id: toId,
 			msg: chatValue,
 			msg_type: MessageType.TEXT,
-			acc_send: Sender.MERCHANT,
 		});
 
-		setChatValue('');
+		setChatValue((prev) => {
+			actionTyping(prev, '');
+
+			return '';
+		});
 	};
+
+	const actionTyping = (prevValue: string, nextValue: string) => {
+		if (prevValue && !nextValue) {
+			socket.emit('un-typing', {
+				to_id: toId,
+			});
+		} else if (!prevValue && nextValue) {
+			socket.emit('typing', {
+				to_id: toId,
+			});
+		}
+	};
+
+	// useEffect(() => {
+	// 	if (!chatValue) {
+	// 		setIsTyping((prev) => {
+	// 			if (prev) {
+	// 				socket.emit('un-typing', {
+	// 					to_id: toId,
+	// 				});
+	// 			}
+	// 			return false;
+	// 		});
+	// 		return;
+	// 	}
+	// 	setIsTyping((prev) => {
+	// 		if (!prev) {
+	// 			socket.emit('typing', {
+	// 				to_id: toId,
+	// 			});
+	// 		}
+	// 		return true;
+	// 	});
+	// }, [chatValue]);
 
 	return (
 		<div className={styles.chatPanel}>
@@ -65,7 +106,13 @@ const ChatPanel = (props: Props) => {
 					placeholder="Aa"
 					className={styles.chatInput}
 					onKeyDown={onEnterPressed}
-					onChange={(e) => setChatValue(e.target.value)}
+					onChange={(e) =>
+						setChatValue((prev) => {
+							actionTyping(prev, e.target.value);
+
+							return e.target.value;
+						})
+					}
 				/>
 				<SentimentSatisfiedAltIcon
 					onClick={handleClickPopoverEmoji}

@@ -65,7 +65,12 @@ export default function ChatMessage(props: Props) {
 			);
 		}
 		if (msg.msg_type === MessageType.FILE) {
-			return <FileMessage message={msg} />;
+			return (
+				<FileMessage
+					style={side === 'left' ? { marginLeft: 'unset' } : {}}
+					message={msg}
+				/>
+			);
 		}
 		return (
 			<Tooltip title={convertTimeSend(msg.time_send)} placement={'right-start'}>
@@ -86,7 +91,7 @@ export default function ChatMessage(props: Props) {
 			justifyContent={side === 'right' ? 'flex-end' : 'flex-start'}
 			className={styles.chatMessage}
 		>
-			{!isMobile && side === 'left' && (
+			{!isMobile && avatar != undefined && side === 'left' && (
 				<Grid item>
 					<Tooltip title={affiliateName} placement="top-start">
 						{avatar ? (

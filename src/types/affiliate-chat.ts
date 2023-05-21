@@ -1,6 +1,7 @@
 export default interface Affiliate {
 	id: number;
 	name: string;
+	shop_id: number;
 	avatar?: string;
 	latestMessage?: AffiliateMessage
 }

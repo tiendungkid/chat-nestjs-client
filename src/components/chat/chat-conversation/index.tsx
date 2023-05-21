@@ -13,7 +13,10 @@ import {
 	groupChatMessages,
 	stringAvatar,
 } from 'utils/affiliate-chat-utils/helpers';
-import { ALLOW_IMAGE_EXTENSIONS } from 'utils/constants/files';
+import {
+	ALLOW_FILE_EXTENSIONS,
+	ALLOW_IMAGE_EXTENSIONS,
+} from 'utils/constants/files';
 import {
 	selectChatMessages,
 	// selectCurrentAffiliate,
@@ -25,23 +28,37 @@ import { selectDeviceMode } from 'store/reducers/screenSlice';
 import { useGetConversation } from 'services/chat/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
-import { flatten } from 'lodash';
+import { chunk, first, flatten } from 'lodash';
 import { Avatar } from '@mui/material';
+import { Merchant } from 'types/merchant';
+import Affiliate from 'types/affiliate-chat';
+import {
+	useMarkAsAllReadMutation,
+	useUploadFile,
+} from 'services/chat/mutation';
+import { socket } from 'utils/socket.io';
+import { MessageType } from 'types/conversation/message-type';
+import { queryClient } from 'services';
 
 interface Props {
-	selectedAff: AffiliateRowResponse;
+	receiver: AffiliateRowResponse | Merchant;
+	affiliate?: Affiliate;
 }
 
 const ChatConversation = (props: Props) => {
 	const deviceMode = useSelector(selectDeviceMode);
 	// const currentAffiliate = useSelector(selectCurrentAffiliate);
 	const loading = useSelector(selectLoadingConversation);
-	const { selectedAff } = props;
-
+	const { receiver, affiliate } = props;
+	const toId = affiliate ? affiliate.shop_id : receiver.id;
 	const { data, fetchNextPage, hasNextPage, isLoading } = useGetConversation(
-		selectedAff.id,
+		toId, // shop_id or affiliate_id
+		receiver.shop_id, // shop_id
+		affiliate ? affiliate.id : receiver.id, // affiliate_id
 	);
+	const markAsAllReadMutation = useMarkAsAllReadMutation();
 	const [messages, setMessages] = useState<Message[]>([]);
+	const uploadFile = useUploadFile();
 
 	// Image preview
 	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false);
@@ -54,10 +71,26 @@ const ChatConversation = (props: Props) => {
 	const [openNotAllowFileMine, setOpenNotAllowFileMine] = useState(false);
 	const onDrop = useCallback((acceptedFiles: any) => {
 		const file: File = acceptedFiles[0];
-		if (!ALLOW_IMAGE_EXTENSIONS.includes(file.type)) {
+
+		if (
+			!ALLOW_IMAGE_EXTENSIONS.includes(file.type) &&
+			!ALLOW_FILE_EXTENSIONS.includes(file.type)
+		) {
 			setOpenNotAllowFileMine(true);
 			return;
 		}
+
+		uploadFile.mutate(file, {
+			onSuccess: (data) => {
+				socket.emit('send_message', {
+					to_id: toId,
+					msg: data,
+					msg_type: ALLOW_IMAGE_EXTENSIONS.includes(file.type)
+						? MessageType.IMAGE
+						: MessageType.FILE,
+				});
+			},
+		});
 	}, []);
 
 	const observer = useRef<IntersectionObserver | null>(null);
@@ -79,7 +112,13 @@ const ChatConversation = (props: Props) => {
 	useEffect(() => {
 		if (!data) return;
 		const messagePaginate = flatten(data.pages);
-
+		if (
+			(first(messagePaginate)?.id ?? 0) > (first(messages)?.id ?? 0) &&
+			((first(messagePaginate)?.acc_send === 'affiliate' && !affiliate) ||
+				(first(messagePaginate)?.acc_send === 'merchant' && affiliate))
+		) {
+			markAsAllReadMutation.mutate(toId);
+		}
 		setMessages(messagePaginate);
 	}, [data]);
 
@@ -94,20 +133,23 @@ const ChatConversation = (props: Props) => {
 		multiple: false,
 	});
 
-	const fullName = selectedAff.first_name + ' ' + selectedAff.last_name;
+	const fullName = receiver.first_name + ' ' + receiver.last_name;
 
-	// if (!messages.length) return <></>;
+	// if (receiver) return <></>;
 	// if (loading) return <ConversationLoading />;
 
 	return (
 		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
 			<div className={styles.affInfo}>
-				{selectedAff.avatar ? (
-					<Avatar src={selectedAff.avatar} className={styles.avatar} />
+				{(receiver as AffiliateRowResponse).avatar ? (
+					<Avatar
+						src={(receiver as AffiliateRowResponse).avatar}
+						className={styles.avatar}
+					/>
 				) : (
 					<Avatar
 						{...stringAvatar(fullName)}
-						src={selectedAff.avatar}
+						src={(receiver as AffiliateRowResponse).avatar}
 						className={styles.avatar}
 					/>
 				)}
@@ -124,11 +166,13 @@ const ChatConversation = (props: Props) => {
 								return (
 									<ChatMessage
 										key={index}
-										affiliateName={`${selectedAff.first_name} ${selectedAff.last_name}`}
-										avatar={selectedAff.avatar}
+										affiliateName={`${receiver.first_name} ${receiver.last_name}`}
+										avatar={(receiver as AffiliateRowResponse).avatar}
 										messages={chatList}
 										side={
-											chatList?.[0].acc_send === Sender.MERCHANT
+											(chatList?.[0].acc_send === Sender.MERCHANT &&
+												!affiliate) ||
+											(chatList?.[0].acc_send !== Sender.MERCHANT && affiliate)
 												? 'right'
 												: 'left'
 										}
@@ -142,7 +186,7 @@ const ChatConversation = (props: Props) => {
 						ref={hasNextPage && messages.length > 0 ? loadMore : undefined}
 					/>
 				</div>
-				<ChatPanel openDropzone={openDropzone} selectedAff={selectedAff} />
+				<ChatPanel openDropzone={openDropzone} toId={toId} />
 			</div>
 			<ImagePreviewDialog
 				open={openImagePreviewDialog}

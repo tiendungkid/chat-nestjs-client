@@ -1,5 +1,5 @@
-import {useInfiniteQuery} from 'react-query'
-import {searchAffiliate} from './services'
+import {useInfiniteQuery, useQuery} from 'react-query'
+import {getAffiliate, searchAffiliate} from './services'
 
 export const useSearchAffiliate = (queries: { query: string }) => {
 	return useInfiniteQuery(
@@ -14,6 +14,18 @@ export const useSearchAffiliate = (queries: { query: string }) => {
 
         return allPages.length + 1;
       }
+    }
+  )
+}
+
+export const useGetAffiliate = (enabled: boolean) => {
+	return useQuery(
+    ['affiliate'], 
+    () => getAffiliate(), 
+    {
+      refetchOnWindowFocus: false,    
+      keepPreviousData: true,
+      enabled
     }
   )
 }

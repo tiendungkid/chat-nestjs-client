@@ -6,13 +6,15 @@ import styles from './styles.module.scss';
 
 interface Props {
 	message: ChatMessage;
+	style?: React.CSSProperties;
 }
 
 export default function FileMessage(props: Props) {
-	const { message } = props;
+	const { message, style = {} } = props;
 	const redirectFile = (url: string) => window.open(url);
 	return (
 		<div
+			style={style}
 			className={styles.fileContainer}
 			onClick={() => redirectFile(message.msg)}
 		>

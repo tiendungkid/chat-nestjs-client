@@ -8,26 +8,14 @@ import React, {
 } from 'react';
 import { AffiliateChat } from '../affiliate';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-	selectCurrentAffiliate,
-	selectSearchAffiliateQuery,
-	setChatMessages,
-	setCurrentAffiliate,
-	setLoadingConversation,
-} from 'store/reducers/conversationSlice';
-import Affiliate, { AffiliateChatStatus } from 'types/affiliate-chat';
+import { selectSearchAffiliateQuery } from 'store/reducers/conversationSlice';
 import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
-import { DeviceMode } from 'types/device-mode';
 import styles from './styles.module.scss';
-import AffiliateSkeleton from '../affiliate/skeleton';
 import { useSearchAffiliate } from 'services/affiliates/query';
-import { convertAffiliateFromResponse } from 'utils/affiliate-chat-utils/helpers';
 import {
 	AffiliateRowResponse,
 	AffiliatesResponse,
 } from 'types/response-instances/affiliates-response';
-import { useMarkAsAllReadMutation } from 'services/chat/mutation';
-import { chatMessages } from '../test';
 import { flatten } from 'lodash';
 
 interface Props {
@@ -43,7 +31,6 @@ export default memo(function AffiliateList(props: Props) {
 
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
 	const deviceMode = useSelector(selectDeviceMode);
-	const markAsAllReadMutation = useMarkAsAllReadMutation();
 	const [affiliates, setAffiliates] = useState<AffiliateRowResponse[]>([]);
 
 	const { data, isLoading, fetchNextPage, hasNextPage } = useSearchAffiliate({

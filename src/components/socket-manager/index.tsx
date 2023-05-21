@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from 'utils/socket.io';
-import { setConnected } from 'store/reducers/socketSlice';
 import { RootState } from 'store';
 import { updateCredentials } from 'store/reducers/credentialSlice';
 import { queryClient } from 'services';
 import { Sender } from 'types/conversation/sender';
 import { chunk, flatten, last } from 'lodash';
-import { Updater } from 'react-query/types/core/utils';
-import { ChatMessage } from 'types/conversation/chat-message';
-import { InfiniteData } from 'react-query';
+import { useMarkAsAllReadMutation } from 'services/chat/mutation';
 
 interface Props {
 	children: React.ReactNode;
+	isAff?: boolean;
 }
 
 export default function SocketManager(props: Props) {
@@ -21,15 +19,18 @@ export default function SocketManager(props: Props) {
 		(state: RootState) => state.credential.access_token,
 	);
 
+	const markAsAllReadMutation = useMarkAsAllReadMutation();
+
 	useEffect(() => {
 		let intervalRefreshToken: any = null;
 		const handle = (event: any) => {
 			dispatch(updateCredentials(event.data.access_token));
 			window.parent.postMessage('access_token', '*');
+
 			// request refresh token
 			intervalRefreshToken = setInterval(() => {
 				window.parent.postMessage('refresh_token', '*');
-			}, 60000 * event.data.expires);
+			}, 60000 * +event.data.expires || 3);
 		};
 
 		window.addEventListener('message', handle);
@@ -48,28 +49,45 @@ export default function SocketManager(props: Props) {
 		socket.on('disconnect', onDisconnect);
 
 		function onConnect() {
-			dispatch(setConnected(true));
-			socket.emit('join_chat');
+			socket.emit('subscribe');
 		}
 
 		function onDisconnect() {
-			dispatch(setConnected(false));
+			socket.emit('unsubscribe');
 		}
 
 		socket.on('receive_message', function (data) {
-			const affId =
-				data.message.acc_send === Sender.MERCHANT
-					? data.message.to_id
-					: data.message.from_id;
+			const affiliate_id = data.affiliateId;
+			const shop_id = data.shopId;
+			const cacheConversation = queryClient.getQueryData([
+				'conversations',
+				{ shop_id, affiliate_id },
+			]);
 
-			queryClient.setQueryData(['conversations', affId], (oldData: any) => {
-				const newDataPages = flatten(oldData.pages);
+			if (cacheConversation) {
+				queryClient.setQueryData(
+					['conversations', { shop_id, affiliate_id }],
+					(oldData: any) => {
+						if (!oldData) return undefined;
+						const size = oldData.pages?.[0].length || 0;
+						const newDataPages = flatten(oldData.pages).filter(
+							(v: any) => v.id !== 'typing',
+						);
 
-				return {
-					...oldData,
-					pages: chunk([data.message, ...newDataPages], data.per_page),
-				};
-			});
+						if (data.message.id === 'un-typing') {
+							return {
+								...oldData,
+								pages: chunk(newDataPages, size),
+							};
+						}
+
+						return {
+							...oldData,
+							pages: chunk([data.message, ...newDataPages], size),
+						};
+					},
+				);
+			}
 
 			const queryCache = queryClient.getQueryCache();
 			const queryKeys =
@@ -79,13 +97,37 @@ export default function SocketManager(props: Props) {
 					.filter((v: any) => v.find((k: any) => k === 'affiliates')) ?? [];
 
 			for (const queryKey of queryKeys) {
+				const cacheAffiliate = queryClient.getQueryData(queryKey);
+				if (!cacheAffiliate) continue;
+
 				queryClient.setQueryData(queryKey as any, (oldData: any) => {
+					if (!oldData) return;
 					const size = oldData.pages?.[0].length || 0;
 
 					const affFlat = flatten([...oldData.pages]);
 
 					const affUpdate = affFlat.map((v: any) => {
-						if (v.id === affId) {
+						if (v.id === affiliate_id) {
+							if (data.message.id === 'typing') {
+								queryClient.setQueryData(
+									['latestMessage', affiliate_id],
+									v.latestMessage,
+								);
+							} else if (
+								data.message.id === 'un-typing' &&
+								queryClient.getQueryData(['latestMessage', affiliate_id])
+							) {
+								return {
+									...v,
+									latestMessage: queryClient.getQueryData([
+										'latestMessage',
+										affiliate_id,
+									]),
+								};
+							}
+
+							if (!data.message.msg) return v;
+
 							return { ...v, latestMessage: data.message };
 						}
 
