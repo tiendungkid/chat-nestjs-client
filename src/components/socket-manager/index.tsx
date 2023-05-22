@@ -4,9 +4,8 @@ import { socket } from 'utils/socket.io';
 import { RootState } from 'store';
 import { updateCredentials } from 'store/reducers/credentialSlice';
 import { queryClient } from 'services';
-import { Sender } from 'types/conversation/sender';
-import { chunk, flatten, last } from 'lodash';
-import { useMarkAsAllReadMutation } from 'services/chat/mutation';
+import { chunk, flatten } from 'lodash';
+import { useGetAccessToken } from 'services/merchant/mutation';
 
 interface Props {
 	children: React.ReactNode;
@@ -19,18 +18,21 @@ export default function SocketManager(props: Props) {
 		(state: RootState) => state.credential.access_token,
 	);
 
-	const markAsAllReadMutation = useMarkAsAllReadMutation();
+	const getAccessToken = useGetAccessToken();
 
 	useEffect(() => {
 		let intervalRefreshToken: any = null;
 		const handle = (event: any) => {
-			dispatch(updateCredentials(event.data.access_token));
+			if (event.data.isFullApp) {
+				dispatch(updateCredentials(event.data.access_token));
+				// request refresh token
+				intervalRefreshToken = setInterval(() => {
+					window.parent.postMessage('refresh_token', '*');
+				}, 60000 * +event.data.expires || 3);
+			} else {
+				getAccessToken.mutate(event.data.access_token);
+			}
 			window.parent.postMessage('access_token', '*');
-
-			// request refresh token
-			intervalRefreshToken = setInterval(() => {
-				window.parent.postMessage('refresh_token', '*');
-			}, 60000 * +event.data.expires || 3);
 		};
 
 		window.addEventListener('message', handle);
@@ -142,9 +144,7 @@ export default function SocketManager(props: Props) {
 			}
 		});
 
-		socket.on('exception', function (data) {
-			console.log('event', data);
-		});
+		socket.on('exception', function (data) {});
 
 		return () => {
 			socket.off('connect', onConnect);

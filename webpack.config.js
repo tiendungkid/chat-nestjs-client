@@ -1,5 +1,7 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
 
 module.exports = {
 	mode: 'production',
@@ -8,12 +10,12 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, '../chat-nest/public'),
+		path: path.resolve(__dirname, '../chat-nestjs/public'),
 		clean: true,
 	},
 	devtool: 'inline-source-map',
 	devServer: {
-		static: path.resolve(__dirname, '../chat-nest/public'),
+		static: path.resolve(__dirname, '../chat-nestjs/public'),
 		hot: true,
 	},
 	plugins: [
@@ -22,7 +24,10 @@ module.exports = {
 			filename: 'index.html',
 			minify: true,
 			cache: true,
-			favicon: './src/static/logo.png'
+			favicon: './src/static/logo.png',
+		}),
+		new webpack.DefinePlugin({
+			'process.env': JSON.stringify(dotenv.parsed),
 		}),
 	],
 	module: {
@@ -49,24 +54,21 @@ module.exports = {
 					{
 						loader: 'sass-loader',
 						options: {
-							sassOptions: {outputStyle: 'expanded'}
-						}
-					}
+							sassOptions: { outputStyle: 'expanded' },
+						},
+					},
 				],
 			},
 		],
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],
-		modules: [
-			path.join(__dirname, 'node_modules'),
-			'src'
-		]
+		modules: [path.join(__dirname, 'node_modules'), 'src'],
 	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
-			filename: '[name].js'
-		}
-	}
-}
+			filename: '[name].js',
+		},
+	},
+};

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import SearchBox from 'components/chat/search-box';
-import AffiliateHeader from 'components/chat/affiliate-header';
 import ChatConversation from 'components/chat/chat-conversation';
 import { DeviceMode } from 'types/device-mode';
 import AffiliateList from 'components/chat/affiliate-list';
@@ -25,7 +24,7 @@ export default function ChatLayout(props: Props) {
 	const [selectedAff, setSelectedAff] = useState<
 		AffiliateRowResponse | undefined
 	>(undefined);
-	const { data: dataMerchant } = useGetMerchant(isAff);
+	const { data: dataMerchant } = useGetMerchant();
 	const { data: dataAffiliate } = useGetAffiliate(isAff);
 
 	useEffect(() => {
@@ -61,7 +60,11 @@ export default function ChatLayout(props: Props) {
 						/>
 						<div className={`${styles.chatConversation} conversation`}>
 							{selectedAff && (
-								<ChatConversation key={selectedAff.id} receiver={selectedAff} />
+								<ChatConversation
+									key={selectedAff.id}
+									receiver={selectedAff}
+									removeSelectAff={() => setSelectedAff(undefined)}
+								/>
 							)}
 						</div>
 					</div>

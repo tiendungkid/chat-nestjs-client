@@ -8,7 +8,7 @@
 	flex-direction: column;
 
 	.showConversation {
-		@include mixin.mobile {
+		@include mixin.mobileSmall {
 			:global {
 				.conversation {
 					left: 55px;
@@ -44,12 +44,13 @@
 .chatConversation {
 	width: 75%;
 	height: 100%;
-	@include mixin.mobile {
+	@include mixin.mobileSmall {
 		position: absolute;
 		top: 0;
-		left: 100%;
 		height: 100%;
-		opacity: 0;
 		width: calc(100% - 55px);
+		opacity: 0;
+		left: 100%;
+		transition: all 3s;
 	}
 }

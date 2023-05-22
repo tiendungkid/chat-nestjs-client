@@ -25,7 +25,7 @@
 	outline: none;
 	justify-content: flex-end;
 
-	@include mixin.mobile {
+	@include mixin.mobileSmall {
 		height: calc(100% - 60px);
 	}
 
@@ -101,7 +101,7 @@
 
 .affInfo {
 	display: none;
-	@include mixin.mobile {
+	@include mixin.mobileSmall {
 		display: flex;
 		align-items: center;
 		height: 60px;

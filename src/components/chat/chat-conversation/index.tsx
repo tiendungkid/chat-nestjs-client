@@ -22,7 +22,7 @@ import {
 	// selectCurrentAffiliate,
 	selectLoadingConversation,
 } from 'store/reducers/conversationSlice';
-import ConversationLoading from '../conversation-loading';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPanel from './chat-panel';
 import { selectDeviceMode } from 'store/reducers/screenSlice';
 import { useGetConversation } from 'services/chat/query';
@@ -43,13 +43,14 @@ import { queryClient } from 'services';
 interface Props {
 	receiver: AffiliateRowResponse | Merchant;
 	affiliate?: Affiliate;
+	removeSelectAff?: () => void;
 }
 
 const ChatConversation = (props: Props) => {
 	const deviceMode = useSelector(selectDeviceMode);
 	// const currentAffiliate = useSelector(selectCurrentAffiliate);
 	const loading = useSelector(selectLoadingConversation);
-	const { receiver, affiliate } = props;
+	const { receiver, affiliate, removeSelectAff } = props;
 	const toId = affiliate ? affiliate.shop_id : receiver.id;
 	const { data, fetchNextPage, hasNextPage, isLoading } = useGetConversation(
 		toId, // shop_id or affiliate_id
@@ -100,13 +101,15 @@ const ChatConversation = (props: Props) => {
 			if (observer.current) observer.current.disconnect();
 			observer.current = new IntersectionObserver((entries) => {
 				if (entries[0].isIntersecting) {
-					fetchNextPage();
-					observer.current?.unobserve(entries[0].target);
+					setTimeout(() => {
+						fetchNextPage();
+						observer.current?.unobserve(entries[0].target);
+					}, 100);
 				}
 			});
 			if (node) observer.current.observe(node);
 		},
-		[data],
+		[messages],
 	);
 
 	useEffect(() => {
@@ -154,6 +157,12 @@ const ChatConversation = (props: Props) => {
 					/>
 				)}
 				<span className={styles.affName}>{fullName}</span>
+				{!affiliate && (
+					<KeyboardArrowRightIcon
+						className={styles.backIcon}
+						onClick={() => removeSelectAff?.()}
+					/>
+				)}
 			</div>
 			<div className={styles.container} {...getRootProps()}>
 				<input {...getInputProps()} />
@@ -183,7 +192,11 @@ const ChatConversation = (props: Props) => {
 							})}
 					<div
 						className={styles.loadMore}
-						ref={hasNextPage && messages.length > 0 ? loadMore : undefined}
+						ref={
+							hasNextPage && messages.length > 0 && !isLoading
+								? loadMore
+								: undefined
+						}
 					/>
 				</div>
 				<ChatPanel openDropzone={openDropzone} toId={toId} />

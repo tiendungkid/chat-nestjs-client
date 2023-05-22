@@ -29,7 +29,7 @@
 	border-bottom: 1px solid #d9d9d970;
 	cursor: pointer;
 
-	@include mixin.mobile {
+	@include mixin.mobileSmall {
 		margin: 0;
 		font-size: 12px;
 	}
@@ -55,7 +55,7 @@
 		align-self: center;
 		width: 40px;
 
-		@include mixin.mobile {
+		@include mixin.mobileSmall {
 			width: 33px;
 			height: 33px;
 			font-size: 15px;
