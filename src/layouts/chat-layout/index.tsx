@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import SearchBox from 'components/chat/search-box';
 import ChatConversation from 'components/chat/chat-conversation';
@@ -11,6 +11,7 @@ import { MOBILE_BREAK_POINT } from 'utils/constants/screen';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { useGetMerchant } from 'services/merchant/query';
 import { useGetAffiliate } from 'services/affiliates/query';
+import { CSSTransition } from 'react-transition-group';
 
 interface Props {
 	isAff?: boolean;
@@ -26,6 +27,8 @@ export default function ChatLayout(props: Props) {
 	>(undefined);
 	const { data: dataMerchant } = useGetMerchant();
 	const { data: dataAffiliate } = useGetAffiliate(isAff);
+	const nodeRef = useRef(null);
+	const [animateConversation, setAnimateConversation] = useState(false);
 
 	useEffect(() => {
 		if (!screenSize.width) return;
@@ -36,6 +39,10 @@ export default function ChatLayout(props: Props) {
 		if (newMode === deviceMode) return;
 		dispatch(setDeviceMode(newMode));
 	}, [screenSize.width]);
+
+	useEffect(() => {
+		setAnimateConversation(!!selectedAff);
+	}, [selectedAff]);
 
 	return (
 		<div className={[styles.container, styles[deviceMode]].join(' ')}>
@@ -48,25 +55,42 @@ export default function ChatLayout(props: Props) {
 						<SearchBox />
 						{/* <AffiliateHeader /> */}
 					</div>
-					<div
-						className={`${styles.body} ${
-							selectedAff ? styles.showConversation : ''
-						}`}
-					>
+					<div className={`${styles.body} ${selectedAff ? '' : ''}`}>
 						<AffiliateList
 							changeSelectedAff={setSelectedAff}
 							className={'aff-list'}
 							selectedAff={selectedAff}
 						/>
-						<div className={`${styles.chatConversation} conversation`}>
-							{selectedAff && (
-								<ChatConversation
-									key={selectedAff.id}
-									receiver={selectedAff}
-									removeSelectAff={() => setSelectedAff(undefined)}
-								/>
-							)}
-						</div>
+
+						<CSSTransition
+							nodeRef={nodeRef}
+							in={animateConversation}
+							timeout={300}
+							classNames="my-node"
+							onExited={() => {
+								setSelectedAff(undefined);
+							}}
+						>
+							<div ref={nodeRef} className={`${styles.chatConversation}`}>
+								{selectedAff && (
+									<ChatConversation
+										key={selectedAff.id}
+										receiver={selectedAff}
+										removeSelectAff={() => {
+											setAnimateConversation(false);
+										}}
+									/>
+								)}
+
+								{/* {selectedAff && (
+										<ChatConversation
+											key={selectedAff.id}
+											receiver={selectedAff}
+											removeSelectAff={() => setSelectedAff(undefined)}
+										/>
+									)} */}
+							</div>
+						</CSSTransition>
 					</div>
 				</>
 			)}

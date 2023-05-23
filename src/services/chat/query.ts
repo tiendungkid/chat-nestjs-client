@@ -12,7 +12,7 @@ export const useGetConversation = (receiverId: number, shop_id: number, affiliat
 			keepPreviousData: true,
 			getNextPageParam: (lastItem: ChatMessage[]) => {											
 				return lastItem[lastItem.length - 1]?.id;
-			},		
+			},	
 		}
 	)
 }

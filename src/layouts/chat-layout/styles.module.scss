@@ -49,8 +49,34 @@
 		top: 0;
 		height: 100%;
 		width: calc(100% - 55px);
-		opacity: 0;
 		left: 100%;
-		transition: all 3s;
+		// opacity: 0;
+		// left: 100%;
+		// transition: all 3s;
+	}
+}
+
+:global {
+	.my-node-enter {
+		left: 100%;
+	}
+	.my-node-enter-active {
+		left: 55px;
+		transition: left 300ms;
+	}
+
+	.my-node-enter-done {
+		left: 55px;
+	}
+	.my-node-exit {
+		left: 55px;
+	}
+	.my-node-exit-active {
+		left: 100%;
+		transition: left 300ms;
+	}
+
+	.my-node-exit-done {
+		left: 100%;
 	}
 }
