@@ -32,7 +32,9 @@ export default function SocketManager(props: Props) {
 			} else {
 				getAccessToken.mutate(event.data.access_token);
 			}
-			window.parent.postMessage('access_token', '*');
+			if (event.data.access_token) {
+				window.parent.postMessage('access_token', '*');
+			}
 		};
 
 		window.addEventListener('message', handle);
@@ -70,8 +72,7 @@ export default function SocketManager(props: Props) {
 				queryClient.setQueryData(
 					['conversations', { shop_id, affiliate_id }],
 					(oldData: any) => {
-						if (!oldData) return undefined;
-						const size = oldData.pages?.[0].length || 0;
+						const size = oldData.pages?.[0]?.length || 20;
 						const newDataPages = flatten(oldData.pages).filter(
 							(v: any) => v.id !== 'typing',
 						);
@@ -103,8 +104,7 @@ export default function SocketManager(props: Props) {
 				if (!cacheAffiliate) continue;
 
 				queryClient.setQueryData(queryKey as any, (oldData: any) => {
-					if (!oldData) return;
-					const size = oldData.pages?.[0].length || 0;
+					const size = oldData.pages?.[0]?.length || 20;
 
 					const affFlat = flatten([...oldData.pages]);
 

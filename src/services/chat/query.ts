@@ -10,7 +10,8 @@ export const useGetConversation = (receiverId: number, shop_id: number, affiliat
 			staleTime: Infinity,   
 			refetchOnWindowFocus: false,			
 			keepPreviousData: true,
-			getNextPageParam: (lastItem: ChatMessage[]) => {											
+			getNextPageParam: (lastItem: ChatMessage[]) => {	
+				if (!lastItem) return undefined;										
 				return lastItem[lastItem.length - 1]?.id;
 			},	
 		}
