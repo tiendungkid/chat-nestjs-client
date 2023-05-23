@@ -40,10 +40,6 @@ export default function ChatLayout(props: Props) {
 		dispatch(setDeviceMode(newMode));
 	}, [screenSize.width]);
 
-	useEffect(() => {
-		setAnimateConversation(!!selectedAff);
-	}, [selectedAff]);
-
 	return (
 		<div className={[styles.container, styles[deviceMode]].join(' ')}>
 			{isAff && dataMerchant && dataAffiliate && (
@@ -57,7 +53,10 @@ export default function ChatLayout(props: Props) {
 					</div>
 					<div className={`${styles.body} ${selectedAff ? '' : ''}`}>
 						<AffiliateList
-							changeSelectedAff={setSelectedAff}
+							changeSelectedAff={(aff) => {
+								setAnimateConversation(true);
+								setSelectedAff(aff);
+							}}
 							className={'aff-list'}
 							selectedAff={selectedAff}
 						/>
@@ -81,14 +80,6 @@ export default function ChatLayout(props: Props) {
 										}}
 									/>
 								)}
-
-								{/* {selectedAff && (
-										<ChatConversation
-											key={selectedAff.id}
-											receiver={selectedAff}
-											removeSelectAff={() => setSelectedAff(undefined)}
-										/>
-									)} */}
 							</div>
 						</CSSTransition>
 					</div>
