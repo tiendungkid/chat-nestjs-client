@@ -12,6 +12,8 @@ import { AffiliateRowResponse } from 'types/response-instances/affiliates-respon
 import { useGetMerchant } from 'services/merchant/query';
 import { useGetAffiliate } from 'services/affiliates/query';
 import { CSSTransition } from 'react-transition-group';
+import { RootState } from 'store';
+import SpeakerNotesOffIcon from '@mui/icons-material/SpeakerNotesOff';
 
 interface Props {
 	isAff?: boolean;
@@ -29,6 +31,14 @@ export default function ChatLayout(props: Props) {
 	const { data: dataAffiliate } = useGetAffiliate(isAff);
 	const nodeRef = useRef(null);
 	const [animateConversation, setAnimateConversation] = useState(false);
+
+	const chatSetting = useSelector(
+		(state: RootState) => state.conversation.chatSetting,
+	);
+
+	const openSetting = () => {
+		window.parent.postMessage('open_setting', '*');
+	};
 
 	useEffect(() => {
 		if (!screenSize.width) return;
@@ -51,37 +61,56 @@ export default function ChatLayout(props: Props) {
 						<SearchBox />
 						{/* <AffiliateHeader /> */}
 					</div>
-					<div className={`${styles.body} ${selectedAff ? '' : ''}`}>
-						<AffiliateList
-							changeSelectedAff={(aff) => {
-								setAnimateConversation(true);
-								setSelectedAff(aff);
-							}}
-							className={'aff-list'}
-							selectedAff={selectedAff}
-						/>
-
-						<CSSTransition
-							nodeRef={nodeRef}
-							in={animateConversation}
-							timeout={300}
-							classNames="my-node"
-							onExited={() => {
-								setSelectedAff(undefined);
-							}}
-						>
-							<div ref={nodeRef} className={`${styles.chatConversation}`}>
-								{selectedAff && (
-									<ChatConversation
-										key={selectedAff.id}
-										receiver={selectedAff}
-										removeSelectAff={() => {
-											setAnimateConversation(false);
-										}}
-									/>
-								)}
+					<div className={styles.body}>
+						{chatSetting ? (
+							<>
+								<AffiliateList
+									changeSelectedAff={(aff) => {
+										setAnimateConversation(true);
+										setSelectedAff(aff);
+									}}
+									className={'aff-list'}
+									selectedAff={selectedAff}
+								/>
+								<CSSTransition
+									nodeRef={nodeRef}
+									in={animateConversation}
+									timeout={300}
+									classNames="my-node"
+									onExited={() => {
+										setSelectedAff(undefined);
+									}}
+								>
+									<div ref={nodeRef} className={`${styles.chatConversation}`}>
+										{selectedAff && (
+											<ChatConversation
+												key={selectedAff.id}
+												receiver={selectedAff}
+												removeSelectAff={() => {
+													setAnimateConversation(false);
+												}}
+											/>
+										)}
+									</div>
+								</CSSTransition>
+							</>
+						) : (
+							<div className={styles.disabledChat}>
+								<SpeakerNotesOffIcon
+									color="disabled"
+									className={styles.offChatIcon}
+								/>
+								<span className={styles.offChatText}>
+									Chat setting is off, turn it on{' '}
+									<span
+										className={styles.openSetting}
+										onClick={() => openSetting()}
+									>
+										here.
+									</span>
+								</span>
 							</div>
-						</CSSTransition>
+						)}
 					</div>
 				</>
 			)}

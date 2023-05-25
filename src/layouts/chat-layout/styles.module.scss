@@ -1,6 +1,26 @@
 @use 'scss/_vars.scss';
 @use 'scss/_mixin.scss';
 
+.disabledChat {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #7f92a3;
+	font-size: 12px;
+}
+
+.offChatIcon {
+	margin-right: 4px;
+}
+
+.openSetting {
+	color: #1d85e8;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .container {
 	background: #f6f6f7;
 	height: 100svh;
@@ -50,9 +70,6 @@
 		height: 100%;
 		width: calc(100% - 55px);
 		left: 100%;
-		// opacity: 0;
-		// left: 100%;
-		// transition: all 3s;
 	}
 }
 

@@ -6,6 +6,8 @@ import { updateCredentials } from 'store/reducers/credentialSlice';
 import { queryClient } from 'services';
 import { chunk, flatten } from 'lodash';
 import { useGetAccessToken } from 'services/merchant/mutation';
+import { CircularProgress } from '@mui/material';
+import { setChatSetting } from 'store/reducers/conversationSlice';
 
 interface Props {
 	children: React.ReactNode;
@@ -18,22 +20,31 @@ export default function SocketManager(props: Props) {
 		(state: RootState) => state.credential.access_token,
 	);
 
+	const chatSetting = useSelector(
+		(state: RootState) => state.conversation.chatSetting,
+	);
+
 	const getAccessToken = useGetAccessToken();
 
 	useEffect(() => {
 		let intervalRefreshToken: any = null;
 		const handle = (event: any) => {
-			if (event.data.isFullApp) {
-				dispatch(updateCredentials(event.data.access_token));
-				// request refresh token
-				intervalRefreshToken = setInterval(() => {
-					window.parent.postMessage('refresh_token', '*');
-				}, 60000 * +event.data.expires || 3);
-			} else {
-				getAccessToken.mutate(event.data.access_token);
-			}
 			if (event.data.access_token) {
+				if (event.data.isFullApp) {
+					dispatch(updateCredentials(event.data.access_token));
+					// request refresh token
+					intervalRefreshToken = setInterval(() => {
+						window.parent.postMessage('refresh_token', '*');
+					}, 60000 * +event.data.expires || 3);
+				} else {
+					getAccessToken.mutate(event.data.access_token);
+				}
 				window.parent.postMessage('access_token', '*');
+			}
+
+			if (event.data.chatSetting !== undefined) {
+				dispatch(setChatSetting(event.data.chatSetting));
+				window.parent.postMessage('done_chat_setting', '*');
 			}
 		};
 
@@ -154,7 +165,12 @@ export default function SocketManager(props: Props) {
 		};
 	}, [accessToken]);
 
-	if (!accessToken) return <></>;
+	if (!accessToken || chatSetting === null)
+		return (
+			<div style={{ textAlign: 'center', marginTop: '10px' }}>
+				<CircularProgress style={{ color: '#1D85E8' }} size={24} />
+			</div>
+		);
 
 	return <>{props.children}</>;
 }
