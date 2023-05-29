@@ -164,7 +164,7 @@ export default function SocketManager(props: Props) {
 		};
 	}, [accessToken]);
 
-	if (!accessToken || (chatSetting === null && !props.isAff))
+	if (!accessToken)
 		return (
 			<div style={{ textAlign: 'center', marginTop: '10px' }}>
 				<CircularProgress style={{ color: '#1D85E8' }} size={24} />
