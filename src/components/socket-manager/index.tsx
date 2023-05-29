@@ -41,7 +41,6 @@ export default function SocketManager(props: Props) {
 				}
 				window.parent.postMessage('access_token', '*');
 			}
-
 			if (event.data.chatSetting !== undefined) {
 				dispatch(setChatSetting(event.data.chatSetting));
 				window.parent.postMessage('done_chat_setting', '*');
@@ -165,7 +164,7 @@ export default function SocketManager(props: Props) {
 		};
 	}, [accessToken]);
 
-	if (!accessToken || chatSetting === null)
+	if (!accessToken || (chatSetting === null && !props.isAff))
 		return (
 			<div style={{ textAlign: 'center', marginTop: '10px' }}>
 				<CircularProgress style={{ color: '#1D85E8' }} size={24} />
