@@ -16,7 +16,7 @@ import {
 	AffiliateRowResponse,
 	AffiliatesResponse,
 } from 'types/response-instances/affiliates-response';
-import { flatten } from 'lodash';
+import { flatten, last } from 'lodash';
 
 interface Props {
 	changeSelectedAff: (aff: AffiliateRowResponse) => void;
@@ -37,17 +37,27 @@ export default memo(function AffiliateList(props: Props) {
 		query: searchAffiliateQuery,
 	});
 
-	const lastAffiliateRef = useCallback((node: HTMLDivElement) => {
-		if (observer.current) observer.current.disconnect();
-		observer.current = new IntersectionObserver((entries) => {
-			if (entries[0].isIntersecting) {
-				setTimeout(() => {
-					fetchNextPage();
-				}, 100);
-			}
-		});
-		if (node) observer.current.observe(node);
-	}, []);
+	const lastAffiliateRef = useCallback(
+		(node: HTMLDivElement) => {
+			if (observer.current) observer.current.disconnect();
+			observer.current = new IntersectionObserver((entries) => {
+				if (entries[0].isIntersecting) {
+					setTimeout(() => {
+						const lastItemMessageId = last(affiliates)?.latestMessage?.id || -1;
+						fetchNextPage({
+							pageParam: {
+								last_message_id: lastItemMessageId,
+								aff_has_message: affiliates.map((v) => v.id),
+							},
+						});
+						observer.current?.unobserve(entries[0].target);
+					}, 100);
+				}
+			});
+			if (node) observer.current.observe(node);
+		},
+		[affiliates],
+	);
 
 	useEffect(() => {
 		if (!data) return;

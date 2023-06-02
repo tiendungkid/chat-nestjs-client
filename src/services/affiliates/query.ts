@@ -4,15 +4,17 @@ import {getAffiliate, searchAffiliate} from './services'
 export const useSearchAffiliate = (queries: { query: string }) => {
 	return useInfiniteQuery(
     ['affiliates', {...queries}], 
-    ({pageParam = 1}) => searchAffiliate({query: queries.query, page: pageParam}), 
+    ({pageParam = {}}) => searchAffiliate({query: queries.query, ...pageParam}), 
     {
       refetchOnWindowFocus: false,
       retry: 5,
       keepPreviousData: true,
-      getNextPageParam: (lastItem, allPages) => {
-        if (lastItem.length === 0) return undefined;
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      getNextPageParam: (lastItem) => {
+        if (!lastItem || lastItem.length === 0) return undefined;
 
-        return allPages.length + 1;
+				return true;
       }
     }
   )
@@ -25,7 +27,9 @@ export const useGetAffiliate = (enabled: boolean) => {
     {
       refetchOnWindowFocus: false,    
       keepPreviousData: true,
-      enabled
+      enabled,
+      staleTime: Infinity,
+      cacheTime: Infinity,
     }
   )
 }

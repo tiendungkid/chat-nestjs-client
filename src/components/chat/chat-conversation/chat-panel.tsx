@@ -67,28 +67,6 @@ const ChatPanel = (props: Props) => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (!chatValue) {
-	// 		setIsTyping((prev) => {
-	// 			if (prev) {
-	// 				socket.emit('un-typing', {
-	// 					to_id: toId,
-	// 				});
-	// 			}
-	// 			return false;
-	// 		});
-	// 		return;
-	// 	}
-	// 	setIsTyping((prev) => {
-	// 		if (!prev) {
-	// 			socket.emit('typing', {
-	// 				to_id: toId,
-	// 			});
-	// 		}
-	// 		return true;
-	// 	});
-	// }, [chatValue]);
-
 	return (
 		<div className={styles.chatPanel}>
 			<div className={styles.media}>

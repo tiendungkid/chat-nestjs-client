@@ -114,41 +114,71 @@ export default function SocketManager(props: Props) {
 				if (!cacheAffiliate) continue;
 
 				queryClient.setQueryData(queryKey as any, (oldData: any) => {
-					const size = oldData.pages?.[0]?.length || 20;
-
 					const affFlat = flatten([...oldData.pages]);
+					let affUpdate = [];
 
-					const affUpdate = affFlat.map((v: any) => {
-						if (v.id === affiliate_id) {
-							if (data.message.id === 'typing') {
-								queryClient.setQueryData(
-									['latestMessage', affiliate_id],
-									v.latestMessage,
-								);
-							} else if (
-								data.message.id === 'un-typing' &&
-								queryClient.getQueryData(['latestMessage', affiliate_id])
-							) {
-								return {
-									...v,
-									latestMessage: queryClient.getQueryData([
-										'latestMessage',
-										affiliate_id,
-									]),
-								};
+					if (
+						!affFlat.find((v) => v.id === affiliate_id) &&
+						data.message.id !== 'typing' &&
+						data.message.id !== 'un-typing'
+					) {
+						affUpdate = [
+							{ ...data.affiliate, latestMessage: data.message },
+							...affFlat,
+						];
+					} else {
+						affUpdate = affFlat.map((v: any) => {
+							if (v.id === affiliate_id) {
+								if (data.message.id === 'typing') {
+									queryClient.setQueryData(
+										['latestMessage', affiliate_id],
+										v.latestMessage,
+									);
+								} else if (
+									data.message.id === 'un-typing' &&
+									queryClient.getQueryData(['latestMessage', affiliate_id])
+								) {
+									return {
+										...v,
+										latestMessage: queryClient.getQueryData([
+											'latestMessage',
+											affiliate_id,
+										]),
+									};
+								}
+
+								if (!data.message.msg) return v;
+
+								return { ...v, latestMessage: data.message };
 							}
 
-							if (!data.message.msg) return v;
+							return v;
+						});
+					}
 
-							return { ...v, latestMessage: data.message };
-						}
+					let sortData = [];
 
-						return v;
-					});
+					if (data.message.id === 'typing') {
+						sortData = [...affUpdate];
+					} else {
+						sortData = [
+							...affUpdate.sort((a: any, b: any) => {
+								if (a.latestMessage === null) {
+									return 1;
+								}
+
+								if (b.latestMessage === null) {
+									return -1;
+								}
+
+								return a.latestMessage.id < b.latestMessage.id ? 1 : -1;
+							}),
+						];
+					}
 
 					return {
 						...oldData,
-						pages: chunk(affUpdate, size),
+						pages: chunk(sortData, 20),
 					};
 				});
 			}

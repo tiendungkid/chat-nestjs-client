@@ -58,6 +58,7 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 				<div className={styles.content}>
 					<div className={styles.affiliateName}>{affiliateName}</div>
 					<div className={styles.latestChat}>
+						{latestMessage?.acc_send === 'merchant' && 'Me: '}
 						{splitLatestChat(affiliateName, latestMessage?.msg || '')}
 					</div>
 				</div>
