@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ImageIcon from '@mui/icons-material/Image';
@@ -19,6 +19,7 @@ interface Props {
 const ChatPanel = (props: Props) => {
 	const { openDropzone, toId } = props;
 	const [chatValue, setChatValue] = useState('');
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Emoji handler
 	const [popoverEmojiAnchorEl, setPopoverEmojiAnchorEl] =
@@ -67,6 +68,10 @@ const ChatPanel = (props: Props) => {
 		}
 	};
 
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
+
 	return (
 		<div className={styles.chatPanel}>
 			<div className={styles.media}>
@@ -79,6 +84,7 @@ const ChatPanel = (props: Props) => {
 			</div>
 			<div className={styles.chatInputGroup}>
 				<input
+					ref={inputRef}
 					type="text"
 					value={chatValue}
 					placeholder="Aa"

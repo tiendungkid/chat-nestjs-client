@@ -27,6 +27,8 @@ export default memo(function AffiliateList(props: Props) {
 	const { changeSelectedAff, className = '', selectedAff } = props;
 	const observer = useRef<IntersectionObserver | null>(null);
 	const listRef = useRef<any>(null);
+	const affItemPrev = useRef(0);
+	const affIdParamPrev = useRef(0);
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
 	const deviceMode = useSelector(selectDeviceMode);
 	const [affiliates, setAffiliates] = useState<AffiliateRowResponse[]>([]);
@@ -66,19 +68,20 @@ export default memo(function AffiliateList(props: Props) {
 		if (!data) return;
 		const dataAffPaginate = flatten(data.pages);
 
-		if (affIdParam && !dataAffPaginate.find((v) => v.id === +affIdParam)) {
+		if (affIdParam > 0 && !dataAffPaginate.find((v) => v.id === +affIdParam)) {
 			setAffiliates(dataAffPaginate);
 			setTimeout(() => {
 				listRef.current?.lastChild?.scrollIntoView({
 					behavior: 'smooth',
 					block: 'start',
+					inline: 'start',
 				});
 			}, 0);
 
 			return;
 		}
-
-		if (affIdParam && dataAffPaginate.find((v) => v.id === +affIdParam)) {
+		console.log(data, affIdParam);
+		if (affIdParam > 0 && dataAffPaginate.find((v) => v.id === +affIdParam)) {
 			setTimeout(() => {
 				affiliatesRef.current[`aff-${affIdParam}`].current?.scrollIntoView({
 					behavior: 'smooth',
@@ -90,6 +93,23 @@ export default memo(function AffiliateList(props: Props) {
 		setAffiliates(dataAffPaginate);
 	}, [data, affIdParam]);
 
+	useEffect(() => {
+		if (!affiliates.length) return;
+
+		if (affItemPrev.current === 0) {
+			changeSelectedAff(affiliates[0]);
+		}
+
+		if (affIdParam > 0 && affIdParam !== affIdParamPrev.current) {
+			changeSelectedAff(
+				affiliates.find((v) => v.id === +affIdParam) ?? affiliates[0],
+			);
+		}
+
+		affItemPrev.current = affiliates.length;
+		affIdParamPrev.current = affIdParam;
+	}, [affiliates, affIdParam]);
+	console.log(hasNextPage);
 	return (
 		<ul
 			className={[styles[deviceMode], styles.container, className].join(' ')}
@@ -98,10 +118,8 @@ export default memo(function AffiliateList(props: Props) {
 			{affiliates.map((affiliate, index) => {
 				return (
 					<React.Fragment key={affiliate.id}>
-						{index === affiliates.length - 1 && (
-							<div
-								ref={hasNextPage && !isLoading ? lastAffiliateRef : undefined}
-							/>
+						{index === affiliates.length - 1 && hasNextPage && !isLoading && (
+							<div ref={lastAffiliateRef} />
 						)}
 						<AffiliateChat
 							ref={(affiliatesRef.current[`aff-${affiliate.id}`] = createRef())}
