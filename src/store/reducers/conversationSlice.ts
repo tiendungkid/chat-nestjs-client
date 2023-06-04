@@ -8,7 +8,8 @@ interface ConversationState {
     currentAffiliate: Affiliate | null,
     loadingConversation: boolean,
     chatMessages: ChatMessage[],
-	chatSetting: boolean | null
+	chatSetting: boolean | null,
+	affIdParam: number,
 }
 
 const initialState: ConversationState = {
@@ -16,7 +17,8 @@ const initialState: ConversationState = {
 	currentAffiliate: null,
 	loadingConversation: false,
 	chatMessages: [],
-	chatSetting: null
+	chatSetting: null,
+	affIdParam: -1
 }
 
 const conversationSlice = createSlice({
@@ -46,6 +48,11 @@ const conversationSlice = createSlice({
 		setChatSetting(state, action: PayloadAction<boolean>) {
 			state.chatSetting = action.payload
 			return state
+		},
+
+		setAffIdParam(state, action: PayloadAction<number>) {
+			state.affIdParam = action.payload
+			return state
 		}
 	},
 })
@@ -55,7 +62,8 @@ export const {
 	setCurrentAffiliate,
 	setLoadingConversation,
 	setChatMessages,
-	setChatSetting
+	setChatSetting,
+	setAffIdParam
 } = conversationSlice.actions
 export const selectSearchAffiliateQuery = (state: RootState) => state.conversation.searchAffiliateQuery
 export const selectCurrentAffiliate = (state: RootState) => state.conversation.currentAffiliate

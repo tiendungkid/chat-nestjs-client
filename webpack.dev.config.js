@@ -25,6 +25,7 @@ module.exports = {
 			minify: false,
 			cache: false,
 			favicon: './src/static/logo.png',
+			publicPath: '/',
 		}),
 		new webpack.DefinePlugin({
 			'process.env': JSON.stringify(dotenv.parsed),

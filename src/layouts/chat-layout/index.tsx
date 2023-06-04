@@ -14,6 +14,7 @@ import { useGetAffiliate } from 'services/affiliates/query';
 import { CSSTransition } from 'react-transition-group';
 import { RootState } from 'store';
 import SpeakerNotesOffIcon from '@mui/icons-material/SpeakerNotesOff';
+import { useParams } from 'react-router-dom';
 
 interface Props {
 	isAff?: boolean;

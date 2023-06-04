@@ -1,22 +1,21 @@
 import React, {
+	RefObject,
+	createRef,
 	memo,
 	useCallback,
 	useEffect,
-	useMemo,
 	useRef,
 	useState,
 } from 'react';
 import { AffiliateChat } from '../affiliate';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectSearchAffiliateQuery } from 'store/reducers/conversationSlice';
 import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
 import styles from './styles.module.scss';
 import { useSearchAffiliate } from 'services/affiliates/query';
-import {
-	AffiliateRowResponse,
-	AffiliatesResponse,
-} from 'types/response-instances/affiliates-response';
+import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { flatten, last } from 'lodash';
+import { RootState } from 'store';
 
 interface Props {
 	changeSelectedAff: (aff: AffiliateRowResponse) => void;
@@ -25,15 +24,19 @@ interface Props {
 }
 
 export default memo(function AffiliateList(props: Props) {
-	const dispatch = useDispatch();
 	const { changeSelectedAff, className = '', selectedAff } = props;
 	const observer = useRef<IntersectionObserver | null>(null);
-
+	const listRef = useRef<any>(null);
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
 	const deviceMode = useSelector(selectDeviceMode);
 	const [affiliates, setAffiliates] = useState<AffiliateRowResponse[]>([]);
+	const affIdParam = useSelector(
+		(state: RootState) => state.conversation.affIdParam,
+	);
 
-	const { data, isLoading, fetchNextPage, hasNextPage } = useSearchAffiliate({
+	const affiliatesRef = useRef<any>([]);
+
+	const { data, fetchNextPage, hasNextPage, isLoading } = useSearchAffiliate({
 		query: searchAffiliateQuery,
 	});
 
@@ -63,31 +66,59 @@ export default memo(function AffiliateList(props: Props) {
 		if (!data) return;
 		const dataAffPaginate = flatten(data.pages);
 
+		if (affIdParam && !dataAffPaginate.find((v) => v.id === +affIdParam)) {
+			setAffiliates(dataAffPaginate);
+			setTimeout(() => {
+				listRef.current?.lastChild?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+				});
+			}, 0);
+
+			return;
+		}
+
+		if (affIdParam && dataAffPaginate.find((v) => v.id === +affIdParam)) {
+			setTimeout(() => {
+				affiliatesRef.current[`aff-${affIdParam}`].current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+					inline: 'start',
+				});
+			}, 10);
+		}
 		setAffiliates(dataAffPaginate);
-	}, [data]);
+	}, [data, affIdParam]);
 
 	return (
-		<ul className={[styles[deviceMode], styles.container, className].join(' ')}>
-			{affiliates.map((affiliate, index) => (
-				<AffiliateChat
-					ref={
-						hasNextPage && index === affiliates.length - 1
-							? lastAffiliateRef
-							: undefined
-					}
-					key={affiliate.id}
-					id={affiliate.id}
-					affiliateName={`${affiliate.first_name} ${affiliate.last_name}`}
-					avatar={affiliate.avatar}
-					active={affiliate.id === selectedAff?.id}
-					onClick={(id: number) =>
-						changeSelectedAff(
-							affiliates.find((v) => v.id === id) as AffiliateRowResponse,
-						)
-					}
-					latestMessage={affiliate.latestMessage}
-				/>
-			))}
+		<ul
+			className={[styles[deviceMode], styles.container, className].join(' ')}
+			ref={listRef}
+		>
+			{affiliates.map((affiliate, index) => {
+				return (
+					<React.Fragment key={affiliate.id}>
+						{index === affiliates.length - 1 && (
+							<div
+								ref={hasNextPage && !isLoading ? lastAffiliateRef : undefined}
+							/>
+						)}
+						<AffiliateChat
+							ref={(affiliatesRef.current[`aff-${affiliate.id}`] = createRef())}
+							id={affiliate.id}
+							affiliateName={`${affiliate.first_name} ${affiliate.last_name}`}
+							avatar={affiliate.avatar}
+							active={affiliate.id === selectedAff?.id}
+							onClick={(id: number) =>
+								changeSelectedAff(
+									affiliates.find((v) => v.id === id) as AffiliateRowResponse,
+								)
+							}
+							latestMessage={affiliate.latestMessage}
+						/>
+					</React.Fragment>
+				);
+			})}
 		</ul>
 	);
 });

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from 'utils/socket.io';
 import { RootState } from 'store';
@@ -7,7 +7,10 @@ import { queryClient } from 'services';
 import { chunk, flatten } from 'lodash';
 import { useGetAccessToken } from 'services/merchant/mutation';
 import { CircularProgress } from '@mui/material';
-import { setChatSetting } from 'store/reducers/conversationSlice';
+import {
+	setAffIdParam,
+	setChatSetting,
+} from 'store/reducers/conversationSlice';
 
 interface Props {
 	children: React.ReactNode;
@@ -35,12 +38,20 @@ export default function SocketManager(props: Props) {
 					// request refresh token
 					intervalRefreshToken = setInterval(() => {
 						window.parent.postMessage('refresh_token', '*');
+						clearInterval(intervalRefreshToken);
 					}, 60000 * +event.data.expires || 3);
 				} else {
 					getAccessToken.mutate(event.data.access_token);
 				}
+
 				window.parent.postMessage('access_token', '*');
 			}
+
+			if (event.data.affiliateId !== undefined) {
+				dispatch(setAffIdParam(event.data.affiliateId));
+				window.parent.postMessage('done_affiliate_param', '*');
+			}
+
 			if (event.data.chatSetting !== undefined) {
 				dispatch(setChatSetting(event.data.chatSetting));
 				window.parent.postMessage('done_chat_setting', '*');
@@ -48,16 +59,17 @@ export default function SocketManager(props: Props) {
 		};
 
 		window.addEventListener('message', handle);
-
 		return () => {
 			window.removeEventListener('message', handle);
 			if (intervalRefreshToken) clearInterval(intervalRefreshToken);
+			dispatch(setAffIdParam(-1));
 		};
 	}, []);
 
 	useEffect(() => {
 		if (!accessToken) return;
 		socket.io.opts.extraHeaders! = { Authorization: `Bearer ${accessToken}` };
+
 		socket.connect();
 		socket.on('connect', onConnect);
 		socket.on('disconnect', onDisconnect);
