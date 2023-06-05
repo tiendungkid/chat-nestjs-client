@@ -80,16 +80,7 @@ export default memo(function AffiliateList(props: Props) {
 
 			return;
 		}
-		console.log(data, affIdParam);
-		if (affIdParam > 0 && dataAffPaginate.find((v) => v.id === +affIdParam)) {
-			setTimeout(() => {
-				affiliatesRef.current[`aff-${affIdParam}`].current?.scrollIntoView({
-					behavior: 'smooth',
-					block: 'start',
-					inline: 'start',
-				});
-			}, 10);
-		}
+
 		setAffiliates(dataAffPaginate);
 	}, [data, affIdParam]);
 
@@ -100,16 +91,28 @@ export default memo(function AffiliateList(props: Props) {
 			changeSelectedAff(affiliates[0]);
 		}
 
-		if (affIdParam > 0 && affIdParam !== affIdParamPrev.current) {
+		if (
+			affIdParam > 0 &&
+			affIdParam !== affIdParamPrev.current &&
+			affiliates.find((v) => v.id === +affIdParam)
+		) {
 			changeSelectedAff(
 				affiliates.find((v) => v.id === +affIdParam) ?? affiliates[0],
 			);
+
+			setTimeout(() => {
+				affiliatesRef.current[`aff-${affIdParam}`].current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+					inline: 'start',
+				});
+			}, 10);
 		}
 
 		affItemPrev.current = affiliates.length;
 		affIdParamPrev.current = affIdParam;
 	}, [affiliates, affIdParam]);
-	console.log(hasNextPage);
+
 	return (
 		<ul
 			className={[styles[deviceMode], styles.container, className].join(' ')}

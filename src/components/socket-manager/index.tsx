@@ -4,7 +4,7 @@ import { socket } from 'utils/socket.io';
 import { RootState } from 'store';
 import { updateCredentials } from 'store/reducers/credentialSlice';
 import { queryClient } from 'services';
-import { chunk, flatten } from 'lodash';
+import { chunk, flatten, last } from 'lodash';
 import { useGetAccessToken } from 'services/merchant/mutation';
 import { CircularProgress } from '@mui/material';
 import {
@@ -128,6 +128,7 @@ export default function SocketManager(props: Props) {
 				queryClient.setQueryData(queryKey as any, (oldData: any) => {
 					const affFlat = flatten([...oldData.pages]);
 					let affUpdate = [];
+					const lastPage: any = last(oldData.pages);
 
 					if (
 						!affFlat.find((v) => v.id === affiliate_id) &&
@@ -190,7 +191,10 @@ export default function SocketManager(props: Props) {
 
 					return {
 						...oldData,
-						pages: chunk(sortData, 20),
+						pages:
+							!lastPage || lastPage.length === 0
+								? [...chunk(sortData, 20), []]
+								: chunk(sortData, 20),
 					};
 				});
 			}

@@ -1,7 +1,7 @@
 import {useMutation} from 'react-query'
 import {markAsAllRead, uploadFile} from './services'
 import { queryClient } from 'services';
-import { chunk, flatten } from 'lodash';
+import { chunk, flatten, last } from 'lodash';
 
 export const useMarkAsAllReadMutation = () => useMutation((affiliateId: number) => markAsAllRead(affiliateId), {
     onSettled(_, __, variables) {        
@@ -17,9 +17,10 @@ export const useMarkAsAllReadMutation = () => useMutation((affiliateId: number) 
                 if (!cacheAffiliate) continue;
 
                 queryClient.setQueryData(queryKey as any, (oldData: any) => {
-                    const size = oldData.pages?.[0]?.length || 20;
+                    const size = 20;
 
                     const affFlat = flatten([...oldData.pages]);
+                    const lastPage: any = last(oldData.pages);
 
                     const affUpdate = affFlat.map((v: any) => {
                         if (v.id === variables) {
@@ -32,7 +33,7 @@ export const useMarkAsAllReadMutation = () => useMutation((affiliateId: number) 
 
                     return {
                         ...oldData,
-                        pages: chunk(affUpdate, size),
+                        pages: !lastPage || lastPage.length === 0 ? [...chunk(affUpdate, size), []] : chunk(affUpdate, size),
                     };
                 });
             }
