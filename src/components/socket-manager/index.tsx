@@ -30,20 +30,9 @@ export default function SocketManager(props: Props) {
 	const getAccessToken = useGetAccessToken();
 
 	useEffect(() => {
-		let intervalRefreshToken: any = null;
 		const handle = (event: any) => {
 			if (event.data.access_token) {
-				if (event.data.isFullApp) {
-					dispatch(updateCredentials(event.data.access_token));
-					// request refresh token
-					intervalRefreshToken = setInterval(() => {
-						window.parent.postMessage('refresh_token', '*');
-						clearInterval(intervalRefreshToken);
-					}, 60000 * +event.data.expires || 3);
-				} else {
-					getAccessToken.mutate(event.data.access_token);
-				}
-
+				getAccessToken.mutate(event.data.access_token);
 				window.parent.postMessage('access_token', '*');
 			}
 
@@ -61,7 +50,6 @@ export default function SocketManager(props: Props) {
 		window.addEventListener('message', handle);
 		return () => {
 			window.removeEventListener('message', handle);
-			if (intervalRefreshToken) clearInterval(intervalRefreshToken);
 			dispatch(setAffIdParam(-1));
 		};
 	}, []);

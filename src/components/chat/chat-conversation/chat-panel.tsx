@@ -19,7 +19,7 @@ interface Props {
 const ChatPanel = (props: Props) => {
 	const { openDropzone, toId } = props;
 	const [chatValue, setChatValue] = useState('');
-	const inputRef = useRef<HTMLInputElement>(null);
+	const inputRef = useRef<HTMLTextAreaElement>(null);
 
 	// Emoji handler
 	const [popoverEmojiAnchorEl, setPopoverEmojiAnchorEl] =
@@ -41,7 +41,9 @@ const ChatPanel = (props: Props) => {
 		setPopoverEmojiAnchorEl(event.currentTarget);
 
 	// Handle send message
-	const onEnterPressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const onEnterPressed = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+		const height = Math.min(100, inputRef?.current?.scrollHeight || 0);
+		inputRef.current!.style!.cssText = 'height:' + height + 'px';
 		if (e.key !== 'Enter') return;
 		socket.emit('send_message', {
 			to_id: toId,
@@ -83,9 +85,9 @@ const ChatPanel = (props: Props) => {
 				</div>
 			</div>
 			<div className={styles.chatInputGroup}>
-				<input
+				<textarea
 					ref={inputRef}
-					type="text"
+					// rows={2}
 					value={chatValue}
 					placeholder="Aa"
 					className={styles.chatInput}
