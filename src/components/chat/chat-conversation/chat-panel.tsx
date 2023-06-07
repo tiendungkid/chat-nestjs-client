@@ -7,7 +7,6 @@ import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { Popover } from '@mui/material';
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
-import { queryClient } from 'services';
 
 // const EmojiPicker = React.lazy(() => import('emoji-picker-react'))
 
@@ -20,6 +19,7 @@ const ChatPanel = (props: Props) => {
 	const { openDropzone, toId } = props;
 	const [chatValue, setChatValue] = useState('');
 	const inputRef = useRef<HTMLTextAreaElement>(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
 
 	// Emoji handler
 	const [popoverEmojiAnchorEl, setPopoverEmojiAnchorEl] =
@@ -42,20 +42,31 @@ const ChatPanel = (props: Props) => {
 
 	// Handle send message
 	const onEnterPressed = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		const height = Math.min(100, inputRef?.current?.scrollHeight || 0);
-		inputRef.current!.style!.cssText = 'height:' + height + 'px';
-		if (e.key !== 'Enter') return;
-		socket.emit('send_message', {
-			to_id: toId,
-			msg: chatValue,
-			msg_type: MessageType.TEXT,
-		});
+		if (e.key !== 'Enter' || !chatValue.trim()) return;
+		if (e.key === 'Enter' && e.altKey) {
+			setChatValue((prev) => {
+				return prev + '\r\n';
+			});
+			setTimeout(() => {
+				inputRef.current?.blur();
+				inputRef.current?.focus();
+			}, 0);
+		}
+		if (e.key === 'Enter' && !e.shiftKey && !e.altKey) {
+			e.preventDefault();
+			socket.emit('send_message', {
+				to_id: toId,
+				msg: chatValue,
+				msg_type: MessageType.TEXT,
+			});
+			wrapperRef!.current!.style.cssText = `height: 50px`;
+			inputRef!.current!.style.cssText = `height: 18px`;
+			setChatValue((prev) => {
+				actionTyping(prev, '');
 
-		setChatValue((prev) => {
-			actionTyping(prev, '');
-
-			return '';
-		});
+				return '';
+			});
+		}
 	};
 
 	const actionTyping = (prevValue: string, nextValue: string) => {
@@ -75,7 +86,7 @@ const ChatPanel = (props: Props) => {
 	}, []);
 
 	return (
-		<div className={styles.chatPanel}>
+		<div className={styles.chatPanel} ref={wrapperRef}>
 			<div className={styles.media}>
 				<div className={styles.mediaOption}>
 					<AttachFileIcon className={styles.mediaIcon} onClick={openDropzone} />
@@ -87,13 +98,21 @@ const ChatPanel = (props: Props) => {
 			<div className={styles.chatInputGroup}>
 				<textarea
 					ref={inputRef}
-					// rows={2}
 					value={chatValue}
 					placeholder="Aa"
 					className={styles.chatInput}
 					onKeyDown={onEnterPressed}
+					wrap="physical"
 					onChange={(e) =>
 						setChatValue((prev) => {
+							inputRef!.current!.style.cssText = 'height: 18px'; // reset after clear text
+							wrapperRef!.current!.style.cssText = 'height: 50px';
+							const height = Math.min(
+								125,
+								inputRef?.current?.scrollHeight || 0,
+							);
+							wrapperRef!.current!.style.cssText = `height: ${height + 32}px`;
+							inputRef!.current!.style.cssText = `height: ${height}px`;
 							actionTyping(prev, e.target.value);
 
 							return e.target.value;
