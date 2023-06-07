@@ -6,10 +6,7 @@ import {
 	DialogContent,
 	DialogContentText,
 } from '@mui/material';
-import {
-	ALLOW_FILE_EXTENSIONS,
-	ALLOW_IMAGE_EXTENSIONS,
-} from 'utils/constants/files';
+import { ALLOW_FILE_TEXT } from 'utils/constants/files';
 
 interface Props {
 	open: boolean;
@@ -23,7 +20,7 @@ export default function NotAllowFileTypeDialog(props: Props) {
 			<DialogContent>
 				<DialogContentText>
 					Only file type supported:{' '}
-					{[...ALLOW_IMAGE_EXTENSIONS, ...ALLOW_FILE_EXTENSIONS]
+					{[...ALLOW_FILE_TEXT]
 						.map((mine) =>
 							mine.replaceAll('image/', '').replaceAll('application/', ''),
 						)

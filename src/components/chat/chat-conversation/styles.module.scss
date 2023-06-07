@@ -4,17 +4,6 @@
 .chatConversation {
 	background-color: #fff;
 	height: 100%;
-	// transition: width vars.$collapseMobileDuration;
-
-	// &.mobileAffiliate {
-	// 	flex: 0 0 0;
-	// 	max-width: 0;
-	// 	opacity: 0;
-	// }
-
-	// &.mobileConversation {
-	// 	flex: 0 1 100%;
-	// }
 }
 
 .container {
@@ -30,7 +19,6 @@
 	}
 
 	.loadMore {
-		// margin-top: auto !important;
 		height: 1px;
 	}
 	.conversation {

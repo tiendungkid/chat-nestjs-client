@@ -32,7 +32,12 @@ export default function SocketManager(props: Props) {
 	useEffect(() => {
 		const handle = (event: any) => {
 			if (event.data.access_token) {
-				getAccessToken.mutate(event.data.access_token);
+				if (event.data.merchant) {
+					getAccessToken.mutate(event.data.access_token);
+				} else {
+					dispatch(updateCredentials(event.data.access_token));
+				}
+
 				window.parent.postMessage('access_token', '*');
 			}
 

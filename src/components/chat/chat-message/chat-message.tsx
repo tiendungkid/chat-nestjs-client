@@ -16,7 +16,6 @@ import { DeviceMode } from 'types/device-mode';
 
 interface Props {
 	affiliateName: string;
-	avatar?: string;
 	messages: Message[];
 	side: 'left' | 'right';
 	setMessageImageUrl: (imageUrl: string) => void;
@@ -26,7 +25,6 @@ interface Props {
 export default function ChatMessage(props: Props) {
 	const {
 		affiliateName,
-		avatar,
 		messages,
 		side,
 		setMessageImageUrl,
@@ -91,24 +89,6 @@ export default function ChatMessage(props: Props) {
 			justifyContent={side === 'right' ? 'flex-end' : 'flex-start'}
 			className={styles.chatMessage}
 		>
-			{!isMobile && avatar != undefined && side === 'left' && (
-				<Grid item>
-					<Tooltip title={affiliateName} placement="top-start">
-						{avatar ? (
-							<Avatar
-								alt={affiliateName}
-								src={avatar}
-								className={styles.avatar}
-							/>
-						) : (
-							<Avatar
-								{...stringAvatar(affiliateName)}
-								className={styles.avatar}
-							></Avatar>
-						)}
-					</Tooltip>
-				</Grid>
-			)}
 			<Grid item xs={10}>
 				{messages.map((message, index) => {
 					return (

@@ -15,6 +15,7 @@ import { CSSTransition } from 'react-transition-group';
 import { RootState } from 'store';
 import SpeakerNotesOffIcon from '@mui/icons-material/SpeakerNotesOff';
 import { useParams } from 'react-router-dom';
+import AffiliateHeader from 'components/chat/affiliate-header';
 
 interface Props {
 	isAff?: boolean;
@@ -58,10 +59,12 @@ export default function ChatLayout(props: Props) {
 			)}
 			{!isAff && (
 				<>
-					<div className={styles.header}>
-						<SearchBox />
-						{/* <AffiliateHeader /> */}
-					</div>
+					{!!chatSetting && (
+						<div className={styles.header}>
+							<SearchBox />
+							<AffiliateHeader currentAffiliate={selectedAff} />
+						</div>
+					)}
 					<div className={styles.body}>
 						{chatSetting ? (
 							<>

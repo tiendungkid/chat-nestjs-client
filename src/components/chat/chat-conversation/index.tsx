@@ -39,6 +39,7 @@ import {
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
 import { queryClient } from 'services';
+import UploadFailedDialog from '../UploadFailedDialog';
 
 interface Props {
 	receiver: AffiliateRowResponse | Merchant;
@@ -60,6 +61,7 @@ const ChatConversation = (props: Props) => {
 	const markAsAllReadMutation = useMarkAsAllReadMutation();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const uploadFile = useUploadFile();
+	const [errorUpload, setErrorUpload] = useState('');
 
 	// Image preview
 	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false);
@@ -91,6 +93,9 @@ const ChatConversation = (props: Props) => {
 						: MessageType.FILE,
 				});
 			},
+			onError: (err: any) => {
+				setErrorUpload(err.response?.data.message);
+			},
 		});
 	}, []);
 
@@ -121,7 +126,15 @@ const ChatConversation = (props: Props) => {
 				(first(messagePaginate)?.acc_send === 'merchant' && affiliate))
 		) {
 			markAsAllReadMutation.mutate(toId);
+			window.parent.postMessage(
+				{
+					type: 'readAll',
+					affId: toId,
+				},
+				'*',
+			);
 		}
+		console.log(123);
 		setMessages(messagePaginate);
 	}, [data]);
 
@@ -176,7 +189,6 @@ const ChatConversation = (props: Props) => {
 									<ChatMessage
 										key={index}
 										affiliateName={`${receiver.first_name} ${receiver.last_name}`}
-										avatar={(receiver as AffiliateRowResponse).avatar}
 										messages={chatList}
 										side={
 											(chatList?.[0].acc_send === Sender.MERCHANT &&
@@ -209,6 +221,11 @@ const ChatConversation = (props: Props) => {
 			<NotAllowFileTypeDialog
 				open={openNotAllowFileMine}
 				setOpen={setOpenNotAllowFileMine}
+			/>
+			<UploadFailedDialog
+				open={!!errorUpload}
+				content={errorUpload}
+				onClose={() => setErrorUpload('')}
 			/>
 		</div>
 	);

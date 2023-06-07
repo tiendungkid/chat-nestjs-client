@@ -59,7 +59,15 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 					<div className={styles.affiliateName}>{affiliateName}</div>
 					<div className={styles.latestChat}>
 						{latestMessage?.acc_send === 'merchant' && 'Me: '}
-						{splitLatestChat(affiliateName, latestMessage?.msg || '')}
+						{splitLatestChat(
+							affiliateName,
+							latestMessage?.msg_type === 'text' ||
+								latestMessage?.msg_type === 'typing'
+								? latestMessage?.msg
+								: (latestMessage?.msg_type === 'img'
+										? 'Sent a photo'
+										: 'Sent a file') || '',
+						)}
 					</div>
 				</div>
 				{hasUnreadMessage && (

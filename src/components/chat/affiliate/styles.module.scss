@@ -32,6 +32,7 @@
 	@include mixin.mobileSmall {
 		margin: 0;
 		font-size: 12px;
+		background-color: #f6f6f7;
 	}
 
 	&.unread {
@@ -80,6 +81,7 @@
 
 		.affiliateName {
 			color: vars.$text-dark;
+			font-weight: 600;
 		}
 
 		.latestChat {
