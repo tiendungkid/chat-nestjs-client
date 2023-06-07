@@ -37,3 +37,12 @@ export const uploadFile = async (file: File): Promise<string> => {
 
 	return response.data;
 }
+
+export const affiliateGetUnreadCount = async (): Promise<number> => {
+	const response = await (await getAxiosInstance()).get(
+		`api/v1/chat/affiliate-unread/count`,
+	)
+
+	return await response.data;
+}
+

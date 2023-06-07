@@ -7,6 +7,8 @@ import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { Popover } from '@mui/material';
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 // const EmojiPicker = React.lazy(() => import('emoji-picker-react'))
 
@@ -20,7 +22,9 @@ const ChatPanel = (props: Props) => {
 	const [chatValue, setChatValue] = useState('');
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 	const wrapperRef = useRef<HTMLDivElement>(null);
-
+	const affOpenChat = useSelector(
+		(state: RootState) => state.conversation.affOpenChat,
+	);
 	// Emoji handler
 	const [popoverEmojiAnchorEl, setPopoverEmojiAnchorEl] =
 		React.useState<Element | null>(null);
@@ -84,6 +88,12 @@ const ChatPanel = (props: Props) => {
 	useEffect(() => {
 		inputRef.current?.focus();
 	}, []);
+
+	useEffect(() => {
+		if (affOpenChat) {
+			inputRef.current?.focus();
+		}
+	}, [affOpenChat]);
 
 	return (
 		<div className={styles.chatPanel} ref={wrapperRef}>

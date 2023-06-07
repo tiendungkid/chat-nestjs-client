@@ -25,7 +25,10 @@ import {
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPanel from './chat-panel';
 import { selectDeviceMode } from 'store/reducers/screenSlice';
-import { useGetConversation } from 'services/chat/query';
+import {
+	useAffiliateGetUnreadCount,
+	useGetConversation,
+} from 'services/chat/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
 import { chunk, first, flatten } from 'lodash';
@@ -38,8 +41,9 @@ import {
 } from 'services/chat/mutation';
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
-import { queryClient } from 'services';
 import UploadFailedDialog from '../UploadFailedDialog';
+import { RootState } from 'store';
+import { queryClient } from 'services';
 
 interface Props {
 	receiver: AffiliateRowResponse | Merchant;
@@ -62,7 +66,13 @@ const ChatConversation = (props: Props) => {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const uploadFile = useUploadFile();
 	const [errorUpload, setErrorUpload] = useState('');
+	const affOpenChat = useSelector(
+		(state: RootState) => state.conversation.affOpenChat,
+	);
 
+	const { data: dataAffiliateUnreadCount } = useAffiliateGetUnreadCount(
+		!!affiliate,
+	);
 	// Image preview
 	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false);
 	const [messageImageUrl, setMessageImageUrl] = useState('');
@@ -120,23 +130,67 @@ const ChatConversation = (props: Props) => {
 	useEffect(() => {
 		if (!data) return;
 		const messagePaginate = flatten(data.pages);
+
 		if (
 			(first(messagePaginate)?.id ?? 0) > (first(messages)?.id ?? 0) &&
 			((first(messagePaginate)?.acc_send === 'affiliate' && !affiliate) ||
 				(first(messagePaginate)?.acc_send === 'merchant' && affiliate))
 		) {
+			if (first(messagePaginate)?.acc_send === 'affiliate' && !affiliate) {
+				markAsAllReadMutation.mutate(toId);
+				window.parent.postMessage(
+					{
+						type: 'readAll',
+						affId: toId,
+					},
+					'*',
+				);
+			}
+
+			if (first(messagePaginate)?.acc_send === 'merchant' && affiliate) {
+				if (affOpenChat) {
+					markAsAllReadMutation.mutate(toId);
+					queryClient.setQueryData(
+						['conversations', 'affiliate_unread_count'],
+						0,
+					);
+				} else if (first(messages)?.id) {
+					queryClient.setQueryData(
+						['conversations', 'affiliate_unread_count'],
+						(oldData: any) => {
+							return oldData + 1;
+						},
+					);
+				}
+			}
+		}
+
+		setMessages(messagePaginate);
+	}, [data, affOpenChat]);
+
+	useEffect(() => {
+		if (affOpenChat) {
 			markAsAllReadMutation.mutate(toId);
+			queryClient.setQueryData(
+				['conversations', 'affiliate_unread_count'],
+				(oldData: any) => {
+					return 0;
+				},
+			);
+		}
+	}, [affOpenChat]);
+
+	useEffect(() => {
+		if (dataAffiliateUnreadCount !== undefined) {
 			window.parent.postMessage(
 				{
-					type: 'readAll',
-					affId: toId,
+					type: 'unreadCount',
+					count: dataAffiliateUnreadCount,
 				},
 				'*',
 			);
 		}
-		console.log(123);
-		setMessages(messagePaginate);
-	}, [data]);
+	}, [dataAffiliateUnreadCount]);
 
 	const {
 		open: openDropzone,

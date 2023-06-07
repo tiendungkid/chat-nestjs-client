@@ -9,6 +9,7 @@ import { useGetAccessToken } from 'services/merchant/mutation';
 import { CircularProgress } from '@mui/material';
 import {
 	setAffIdParam,
+	setAffOpenChat,
 	setChatSetting,
 } from 'store/reducers/conversationSlice';
 
@@ -49,6 +50,10 @@ export default function SocketManager(props: Props) {
 			if (event.data.chatSetting !== undefined) {
 				dispatch(setChatSetting(event.data.chatSetting));
 				window.parent.postMessage('done_chat_setting', '*');
+			}
+
+			if (event.data.type === 'affOpenChat') {
+				dispatch(setAffOpenChat(event.data.openChat));
 			}
 		};
 
