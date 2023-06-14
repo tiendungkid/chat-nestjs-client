@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ImageIcon from '@mui/icons-material/Image';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { Popover } from '@mui/material';
 import { socket } from 'utils/socket.io';
 import { MessageType } from 'types/conversation/message-type';
@@ -95,6 +95,8 @@ const ChatPanel = (props: Props) => {
 		}
 	}, [affOpenChat]);
 
+	const wrapperRefBounding = wrapperRef.current?.getBoundingClientRect();
+
 	return (
 		<div className={styles.chatPanel} ref={wrapperRef}>
 			<div className={styles.media}>
@@ -135,15 +137,24 @@ const ChatPanel = (props: Props) => {
 				/>
 				<Popover
 					id={popoverEmojiId}
-					open={openPopoverEmoji}
+					open={openPopoverEmoji && !!wrapperRefBounding}
 					onClose={handleClosePopoverEmoji}
-					anchorEl={popoverEmojiAnchorEl}
-					anchorOrigin={{
-						vertical: 'center',
-						horizontal: 'center',
+					container={document.body}
+					anchorPosition={{
+						top: (wrapperRefBounding?.top ?? 0) - 360,
+						left: (wrapperRefBounding?.right ?? 0) - 340,
 					}}
+					anchorReference="anchorPosition"
 				>
-					<EmojiPicker onEmojiClick={onClickEmojiIcon} />
+					<EmojiPicker
+						onEmojiClick={onClickEmojiIcon}
+						width={300}
+						height={350}
+						searchDisabled
+						skinTonesDisabled
+						emojiStyle={EmojiStyle['NATIVE']}
+						previewConfig={{ showPreview: false }}
+					/>
 				</Popover>
 			</div>
 		</div>
