@@ -61,12 +61,14 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 						{latestMessage?.acc_send === 'merchant' && 'Me: '}
 						{splitLatestChat(
 							affiliateName,
-							latestMessage?.msg_type === 'text' ||
-								latestMessage?.msg_type === 'typing'
-								? latestMessage?.msg
-								: (latestMessage?.msg_type === 'img'
-										? 'Sent a photo'
-										: 'Sent a file') || '',
+							latestMessage
+								? latestMessage.msg_type === 'text' ||
+								  latestMessage.msg_type === 'typing'
+									? latestMessage?.msg
+									: latestMessage?.msg_type === 'img'
+									? 'Sent a photo'
+									: 'Sent a file'
+								: '',
 						)}
 					</div>
 				</div>
