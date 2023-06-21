@@ -57,11 +57,12 @@ const ChatConversation = (props: Props) => {
 	const loading = useSelector(selectLoadingConversation);
 	const { receiver, affiliate, removeSelectAff } = props;
 	const toId = affiliate ? affiliate.shop_id : receiver.id;
-	const { data, fetchNextPage, hasNextPage, isLoading } = useGetConversation(
-		toId, // shop_id or affiliate_id
-		receiver.shop_id, // shop_id
-		affiliate ? affiliate.id : receiver.id, // affiliate_id
-	);
+	const { data, fetchNextPage, hasNextPage, isLoading, remove } =
+		useGetConversation(
+			toId, // shop_id or affiliate_id
+			receiver.shop_id, // shop_id
+			affiliate ? affiliate.id : receiver.id, // affiliate_id
+		);
 	const markAsAllReadMutation = useMarkAsAllReadMutation();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const uploadFile = useUploadFile();
@@ -202,6 +203,12 @@ const ChatConversation = (props: Props) => {
 		noClick: true,
 		multiple: false,
 	});
+
+	useEffect(() => {
+		return () => {
+			remove();
+		};
+	}, []);
 
 	const fullName = receiver.first_name + ' ' + receiver.last_name;
 
