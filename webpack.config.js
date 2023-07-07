@@ -25,6 +25,7 @@ module.exports = {
 			minify: true,
 			cache: true,
 			favicon: './src/static/logo.png',
+			// publicPath: 'https://cdn.server-name.com/', // Replace by dotenv file
 			publicPath: '/',
 		}),
 		new webpack.DefinePlugin({
