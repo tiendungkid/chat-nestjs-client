@@ -3,6 +3,7 @@ import styles from './styles.module.scss';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ImageIcon from '@mui/icons-material/Image';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import SendIcon from '@mui/icons-material/Send';
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { Popover } from '@mui/material';
 import { socket } from 'utils/socket.io';
@@ -40,7 +41,29 @@ const ChatPanel = (props: Props) => {
 		});
 	};
 
-	const handleClosePopoverEmoji = () => setPopoverEmojiAnchorEl(null);
+	const handleClosePopoverEmoji = () => {
+		setPopoverEmojiAnchorEl(null);
+		setTimeout(() => {
+			inputRef.current?.blur();
+			inputRef.current?.focus();
+		}, 0);
+	};
+
+	const sendMessage = () => {
+		socket.emit('send_message', {
+			to_id: toId,
+			msg: chatValue,
+			msg_type: MessageType.TEXT,
+		});
+		wrapperRef!.current!.style.cssText = `height: 51px`;
+		inputRef!.current!.style.cssText = `height: 19px`;
+		setChatValue((prev) => {
+			actionTyping(prev, '');
+
+			return '';
+		});
+	};
+
 	const handleClickPopoverEmoji = (event: React.MouseEvent) =>
 		setPopoverEmojiAnchorEl(event.currentTarget);
 
@@ -58,18 +81,7 @@ const ChatPanel = (props: Props) => {
 		}
 		if (e.key === 'Enter' && !e.shiftKey && !e.altKey) {
 			e.preventDefault();
-			socket.emit('send_message', {
-				to_id: toId,
-				msg: chatValue,
-				msg_type: MessageType.TEXT,
-			});
-			wrapperRef!.current!.style.cssText = `height: 50px`;
-			inputRef!.current!.style.cssText = `height: 18px`;
-			setChatValue((prev) => {
-				actionTyping(prev, '');
-
-				return '';
-			});
+			sendMessage();
 		}
 	};
 
@@ -115,10 +127,17 @@ const ChatPanel = (props: Props) => {
 					className={styles.chatInput}
 					onKeyDown={onEnterPressed}
 					wrap="physical"
+					onFocus={(e) => {
+						e.currentTarget.setSelectionRange(
+							e.currentTarget.value.length,
+							e.currentTarget.value.length,
+						);
+						e.currentTarget.scrollTo({ top: e.currentTarget.scrollHeight });
+					}}
 					onChange={(e) =>
 						setChatValue((prev) => {
-							inputRef!.current!.style.cssText = 'height: 18px'; // reset after clear text
-							wrapperRef!.current!.style.cssText = 'height: 50px';
+							inputRef!.current!.style.cssText = 'height: 19px';
+							wrapperRef!.current!.style.cssText = 'height: 51px';
 							const height = Math.min(
 								125,
 								inputRef?.current?.scrollHeight || 0,
@@ -134,6 +153,12 @@ const ChatPanel = (props: Props) => {
 				<SentimentSatisfiedAltIcon
 					onClick={handleClickPopoverEmoji}
 					className={styles.emojiPicker}
+				/>
+				<SendIcon
+					className={[styles.sendIcon, chatValue ? styles.active : ''].join(
+						' ',
+					)}
+					onClick={() => sendMessage()}
 				/>
 				<Popover
 					id={popoverEmojiId}

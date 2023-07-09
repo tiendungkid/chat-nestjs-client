@@ -33,7 +33,7 @@
 				.conversation {
 					left: 55px;
 					opacity: 1;
-					transition: left 0.3s ease, opacity 0.25s ease 0.1s;
+					// transition: left 0.3s ease, opacity 0.25s ease 0.1s;
 				}
 				.aff-list {
 					background-color: #f6f6f7;
@@ -80,7 +80,6 @@
 	}
 	.my-node-enter-active {
 		left: 55px;
-		transition: left 300ms;
 	}
 
 	.my-node-enter-done {
@@ -91,7 +90,7 @@
 	}
 	.my-node-exit-active {
 		left: 100%;
-		transition: left 300ms;
+		transition: left 200ms;
 	}
 
 	.my-node-exit-done {

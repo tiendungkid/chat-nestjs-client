@@ -16,6 +16,7 @@ import { useSearchAffiliate } from 'services/affiliates/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { flatten, last } from 'lodash';
 import { RootState } from 'store';
+import { DeviceMode } from 'types/device-mode';
 
 interface Props {
 	changeSelectedAff: (aff: AffiliateRowResponse) => void;
@@ -35,6 +36,9 @@ export default memo(function AffiliateList(props: Props) {
 	const affIdParam = useSelector(
 		(state: RootState) => state.conversation.affIdParam,
 	);
+	const isMobile =
+		useSelector((state: RootState) => state.screen.deviceMode) ===
+		DeviceMode.MOBILE_AFFILIATE;
 
 	const affiliatesRef = useRef<any>([]);
 
@@ -87,7 +91,7 @@ export default memo(function AffiliateList(props: Props) {
 	useEffect(() => {
 		if (!affiliates.length) return;
 
-		if (affItemPrev.current === 0) {
+		if (affItemPrev.current === 0 && !isMobile) {
 			changeSelectedAff(affiliates[0]);
 		}
 

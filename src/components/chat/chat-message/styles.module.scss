@@ -1,55 +1,57 @@
+@use 'scss/vars.scss';
+
 .chatMessage {
+	.avatar {
+		align-self: center;
+		width: 40px;
+	}
 
-  .avatar {
-    align-self: center;
-    width: 40px;
-  }
+	.message {
+		display: inline-block;
+		padding: 8px 16px;
+		font-size: vars.$font-size-md;
+		word-break: break-word;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+			Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+			'Segoe UI Symbol';
+		border-radius: 4px;
+		margin-bottom: 4px;
+	}
 
-  .message {
-    display: inline-block;
-    padding: 8px 16px;
-    font-size: 14px;
-    word-break: break-word;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    border-radius: 4px;
-    margin-bottom: 4px;
-  }
+	.leftRow {
+		text-align: left;
 
-  .leftRow {
-    text-align: left;
+		.left {
+			border-top-right-radius: 20px;
+			border-bottom-right-radius: 20px;
+			background-color: #e1e3e5;
+		}
 
-    .left {
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-      background-color: #E1E3E5;
+		.leftFirst {
+			border-top-left-radius: 20px;
+		}
 
-    }
+		.leftLast {
+			border-bottom-left-radius: 20px;
+		}
+	}
 
-    .leftFirst {
-      border-top-left-radius: 20px;
-    }
+	.rightRow {
+		text-align: right;
 
-    .leftLast {
-      border-bottom-left-radius: 20px;
-    }
-  }
+		.right {
+			border-top-left-radius: 20px;
+			border-bottom-left-radius: 20px;
+			background-color: #1d85e8;
+			color: #fff;
+		}
 
-  .rightRow {
-    text-align: right;
+		.rightFirst {
+			border-top-right-radius: 20px;
+		}
 
-    .right {
-      border-top-left-radius: 20px;
-      border-bottom-left-radius: 20px;
-      background-color: #1D85E8;
-      color: #fff
-    }
-
-    .rightFirst {
-      border-top-right-radius: 20px;
-    }
-
-    .rightLast {
-      border-bottom-right-radius: 20px;
-    }
-  }
+		.rightLast {
+			border-bottom-right-radius: 20px;
+		}
+	}
 }

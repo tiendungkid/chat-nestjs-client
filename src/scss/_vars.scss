@@ -1,11 +1,12 @@
-$text-dark: rgba(9, 44, 76, 1);
+$text-dark: #092c4c;
 
-$collapseMobileDuration: .3s;
-
+$collapseMobileDuration: 0.3s;
+$font-family: Poppins, sans-serif;
+$font-size-xl: 16px;
+$font-size-md: 14px;
 
 /**
  * Media query
  */
-$screen-mobileSmall: 'screen and (max-width: 390px)';
-$screen-mobile: 'screen and (min-width: 390px) and (max-width: 992px)';
-
+$screen-mobileSmall: 'screen and (max-width: 450px)';
+$screen-mobile: 'screen and (min-width: 451px) and (max-width: 992px)';

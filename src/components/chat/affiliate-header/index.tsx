@@ -1,10 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import styles from './styles.module.scss';
-import { Avatar, IconButton } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { stringAvatar } from 'utils/affiliate-chat-utils/helpers';
-import { DeviceMode } from 'types/device-mode';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { useDispatch, useSelector } from 'react-redux';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 
 interface Props {
@@ -13,7 +10,6 @@ interface Props {
 
 export default memo(function AffiliateHeader(props: Props) {
 	const { currentAffiliate } = props;
-	const dispatch = useDispatch();
 
 	if (!currentAffiliate) return <></>;
 

@@ -79,7 +79,7 @@ export default function ChatLayout(props: Props) {
 								<CSSTransition
 									nodeRef={nodeRef}
 									in={animateConversation}
-									timeout={300}
+									timeout={200}
 									classNames="my-node"
 									onExited={() => {
 										setSelectedAff(undefined);

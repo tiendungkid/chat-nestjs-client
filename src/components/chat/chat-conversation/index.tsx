@@ -22,7 +22,6 @@ import {
 	// selectCurrentAffiliate,
 	selectLoadingConversation,
 } from 'store/reducers/conversationSlice';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPanel from './chat-panel';
 import { selectDeviceMode } from 'store/reducers/screenSlice';
 import {
@@ -31,7 +30,8 @@ import {
 } from 'services/chat/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
-import { chunk, first, flatten } from 'lodash';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { first, flatten } from 'lodash';
 import { Avatar } from '@mui/material';
 import { Merchant } from 'types/merchant';
 import Affiliate from 'types/affiliate-chat';
@@ -212,9 +212,6 @@ const ChatConversation = (props: Props) => {
 
 	const fullName = receiver.first_name + ' ' + receiver.last_name;
 
-	// if (receiver) return <></>;
-	// if (loading) return <ConversationLoading />;
-
 	return (
 		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
 			<div className={styles.affInfo}>
@@ -230,13 +227,13 @@ const ChatConversation = (props: Props) => {
 						className={styles.avatar}
 					/>
 				)}
-				<span className={styles.affName}>{fullName}</span>
 				{!affiliate && (
-					<KeyboardArrowRightIcon
+					<ArrowBackIcon
 						className={styles.backIcon}
 						onClick={() => removeSelectAff?.()}
 					/>
 				)}
+				<span className={styles.affName}>{fullName}</span>
 			</div>
 			<div className={styles.container} {...getRootProps()}>
 				<input {...getInputProps()} />
