@@ -25,8 +25,7 @@ module.exports = {
 			minify: true,
 			cache: true,
 			favicon: './src/static/logo.png',
-			// publicPath: 'https://cdn.server-name.com/', // Replace by dotenv file
-			publicPath: '/',
+			publicPath: dotenv.parsed.CDN_URL ?? '/',
 		}),
 		new webpack.DefinePlugin({
 			'process.env': JSON.stringify(dotenv.parsed),

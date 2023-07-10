@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
+
 const BundleAnalyzerPlugin =
 	require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -25,7 +26,7 @@ module.exports = {
 			minify: false,
 			cache: false,
 			favicon: './src/static/logo.png',
-			publicPath: '/',
+			publicPath: dotenv.parsed.CDN_URL ?? '/',
 		}),
 		new webpack.DefinePlugin({
 			'process.env': JSON.stringify(dotenv.parsed),
