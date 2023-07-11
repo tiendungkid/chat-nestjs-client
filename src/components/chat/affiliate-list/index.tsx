@@ -17,6 +17,7 @@ import { AffiliateRowResponse } from 'types/response-instances/affiliates-respon
 import { flatten, last } from 'lodash';
 import { RootState } from 'store';
 import { DeviceMode } from 'types/device-mode';
+import { useMarkAsAllReadMutation } from 'services/chat/mutation';
 
 interface Props {
 	changeSelectedAff: (aff: AffiliateRowResponse) => void;
@@ -40,6 +41,7 @@ export default memo(function AffiliateList(props: Props) {
 		useSelector((state: RootState) => state.screen.deviceMode) ===
 		DeviceMode.MOBILE_AFFILIATE;
 
+	const markAsAllReadMutation = useMarkAsAllReadMutation();
 	const affiliatesRef = useRef<any>([]);
 
 	const { data, fetchNextPage, hasNextPage, isLoading } = useSearchAffiliate({
@@ -116,6 +118,12 @@ export default memo(function AffiliateList(props: Props) {
 		affItemPrev.current = affiliates.length;
 		affIdParamPrev.current = affIdParam;
 	}, [affiliates, affIdParam]);
+
+	useEffect(() => {
+		if (!selectedAff) return;
+
+		markAsAllReadMutation.mutate(selectedAff?.id);
+	}, [selectedAff]);
 
 	return (
 		<ul
