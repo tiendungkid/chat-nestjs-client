@@ -68,10 +68,14 @@
 		position: absolute;
 		top: 0;
 		height: 100%;
-		width: calc(100% - 55px);
+		width: 100%;
 		left: 100%;
 		border-left: 1px solid #d9d9d9;
 	}
+}
+
+.hidden {
+	display: none;
 }
 
 :global {
@@ -79,18 +83,18 @@
 		left: 100%;
 	}
 	.my-node-enter-active {
-		left: 55px;
+		left: 0;
 	}
 
 	.my-node-enter-done {
-		left: 55px;
+		left: 0;
 	}
 	.my-node-exit {
-		left: 55px;
+		left: 0;
 	}
 	.my-node-exit-active {
 		left: 100%;
-		transition: left 200ms;
+		// transition: left 5000ms;
 	}
 
 	.my-node-exit-done {

@@ -16,6 +16,7 @@ import { RootState } from 'store';
 import SpeakerNotesOffIcon from '@mui/icons-material/SpeakerNotesOff';
 import { useParams } from 'react-router-dom';
 import AffiliateHeader from 'components/chat/affiliate-header';
+import { useMediaQuery } from 'react-responsive';
 
 interface Props {
 	isAff?: boolean;
@@ -32,7 +33,11 @@ export default function ChatLayout(props: Props) {
 	const { data: dataMerchant } = useGetMerchant();
 	const { data: dataAffiliate } = useGetAffiliate(isAff);
 	const nodeRef = useRef(null);
+	const [hidden, setHidden] = useState(false);
 	const [animateConversation, setAnimateConversation] = useState(false);
+	const isMobile = useMediaQuery({
+		query: `(max-width: 450px)`,
+	});
 
 	const chatSetting = useSelector(
 		(state: RootState) => state.conversation.chatSetting,
@@ -59,7 +64,7 @@ export default function ChatLayout(props: Props) {
 			)}
 			{!isAff && (
 				<>
-					{!!chatSetting && (
+					{!!chatSetting && (!selectedAff || !isMobile) && (
 						<div className={styles.header}>
 							<SearchBox />
 							<AffiliateHeader currentAffiliate={selectedAff} />
@@ -73,14 +78,19 @@ export default function ChatLayout(props: Props) {
 										setAnimateConversation(true);
 										setSelectedAff(aff);
 									}}
-									className={'aff-list'}
+									className={[
+										'aff-list',
+										// isMobile && hidden ? styles.hidden : '',
+									].join(' ')}
 									selectedAff={selectedAff}
 								/>
 								<CSSTransition
 									nodeRef={nodeRef}
 									in={animateConversation}
-									timeout={200}
+									timeout={0}
 									classNames="my-node"
+									onEnter={() => setHidden(true)}
+									onEntered={() => setHidden(false)}
 									onExited={() => {
 										setSelectedAff(undefined);
 									}}

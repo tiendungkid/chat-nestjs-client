@@ -19,7 +19,7 @@
 	justify-content: flex-end;
 
 	@include mixin.mobileSmall {
-		height: calc(100% - 60px);
+		// height: calc(100% - 60px);
 	}
 
 	.loadMore {
@@ -114,6 +114,10 @@
 .affInfo {
 	display: none;
 	@include mixin.mobileSmall {
+		position: fixed;
+		width: 100%;
+		top: 0;
+		left: 0;
 		display: flex;
 		align-items: center;
 		height: 60px;
@@ -122,6 +126,8 @@
 		border-bottom: 1px solid #d9d9d9;
 		color: #092c4c;
 		box-sizing: border-box;
+		z-index: 1;
+		background-color: #fff;
 
 		.avatar {
 			align-self: center;

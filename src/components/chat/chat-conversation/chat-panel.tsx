@@ -59,7 +59,7 @@ const ChatPanel = (props: Props) => {
 		inputRef!.current!.style.cssText = `height: 19px`;
 		setChatValue((prev) => {
 			actionTyping(prev, '');
-
+			inputRef.current?.focus();
 			return '';
 		});
 	};
