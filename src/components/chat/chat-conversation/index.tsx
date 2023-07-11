@@ -15,6 +15,7 @@ import {
 } from 'utils/affiliate-chat-utils/helpers';
 import {
 	ALLOW_FILE_EXTENSIONS,
+	ALLOW_FILE_TEXT,
 	ALLOW_IMAGE_EXTENSIONS,
 } from 'utils/constants/files';
 import {
@@ -202,6 +203,11 @@ const ChatConversation = (props: Props) => {
 		onDrop,
 		noClick: true,
 		multiple: false,
+		accept: {
+			'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.webp'],
+			'application/*': ['.pdf', '.xlsx', '.xls'],
+			'text/*': ['.csv'],
+		},
 	});
 
 	useEffect(() => {
