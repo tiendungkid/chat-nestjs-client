@@ -67,7 +67,9 @@ const AffiliateChat = forwardRef<any, Props>(function (props, ref?) {
 									? latestMessage?.msg
 									: latestMessage?.msg_type === 'img'
 									? 'Sent a photo'
-									: 'Sent a file'
+									: latestMessage?.msg_type === 'file'
+									? 'Sent a file'
+									: ''
 								: '',
 						)}
 					</div>

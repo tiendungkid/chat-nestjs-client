@@ -221,6 +221,12 @@ const ChatConversation = (props: Props) => {
 	return (
 		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
 			<div className={styles.affInfo}>
+				{!affiliate && (
+					<ArrowBackIcon
+						className={styles.backIcon}
+						onClick={() => removeSelectAff?.()}
+					/>
+				)}
 				{(receiver as AffiliateRowResponse).avatar ? (
 					<Avatar
 						src={(receiver as AffiliateRowResponse).avatar}
@@ -231,12 +237,6 @@ const ChatConversation = (props: Props) => {
 						{...stringAvatar(fullName)}
 						src={(receiver as AffiliateRowResponse).avatar}
 						className={styles.avatar}
-					/>
-				)}
-				{!affiliate && (
-					<ArrowBackIcon
-						className={styles.backIcon}
-						onClick={() => removeSelectAff?.()}
 					/>
 				)}
 				<span className={styles.affName}>{fullName}</span>

@@ -52,7 +52,7 @@ export default memo(function AffiliateList(props: Props) {
 		(node: HTMLDivElement) => {
 			if (observer.current) observer.current.disconnect();
 			observer.current = new IntersectionObserver((entries) => {
-				if (entries[0].isIntersecting) {
+				if (entries[0].isIntersecting && hasNextPage) {
 					setTimeout(() => {
 						const lastItemMessageId = last(affiliates)?.latestMessage?.id || -1;
 						fetchNextPage({
@@ -62,7 +62,7 @@ export default memo(function AffiliateList(props: Props) {
 							},
 						});
 						observer.current?.unobserve(entries[0].target);
-					}, 100);
+					}, 0);
 				}
 			});
 			if (node) observer.current.observe(node);
@@ -123,6 +123,13 @@ export default memo(function AffiliateList(props: Props) {
 		if (!selectedAff) return;
 
 		markAsAllReadMutation.mutate(selectedAff?.id);
+		window.parent.postMessage(
+			{
+				type: 'readAll',
+				affId: selectedAff?.id,
+			},
+			'*',
+		);
 	}, [selectedAff]);
 
 	return (
