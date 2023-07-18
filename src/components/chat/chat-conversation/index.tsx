@@ -25,10 +25,7 @@ import {
 } from 'store/reducers/conversationSlice';
 import ChatPanel from './chat-panel';
 import { selectDeviceMode } from 'store/reducers/screenSlice';
-import {
-	useAffiliateGetUnreadCount,
-	useGetConversation,
-} from 'services/chat/query';
+import { useGetConversation } from 'services/chat/query';
 import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
 import { ChatMessage as Message } from 'types/conversation/chat-message';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -72,9 +69,6 @@ const ChatConversation = (props: Props) => {
 		(state: RootState) => state.conversation.affOpenChat,
 	);
 
-	const { data: dataAffiliateUnreadCount } = useAffiliateGetUnreadCount(
-		!!affiliate,
-	);
 	// Image preview
 	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false);
 	const [messageImageUrl, setMessageImageUrl] = useState('');
@@ -148,23 +142,6 @@ const ChatConversation = (props: Props) => {
 					'*',
 				);
 			}
-
-			if (first(messagePaginate)?.acc_send === 'merchant' && affiliate) {
-				if (affOpenChat) {
-					markAsAllReadMutation.mutate(toId);
-					queryClient.setQueryData(
-						['conversations', 'affiliate_unread_count'],
-						0,
-					);
-				} else if (first(messages)?.id) {
-					queryClient.setQueryData(
-						['conversations', 'affiliate_unread_count'],
-						(oldData: any) => {
-							return oldData + 1;
-						},
-					);
-				}
-			}
 		}
 
 		setMessages(messagePaginate);
@@ -181,18 +158,6 @@ const ChatConversation = (props: Props) => {
 			);
 		}
 	}, [affOpenChat]);
-
-	useEffect(() => {
-		if (dataAffiliateUnreadCount !== undefined) {
-			window.parent.postMessage(
-				{
-					type: 'unreadCount',
-					count: dataAffiliateUnreadCount,
-				},
-				'*',
-			);
-		}
-	}, [dataAffiliateUnreadCount]);
 
 	const {
 		open: openDropzone,
