@@ -3,9 +3,9 @@ import {MessageType} from './message-type'
 
 export interface ChatMessage {
 	id: number;
-	message: string;
-	message_type: MessageType;
-	sent_at: string;
-	read: boolean;
-	sender: Sender
+	msg: string;
+	msg_type: MessageType;
+	time_send: number;
+	status: string;
+	acc_send: Sender
 }

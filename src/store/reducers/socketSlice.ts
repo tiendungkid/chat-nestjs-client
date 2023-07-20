@@ -1,20 +1,21 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {RootState} from '..'
-import ConversationSocket from "utils/constants/socket";
+import ConversationSocket from 'utils/constants/socket';
 
 const initialState: ConversationSocket = {
-    isConnected: false
+	isConnected: false
 }
 
 const socketSlice = createSlice({
-    name: 'socket',
-    initialState,
-    reducers: {
-        setConnected: (state, action: PayloadAction<boolean>) => {
-            state.isConnected = action.payload
-            return state
-        }
-    },
+	name: 'socket',
+	initialState,
+	reducers: {
+		setConnected: (state, action: PayloadAction<boolean>) => {
+			state.isConnected = action.payload;
+      
+			return state
+		}
+	},
 })
 
 export const { setConnected } = socketSlice.actions

@@ -3,6 +3,7 @@ import {Sender} from 'types/conversation/sender'
 import {ChatMessage} from 'types/conversation/chat-message'
 import {AffiliatesResponse} from 'types/response-instances/affiliates-response'
 import Affiliate from 'types/affiliate-chat'
+import moment from 'moment'
 
 export const MAX_PREVIEW_LATEST_CHAT = 35
 
@@ -32,8 +33,8 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 	let chats = new Collection(chatMessages)
 
 	const filterSender = (message: ChatMessage) => {
-		if (message.sender !== currentSender) {
-			currentSender = message.sender
+		if (message.acc_send !== currentSender) {
+			currentSender = message.acc_send
 			return true
 		}
 		return false
@@ -41,7 +42,7 @@ const groupChatMessages = (chatMessages: ChatMessage[]) => {
 	let subset: Collection<ChatMessage> = chats.takeUntil(filterSender)
 
 	do {
-		grouped.push(subset.all())
+		grouped.push(subset.all().reverse())
 		chats = chats.slice(subset.count())
 		subset = chats.takeUntil(filterSender)
 	} while (subset.count())
@@ -62,4 +63,8 @@ const convertAffiliateFromResponse = (affiliateResponse: AffiliatesResponse): Af
 	})
 }
 
-export {splitLatestChat, stringAvatar, groupChatMessages, convertAffiliateFromResponse}
+const convertTimeSend = (timestamp: number) => {
+	return moment(timestamp * 1000).format('hh:mm:ss YYYY-MM-DD');
+}
+
+export {splitLatestChat, stringAvatar, groupChatMessages, convertAffiliateFromResponse, convertTimeSend}

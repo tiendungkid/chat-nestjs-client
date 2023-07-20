@@ -1,42 +1,44 @@
-@use "scss/mixin";
-@use "scss/vars";
+@use 'scss/mixin';
+@use 'scss/vars';
 
 .affiliateInfoContainer {
+	width: 75%;
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	// transition: width vars.$collapseMobileDuration;
 
-  width: 75%;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transition: width vars.$collapseMobileDuration;
+	@include mixin.mobileSmall {
+		display: none;
+	}
 
-  &.mobileConversation {
-    width: 100%;
-    overflow: hidden;
-  }
+	&.mobileConversation {
+		width: 100%;
+		overflow: hidden;
+	}
 
-  &.mobileAffiliate {
-    width: 0;
-  }
+	&.mobileAffiliate {
+		width: 0;
+	}
 
-  .container {
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
+	.container {
+		display: flex;
+		align-items: center;
+		padding-left: 20px;
 
+		.backIcon {
+			padding: 8px 10px;
+			margin-right: 13px;
+		}
 
-    .backIcon {
-      padding: 8px 10px;
-      margin-right: 13px;
-    }
+		.avatar {
+			margin-right: 12px;
+		}
 
-    .avatar {
-      margin-right: 12px;
-    }
-
-    .affiliateName {
-      font-weight: 600;
-    }
-  }
-
+		.affiliateName {
+			font-weight: 500;
+			font-size: vars.$font-size-xl;
+		}
+	}
 }

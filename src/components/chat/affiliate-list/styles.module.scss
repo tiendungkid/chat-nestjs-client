@@ -1,22 +1,19 @@
-@use "scss/vars";
+@use 'scss/vars';
+@use 'scss/_mixin.scss';
 
 .container {
-  width: 25%;
-  margin: 0;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  padding: 0;
-  background-color: #fff;
-  transition: all vars.$collapseMobileDuration;
+	width: 25%;
+	margin: 0;
+	overflow-y: auto;
+	border-right: 1px solid #ccc;
+	padding: 0;
+	background-color: #fff;
 
-  &.mobileConversation {
-    width: 0;
-    opacity: 0;
-    overflow: hidden;
-  }
+	@include mixin.mobileSmall {
+		width: 100%;
+	}
+}
 
-  &.mobileAffiliate {
-    width: 100%;
-  }
-
+.endItem {
+	height: 1px;
 }

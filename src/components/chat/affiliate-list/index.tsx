@@ -1,108 +1,164 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from 'react'
-import {AffiliateChat} from '../affiliate'
-import {useDispatch, useSelector} from 'react-redux'
-import {
-	selectCurrentAffiliate,
-	selectSearchAffiliateQuery, setChatMessages,
-	setCurrentAffiliate,
-	setLoadingConversation,
-} from 'store/reducers/conversationSlice'
-import Affiliate, {AffiliateChatStatus} from 'types/affiliate-chat'
-import {selectDeviceMode, setDeviceMode} from 'store/reducers/screenSlice'
-import {DeviceMode} from 'types/device-mode'
-import styles from './styles.module.scss'
-import AffiliateSkeleton from '../affiliate/skeleton'
-import {useSearchAffiliate} from 'services/affiliates/query'
-import {convertAffiliateFromResponse} from 'utils/affiliate-chat-utils/helpers'
-import {AffiliatesResponse} from 'types/response-instances/affiliates-response'
-import {InfiniteData} from 'react-query'
-import {useMarkAsAllReadMutation} from 'services/chat/mutation'
-import {chatMessages} from '../test'
+import React, {
+	RefObject,
+	createRef,
+	memo,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
+import { AffiliateChat } from '../affiliate';
+import { useSelector } from 'react-redux';
+import { selectSearchAffiliateQuery } from 'store/reducers/conversationSlice';
+import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
+import styles from './styles.module.scss';
+import { useSearchAffiliate } from 'services/affiliates/query';
+import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
+import { flatten, last } from 'lodash';
+import { RootState } from 'store';
+import { DeviceMode } from 'types/device-mode';
+import { useMarkAsAllReadMutation } from 'services/chat/mutation';
 
-export default memo(function AffiliateList() {
-	const dispatch = useDispatch()
-	const currentAffiliate = useSelector(selectCurrentAffiliate)
-	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery)
-	const deviceMode = useSelector(selectDeviceMode)
-	const markAsAllReadMutation = useMarkAsAllReadMutation()
-	const [affiliates, setAffiliates] = useState<Affiliate[]>([])
-	const [page, setPage] = useState(1)
+interface Props {
+	changeSelectedAff: (aff: AffiliateRowResponse) => void;
+	className?: string;
+	selectedAff?: AffiliateRowResponse;
+}
 
-	const {data, isLoading} = useSearchAffiliate({
+export default memo(function AffiliateList(props: Props) {
+	const { changeSelectedAff, className = '', selectedAff } = props;
+	const observer = useRef<IntersectionObserver | null>(null);
+	const listRef = useRef<any>(null);
+	const affItemPrev = useRef(0);
+	const affIdParamPrev = useRef(0);
+	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
+	const deviceMode = useSelector(selectDeviceMode);
+	const [affiliates, setAffiliates] = useState<AffiliateRowResponse[]>([]);
+	const affIdParam = useSelector(
+		(state: RootState) => state.conversation.affIdParam,
+	);
+	const isMobile =
+		useSelector((state: RootState) => state.screen.deviceMode) ===
+		DeviceMode.MOBILE_AFFILIATE;
+
+	const markAsAllReadMutation = useMarkAsAllReadMutation();
+	const affiliatesRef = useRef<any>([]);
+
+	const { data, fetchNextPage, hasNextPage, isLoading } = useSearchAffiliate({
 		query: searchAffiliateQuery,
-		page
-	}, {
-		onSuccess(response: InfiniteData<AffiliatesResponse>) {
-			setAffiliates((prevAffiliates) => {
-				if (searchAffiliateQuery && page === 1) {
-					return convertAffiliateFromResponse(response.pages?.[0] || [])
+	});
+
+	const lastAffiliateRef = useCallback(
+		(node: HTMLDivElement) => {
+			if (observer.current) observer.current.disconnect();
+			observer.current = new IntersectionObserver((entries) => {
+				if (entries[0].isIntersecting && hasNextPage) {
+					setTimeout(() => {
+						const lastItemMessageId = last(affiliates)?.latestMessage?.id || -1;
+						fetchNextPage({
+							pageParam: {
+								last_message_id: lastItemMessageId,
+								aff_has_message: affiliates.map((v) => v.id),
+							},
+						});
+						observer.current?.unobserve(entries[0].target);
+					}, 0);
 				}
-				return [
-					...prevAffiliates,
-					...convertAffiliateFromResponse(response.pages?.[0] || [])
-				]
-			})
-		}
-	})
+			});
+			if (node) observer.current.observe(node);
+		},
+		[affiliates],
+	);
 
 	useEffect(() => {
-		if (!searchAffiliateQuery) {
-			setAffiliates([])
+		if (!data) return;
+		const dataAffPaginate = flatten(data.pages);
+
+		if (affIdParam > 0 && !dataAffPaginate.find((v) => v.id === +affIdParam)) {
+			setAffiliates(dataAffPaginate);
+			setTimeout(() => {
+				listRef.current?.lastChild?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+					inline: 'start',
+				});
+			}, 0);
+
+			return;
 		}
-		setPage(1)
-	}, [searchAffiliateQuery])
 
-	const scrollAffiliateListHandler = useCallback((e: React.UIEvent<HTMLUListElement>) => {
-		const bottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop === e.currentTarget.clientHeight
-		if (!bottom) return
-		if (data?.pages?.[0].nextPage) setPage(data?.pages?.[0].nextPage)
-	}, [data])
+		setAffiliates(dataAffPaginate);
+	}, [data, affIdParam]);
 
-	const onAffiliateClicked = useCallback((clickedAffiliate: Affiliate) => {
-		if (clickedAffiliate.id === currentAffiliate?.id && deviceMode !== DeviceMode.MOBILE_AFFILIATE) return
-		const clickedAffiliateIndex = affiliates.findIndex(aff => clickedAffiliate.id === aff.id)
-		const affiliateListCurrent = affiliates
-		if (clickedAffiliateIndex !== -1) {
-			affiliateListCurrent[clickedAffiliateIndex].latestMessage = clickedAffiliate.latestMessage
-				? {...clickedAffiliate.latestMessage, status: AffiliateChatStatus.READ}
-				: undefined
-			setAffiliates(affiliateListCurrent)
-			markAsAllReadMutation.mutateAsync(clickedAffiliate.id).then()
+	useEffect(() => {
+		if (!affiliates.length) return;
+
+		if (affItemPrev.current === 0 && !isMobile) {
+			changeSelectedAff(affiliates[0]);
 		}
-		dispatch(setCurrentAffiliate(clickedAffiliate))
-		dispatch(setChatMessages(chatMessages))
-		// dispatch(setLoadingConversation(true))
 
-		if (deviceMode === DeviceMode.MOBILE_AFFILIATE) dispatch(setDeviceMode(DeviceMode.MOBILE_CONVERSATION))
-	}, [deviceMode, currentAffiliate, affiliates, data])
+		if (
+			affIdParam > 0 &&
+			affIdParam !== affIdParamPrev.current &&
+			affiliates.find((v) => v.id === +affIdParam)
+		) {
+			changeSelectedAff(
+				affiliates.find((v) => v.id === +affIdParam) ?? affiliates[0],
+			);
 
-	const affiliateList = useMemo(() => {
-		return (
-			<>
-				{
-					affiliates && affiliates.map(affiliate => (
-						<AffiliateChat
-							key={`${affiliate.id}-${searchAffiliateQuery}`}
-							id={affiliate.id}
-							affiliateName={affiliate.name}
-							avatar={affiliate.avatar}
-							active={affiliate.id === currentAffiliate?.id}
-							onClick={() => onAffiliateClicked(affiliate)}
-							latestMessage={affiliate.latestMessage}
-						/>))
-				}
-				{
-					isLoading && [1, 2, 3].map(skeletonIndex => (
-						<AffiliateSkeleton key={`skeleton-${skeletonIndex}`} id={skeletonIndex}/>
-					))
-				}
-			</>
-		)
-	}, [affiliates, currentAffiliate, isLoading])
-	// console.log('render affiliates')
+			setTimeout(() => {
+				affiliatesRef.current[`aff-${affIdParam}`].current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+					inline: 'start',
+				});
+			}, 10);
+		}
+
+		affItemPrev.current = affiliates.length;
+		affIdParamPrev.current = affIdParam;
+	}, [affiliates, affIdParam]);
+
+	useEffect(() => {
+		if (!selectedAff) return;
+
+		markAsAllReadMutation.mutate(selectedAff?.id);
+		window.parent.postMessage(
+			{
+				type: 'readAll',
+				affId: selectedAff?.id,
+			},
+			'*',
+		);
+	}, [selectedAff]);
+
 	return (
-		<ul className={[styles[deviceMode], styles.container].join(' ')} onScroll={scrollAffiliateListHandler}>
-			{affiliateList}
+		<ul
+			className={[styles[deviceMode], styles.container, className].join(' ')}
+			ref={listRef}
+		>
+			{affiliates.map((affiliate, index) => {
+				return (
+					<React.Fragment key={affiliate.id}>
+						{index === affiliates.length - 1 && hasNextPage && !isLoading && (
+							<div ref={lastAffiliateRef} />
+						)}
+						<AffiliateChat
+							ref={(affiliatesRef.current[`aff-${affiliate.id}`] = createRef())}
+							id={affiliate.id}
+							affiliateName={`${affiliate.first_name} ${affiliate.last_name}`}
+							avatar={affiliate.avatar}
+							active={affiliate.id === selectedAff?.id}
+							onClick={(id: number) =>
+								changeSelectedAff(
+									affiliates.find((v) => v.id === id) as AffiliateRowResponse,
+								)
+							}
+							latestMessage={affiliate.latestMessage}
+						/>
+					</React.Fragment>
+				);
+			})}
 		</ul>
-	)
-})
+	);
+});

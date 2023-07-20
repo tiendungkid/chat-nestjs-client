@@ -1,97 +1,263 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react'
-import {useSelector} from 'react-redux'
-import {useDropzone} from 'react-dropzone'
-import {DropzoneOverlay, ImagePreviewDialog, ChatMessage, NotAllowFileTypeDialog} from '..'
-import styles from './styles.module.scss'
-import {Sender} from 'types/conversation/sender'
-import {groupChatMessages} from 'utils/affiliate-chat-utils/helpers'
-import {ALLOW_IMAGE_EXTENSIONS} from 'utils/constants/files'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useDropzone } from 'react-dropzone';
+import {
+	DropzoneOverlay,
+	ImagePreviewDialog,
+	ChatMessage,
+	NotAllowFileTypeDialog,
+} from '..';
+import styles from './styles.module.scss';
+import { Sender } from 'types/conversation/sender';
+import {
+	groupChatMessages,
+	stringAvatar,
+} from 'utils/affiliate-chat-utils/helpers';
+import {
+	ALLOW_FILE_EXTENSIONS,
+	ALLOW_FILE_TEXT,
+	ALLOW_IMAGE_EXTENSIONS,
+} from 'utils/constants/files';
 import {
 	selectChatMessages,
-	selectCurrentAffiliate,
+	// selectCurrentAffiliate,
 	selectLoadingConversation,
-} from 'store/reducers/conversationSlice'
-import ConversationLoading from '../conversation-loading'
-import ChatPanel from './chat-panel'
-import {selectDeviceMode} from 'store/reducers/screenSlice'
+} from 'store/reducers/conversationSlice';
+import ChatPanel from './chat-panel';
+import { selectDeviceMode } from 'store/reducers/screenSlice';
+import { useGetConversation } from 'services/chat/query';
+import { AffiliateRowResponse } from 'types/response-instances/affiliates-response';
+import { ChatMessage as Message } from 'types/conversation/chat-message';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { first, flatten } from 'lodash';
+import { Avatar } from '@mui/material';
+import { Merchant } from 'types/merchant';
+import Affiliate from 'types/affiliate-chat';
+import {
+	useMarkAsAllReadMutation,
+	useUploadFile,
+} from 'services/chat/mutation';
+import { socket } from 'utils/socket.io';
+import { MessageType } from 'types/conversation/message-type';
+import UploadFailedDialog from '../UploadFailedDialog';
+import { RootState } from 'store';
+import { queryClient } from 'services';
 
-const ChatConversation = () => {
-	const deviceMode = useSelector(selectDeviceMode)
-	const currentAffiliate = useSelector(selectCurrentAffiliate)
-	const loading = useSelector(selectLoadingConversation)
+interface Props {
+	receiver: AffiliateRowResponse | Merchant;
+	affiliate?: Affiliate;
+	removeSelectAff?: () => void;
+}
 
-	// const { data } = useGetConversation({
-	// 	affiliateId: currentAffiliate?.id,
-	// 	page: 1
-	// })
+const ChatConversation = (props: Props) => {
+	const deviceMode = useSelector(selectDeviceMode);
+	// const currentAffiliate = useSelector(selectCurrentAffiliate);
+	const loading = useSelector(selectLoadingConversation);
+	const { receiver, affiliate, removeSelectAff } = props;
+	const toId = affiliate ? affiliate.shop_id : receiver.id;
+	const { data, fetchNextPage, hasNextPage, isLoading, remove } =
+		useGetConversation(
+			toId, // shop_id or affiliate_id
+			receiver.shop_id, // shop_id
+			affiliate ? affiliate.id : receiver.id, // affiliate_id
+		);
+	const markAsAllReadMutation = useMarkAsAllReadMutation();
+	const [messages, setMessages] = useState<Message[]>([]);
+	const uploadFile = useUploadFile();
+	const [errorUpload, setErrorUpload] = useState('');
+	const affOpenChat = useSelector(
+		(state: RootState) => state.conversation.affOpenChat,
+	);
 
 	// Image preview
-	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false)
-	const [messageImageUrl, setMessageImageUrl] = useState('')
-
+	const [openImagePreviewDialog, setOpenImagePreviewDialog] = useState(false);
+	const [messageImageUrl, setMessageImageUrl] = useState('');
 
 	// Chat message handler
-	const chatMessages = groupChatMessages(useSelector(selectChatMessages))
-	const chatMessageRef = useRef<HTMLDivElement>(null)
+	const chatMessages = groupChatMessages(messages);
 
 	// Upload file handler
-	const [openNotAllowFileMine, setOpenNotAllowFileMine] = useState(false)
+	const [openNotAllowFileMine, setOpenNotAllowFileMine] = useState(false);
 	const onDrop = useCallback((acceptedFiles: any) => {
-		const file: File = acceptedFiles[0]
-		if (!ALLOW_IMAGE_EXTENSIONS.includes(file.type)) {
-			setOpenNotAllowFileMine(true)
-			return
-		}
-	}, [])
+		const file: File = acceptedFiles[0];
 
+		if (
+			!ALLOW_IMAGE_EXTENSIONS.includes(file.type) &&
+			!ALLOW_FILE_EXTENSIONS.includes(file.type)
+		) {
+			setOpenNotAllowFileMine(true);
+			return;
+		}
+
+		uploadFile.mutate(file, {
+			onSuccess: (data) => {
+				socket.emit('send_message', {
+					to_id: toId,
+					msg: data,
+					msg_type: ALLOW_IMAGE_EXTENSIONS.includes(file.type)
+						? MessageType.IMAGE
+						: MessageType.FILE,
+				});
+			},
+			onError: (err: any) => {
+				setErrorUpload(err.response?.data.message);
+			},
+		});
+	}, []);
+
+	const observer = useRef<IntersectionObserver | null>(null);
+
+	const loadMore = useCallback(
+		(node: HTMLDivElement) => {
+			if (observer.current) observer.current.disconnect();
+			observer.current = new IntersectionObserver((entries) => {
+				if (entries[0].isIntersecting) {
+					setTimeout(() => {
+						fetchNextPage();
+						observer.current?.unobserve(entries[0].target);
+					}, 100);
+				}
+			});
+			if (node) observer.current.observe(node);
+		},
+		[messages],
+	);
 
 	useEffect(() => {
-		if (chatMessageRef && chatMessageRef.current) {
-			chatMessageRef.current.addEventListener('DOMNodeInserted', (event) => {
-				const target = event.currentTarget as HTMLDivElement
-				target.scroll({ top: target.scrollHeight, behavior: 'smooth' })
-			})
-		}
-	}, [chatMessages])
+		if (!data) return;
+		const messagePaginate = flatten(data.pages);
 
-	const {open: openDropzone, getRootProps, getInputProps, isDragActive} = useDropzone({
+		if (
+			(first(messagePaginate)?.id ?? 0) > (first(messages)?.id ?? 0) &&
+			((first(messagePaginate)?.acc_send === 'affiliate' && !affiliate) ||
+				(first(messagePaginate)?.acc_send === 'merchant' && affiliate))
+		) {
+			if (first(messagePaginate)?.acc_send === 'affiliate' && !affiliate) {
+				markAsAllReadMutation.mutate(toId);
+				window.parent.postMessage(
+					{
+						type: 'readAll',
+						affId: toId,
+					},
+					'*',
+				);
+			}
+		}
+
+		setMessages(messagePaginate);
+	}, [data, affOpenChat]);
+
+	useEffect(() => {
+		if (affOpenChat) {
+			markAsAllReadMutation.mutate(toId);
+			queryClient.setQueryData(
+				['conversations', 'affiliate_unread_count'],
+				(oldData: any) => {
+					return 0;
+				},
+			);
+		}
+	}, [affOpenChat]);
+
+	const {
+		open: openDropzone,
+		getRootProps,
+		getInputProps,
+		isDragActive,
+	} = useDropzone({
 		onDrop,
 		noClick: true,
 		multiple: false,
-	})
+		accept: {
+			'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.webp'],
+			'application/*': ['.pdf', '.xlsx', '.xls'],
+			'text/*': ['.csv'],
+		},
+	});
 
-	if (!currentAffiliate) return <></>
-	if (loading) return <ConversationLoading/>
+	useEffect(() => {
+		return () => {
+			remove();
+		};
+	}, []);
+
+	const fullName = receiver.first_name + ' ' + receiver.last_name;
 
 	return (
 		<div className={[styles.chatConversation, styles[deviceMode]].join(' ')}>
-			<div className={styles.container}  {...getRootProps()}>
+			<div className={styles.affInfo}>
+				{!affiliate && (
+					<ArrowBackIcon
+						className={styles.backIcon}
+						onClick={() => removeSelectAff?.()}
+					/>
+				)}
+				{(receiver as AffiliateRowResponse).avatar ? (
+					<Avatar
+						src={(receiver as AffiliateRowResponse).avatar}
+						className={styles.avatar}
+					/>
+				) : (
+					<Avatar
+						{...stringAvatar(fullName)}
+						src={(receiver as AffiliateRowResponse).avatar}
+						className={styles.avatar}
+					/>
+				)}
+				<span className={styles.affName}>{fullName}</span>
+			</div>
+			<div className={styles.container} {...getRootProps()}>
 				<input {...getInputProps()} />
-				<DropzoneOverlay open={isDragActive}/>
-				<div className={styles.conversation} ref={chatMessageRef}>
-					{
-						chatMessages.map((chatList, index) => (
-							<ChatMessage key={index}
-								affiliateName={currentAffiliate.name}
-								avatar={currentAffiliate.avatar}
-								messages={chatList}
-								side={chatList?.[0].sender === Sender.MERCHANT ? 'right' : 'left'}
-								setOpenImagePreviewDialog={setOpenImagePreviewDialog}
-								setMessageImageUrl={setMessageImageUrl}
-							/>
-						))
-					}
+				<DropzoneOverlay open={isDragActive} />
+				<div className={styles.conversation}>
+					{!!messages.length &&
+						chatMessages
+							.filter((v) => v.length > 0)
+							.map((chatList, index) => {
+								return (
+									<ChatMessage
+										key={index}
+										affiliateName={`${receiver.first_name} ${receiver.last_name}`}
+										messages={chatList}
+										side={
+											(chatList?.[0].acc_send === Sender.MERCHANT &&
+												!affiliate) ||
+											(chatList?.[0].acc_send !== Sender.MERCHANT && affiliate)
+												? 'right'
+												: 'left'
+										}
+										setOpenImagePreviewDialog={setOpenImagePreviewDialog}
+										setMessageImageUrl={setMessageImageUrl}
+									/>
+								);
+							})}
+					<div
+						className={styles.loadMore}
+						ref={
+							hasNextPage && messages.length > 0 && !isLoading
+								? loadMore
+								: undefined
+						}
+					/>
 				</div>
-				<ChatPanel openDropzone={openDropzone}/>
+				<ChatPanel openDropzone={openDropzone} toId={toId} />
 			</div>
 			<ImagePreviewDialog
 				open={openImagePreviewDialog}
 				imageUrl={messageImageUrl}
 				setOpen={setOpenImagePreviewDialog}
 			/>
-			<NotAllowFileTypeDialog open={openNotAllowFileMine} setOpen={setOpenNotAllowFileMine}/>
+			<NotAllowFileTypeDialog
+				open={openNotAllowFileMine}
+				setOpen={setOpenNotAllowFileMine}
+			/>
+			<UploadFailedDialog
+				open={!!errorUpload}
+				content={errorUpload}
+				onClose={() => setErrorUpload('')}
+			/>
 		</div>
-	)
-}
+	);
+};
 
-export default ChatConversation
+export default ChatConversation;

@@ -1,26 +1,27 @@
 .fileContainer {
-  display: flex;
-  justify-content: flex-start;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  width: 300px;
-  max-width: 100%;
-  margin-left: auto;
-  border-radius: 4px;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-  margin-bottom: 5px;
+	display: flex;
+	justify-content: flex-start;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	width: 300px;
+	max-width: 100%;
+	margin-left: auto;
+	border-radius: 4px;
+	flex-direction: row;
+	align-items: center;
+	cursor: pointer;
+	margin-bottom: 5px;
 
-  .downLoadIcon {
-    color: #cccccc;
-    padding: 10px 15px;
-    font-size: 20px;
-  }
+	.downLoadIcon {
+		color: #cccccc;
+		padding: 10px 15px;
+		font-size: 20px;
+	}
 
-  .fileName {
-    padding: 5px 15px;
-    text-align: start;
-    border-left: 1px solid #ccc;
-  }
+	.fileName {
+		padding: 5px 15px;
+		text-align: start;
+		border-left: 1px solid #ccc;
+		word-break: break-all;
+	}
 }

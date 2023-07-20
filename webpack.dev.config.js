@@ -1,6 +1,10 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
+
+const BundleAnalyzerPlugin =
+	require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
 	mode: 'development',
@@ -10,24 +14,24 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, '../chat-nest/public'),
+		path: path.resolve(__dirname, '../chat-nestjs/public'),
 		clean: true,
-		cssFilename: '[name].css'
+		cssFilename: '[name].css',
 	},
 	devtool: 'inline-source-map',
-	devServer: {
-		static: path.resolve(__dirname, '../chat-nest/public'),
-		hot: true,
-	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: './src/static/index.html',
 			filename: 'index.html',
 			minify: false,
 			cache: false,
-			favicon: './src/static/logo.png'
+			favicon: './src/static/logo.png',
+			publicPath: dotenv.parsed.CDN_URL ?? '/',
 		}),
-		new BundleAnalyzerPlugin()
+		new webpack.DefinePlugin({
+			'process.env': JSON.stringify(dotenv.parsed),
+		}),
+		// new BundleAnalyzerPlugin()
 	],
 	module: {
 		rules: [
@@ -53,25 +57,21 @@ module.exports = {
 					{
 						loader: 'sass-loader',
 						options: {
-							sassOptions: {outputStyle: 'expanded'}
-						}
-					}
+							sassOptions: { outputStyle: 'expanded' },
+						},
+					},
 				],
 			},
 		],
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],
-		modules: [
-			path.join(__dirname, 'node_modules'),
-			'src'
-		]
+		modules: [path.join(__dirname, 'node_modules'), 'src'],
 	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
-			filename: '[name].js'
-		}
-	}
-}
-
+			filename: '[name].js',
+		},
+	},
+};

@@ -1,68 +1,86 @@
-import React from 'react'
-import styles from './styles.module.scss'
-import {Avatar, Grid, Tooltip, Typography} from '@mui/material'
-import {stringAvatar} from 'utils/affiliate-chat-utils/helpers'
-import {ChatMessage as Messages} from 'types/conversation/chat-message'
-import {MessageType} from 'types/conversation/message-type'
-import Typing from '../typing'
-import ImageMessage from '../image-message'
-import FileMessage from '../file-message'
+import React from 'react';
+import styles from './styles.module.scss';
+import { Avatar, Grid, Tooltip, Typography } from '@mui/material';
+import {
+	convertTimeSend,
+	stringAvatar,
+} from 'utils/affiliate-chat-utils/helpers';
+import { ChatMessage as Message } from 'types/conversation/chat-message';
+import { MessageType } from 'types/conversation/message-type';
+import Typing from '../typing';
+import ImageMessage from '../image-message';
+import FileMessage from '../file-message';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { DeviceMode } from 'types/device-mode';
 
 interface Props {
-	affiliateName: string
-	avatar?: string
-	messages: Messages[]
-	side: 'left' | 'right'
-	setMessageImageUrl: (imageUrl: string) => void
-	setOpenImagePreviewDialog: (open: boolean) => void
+	affiliateName: string;
+	messages: Message[];
+	side: 'left' | 'right';
+	setMessageImageUrl: (imageUrl: string) => void;
+	setOpenImagePreviewDialog: (open: boolean) => void;
 }
 
 export default function ChatMessage(props: Props) {
 	const {
 		affiliateName,
-		avatar,
 		messages,
 		side,
 		setMessageImageUrl,
-		setOpenImagePreviewDialog
+		setOpenImagePreviewDialog,
+	} = props;
 
-	} = props
+	const isMobile =
+		useSelector((state: RootState) => state.screen.deviceMode) ===
+		DeviceMode.MOBILE_AFFILIATE;
+
 	const attachClass = (index: number, side: 'left' | 'right'): string[] => {
-		const rowClass = index === 0
-			? styles[side + 'First']
-			: (index === messages.length - 1 ? styles[side + 'Last'] : '')
-		return [styles.message, rowClass, styles[side]]
-	}
+		const rowClass =
+			index === 0
+				? styles[side + 'First']
+				: index === messages.length - 1
+				? styles[side + 'Last']
+				: '';
+		return [styles.message, rowClass, styles[side]];
+	};
 	const onImageMessageClicked = (imageUrl: string) => {
-		setMessageImageUrl(imageUrl)
-		setOpenImagePreviewDialog(true)
-	}
+		setMessageImageUrl(imageUrl);
+		setOpenImagePreviewDialog(true);
+	};
 
-	const renderMessage = (msg: Messages, index: number) => {
-		if (msg.message_type === MessageType.TYPING) {
+	const renderMessage = (msg: Message, index: number) => {
+		if (msg.msg_type === MessageType.TYPING) {
 			return (
 				<div className={attachClass(index, side).join(' ')}>
-					<Typing/>
+					<Typing />
 				</div>
-			)
+			);
 		}
-		if (msg.message_type === MessageType.IMAGE) {
-			return <ImageMessage message={msg} onImageClick={onImageMessageClicked}/>
+		if (msg.msg_type === MessageType.IMAGE) {
+			return (
+				<ImageMessage message={msg} onImageClick={onImageMessageClicked} />
+			);
 		}
-		if (msg.message_type === MessageType.FILE) {
-			return <FileMessage message={msg}/>
+		if (msg.msg_type === MessageType.FILE) {
+			return (
+				<FileMessage
+					style={side === 'left' ? { marginLeft: 'unset' } : {}}
+					message={msg}
+				/>
+			);
 		}
 		return (
-			<Tooltip title={msg.sent_at} placement={'right-start'}>
+			<Tooltip title={convertTimeSend(msg.time_send)} placement={'right-start'}>
 				<Typography
 					align={'left'}
 					className={attachClass(index, side).join(' ')}
 				>
-					{msg.message}
+					{msg.msg}
 				</Typography>
 			</Tooltip>
-		)
-	}
+		);
+	};
 
 	return (
 		<Grid
@@ -71,26 +89,15 @@ export default function ChatMessage(props: Props) {
 			justifyContent={side === 'right' ? 'flex-end' : 'flex-start'}
 			className={styles.chatMessage}
 		>
-			{side === 'left' && (
-				<Grid item>
-					<Tooltip title={affiliateName} placement="top-start">
-						{
-							avatar
-								? <Avatar alt={affiliateName} src={avatar} className={styles.avatar}/>
-								: <Avatar {...stringAvatar(affiliateName)} className={styles.avatar}></Avatar>
-						}
-					</Tooltip>
-				</Grid>
-			)}
-			<Grid item xs={8}>
+			<Grid item xs={10}>
 				{messages.map((message, index) => {
 					return (
 						<div key={message.id} className={styles[side + 'Row']}>
 							{renderMessage(message, index)}
 						</div>
-					)
+					);
 				})}
 			</Grid>
 		</Grid>
-	)
+	);
 }

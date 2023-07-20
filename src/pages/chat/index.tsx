@@ -1,9 +1,19 @@
-import React from 'react'
-import ChatLayout from 'layouts/chat-layout'
+import React from 'react';
+import ChatLayout from 'layouts/chat-layout';
+import SocketManager from 'components/socket-manager';
 
-function Chat() {
-	console.log('Chat page rendered')
-	return <ChatLayout/>
+interface Props {
+	isAff?: boolean;
 }
 
-export default Chat
+const Chat = (props: Props) => {
+	const { isAff = false } = props;
+
+	return (
+		<SocketManager isAff={isAff}>
+			<ChatLayout isAff={isAff} />
+		</SocketManager>
+	);
+};
+
+export default Chat;

@@ -1,82 +1,99 @@
-@use "scss/vars";
+@use 'scss/vars';
+@use 'scss/mixin';
 
 .affiliateLoading {
-  width: 25%;
-  margin: 0;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  padding: 0;
-  background-color: #fff;
-  transition: all vars.$collapseMobileDuration;
+	width: 25%;
+	margin: 0;
+	overflow-y: auto;
+	border-right: 1px solid #ccc;
+	padding: 0;
+	background-color: #fff;
 
-  &.mobileConversation {
-    width: 0;
-    opacity: 0;
-    overflow: hidden;
-  }
+	&.mobileConversation {
+		width: 0;
+		opacity: 0;
+		overflow: hidden;
+	}
 
-  &.mobileAffiliate {
-    width: 100%;
-  }
-
+	&.mobileAffiliate {
+		width: 100%;
+	}
 }
 
 .container {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  margin: 0 5px 0;
-  border-bottom: 1px solid #d9d9d970;
-  cursor: pointer;
+	height: 60px;
+	padding: 10px;
+	display: flex;
+	flex-direction: row;
+	border-bottom: 1px solid #d9d9d970;
+	cursor: pointer;
 
-  &.unread {
-    .affiliateName {
-      font-weight: 600;
-    }
+	@include mixin.mobileSmall {
+		margin: 0;
+		font-size: 12px;
+		background-color: #f6f6f7;
+	}
 
-    .latestChat {
-      color: #000 !important;
-    }
-  }
+	&.unread {
+		.affiliateName {
+			// font-weight: 500;
+		}
+	}
 
-  &.notChatYet {
-    .latestChat {
-      color: #8090a07a;
-    }
-  }
+	&.notChatYet {
+		.latestChat {
+			// color: vars.$text-dark;
+		}
+	}
 
-  .avatar {
-    margin-right: 12px;
-    align-self: center;
-    width: 40px;
-  }
+	.avatar {
+		margin-right: 12px;
+		align-self: center;
+		width: 40px;
 
-  .unreadBadge {
-    align-self: center;
-  }
+		@include mixin.mobileSmall {
+			width: 32px;
+			height: 32px;
+			font-size: 14px;
+		}
+	}
 
-  .contentWrapper {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
+	.unreadBadge {
+		align-self: center;
+	}
 
-  .content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+	.contentWrapper {
+		display: flex;
+		width: calc(100% - 60px);
+		justify-content: space-between;
+	}
 
-    .affiliateName {
-      color: vars.$text-dark;
-    }
+	.content {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 
-    .latestChat {
-      font-size: 14px;
-    }
-  }
+		.affiliateName {
+			color: vars.$text-dark;
+			font-weight: 500;
+			text-overflow: ellipsis;
+			width: 100%;
+			overflow: hidden;
+			font-size: vars.$font-size-md;
+		}
 
-  &.active {
-    background-color: #1D85E838;
-  }
+		.latestChat {
+			white-space: nowrap;
+			font-size: vars.$font-size-md;
+			text-overflow: ellipsis;
+			width: 100%;
+			overflow: hidden;
+			color: vars.$text-dark;
+		}
+	}
+
+	&.active {
+		background-color: rgb(29, 133, 232, 0.16);
+	}
 }
