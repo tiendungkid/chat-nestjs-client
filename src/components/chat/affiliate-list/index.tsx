@@ -8,8 +8,12 @@ import React, {
 	useState,
 } from 'react';
 import { AffiliateChat } from '../affiliate';
-import { useSelector } from 'react-redux';
-import { selectSearchAffiliateQuery } from 'store/reducers/conversationSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	selectSearchAffiliateQuery,
+	setAffIdParam,
+	setSearchAffiliateQuery,
+} from 'store/reducers/conversationSlice';
 import { selectDeviceMode, setDeviceMode } from 'store/reducers/screenSlice';
 import styles from './styles.module.scss';
 import { useSearchAffiliate } from 'services/affiliates/query';
@@ -31,6 +35,7 @@ export default memo(function AffiliateList(props: Props) {
 	const listRef = useRef<any>(null);
 	const affItemPrev = useRef(0);
 	const affIdParamPrev = useRef(0);
+	const dispatch = useDispatch();
 	const searchAffiliateQuery = useSelector(selectSearchAffiliateQuery);
 	const deviceMode = useSelector(selectDeviceMode);
 	const [affiliates, setAffiliates] = useState<AffiliateRowResponse[]>([]);
@@ -74,7 +79,11 @@ export default memo(function AffiliateList(props: Props) {
 		if (!data) return;
 		const dataAffPaginate = flatten(data.pages);
 
-		if (affIdParam > 0 && !dataAffPaginate.find((v) => v.id === +affIdParam)) {
+		if (
+			affIdParam > 0 &&
+			!dataAffPaginate.find((v) => v.id === +affIdParam) &&
+			!searchAffiliateQuery
+		) {
 			setAffiliates(dataAffPaginate);
 			setTimeout(() => {
 				listRef.current?.lastChild?.scrollIntoView({
@@ -88,7 +97,7 @@ export default memo(function AffiliateList(props: Props) {
 		}
 
 		setAffiliates(dataAffPaginate);
-	}, [data, affIdParam]);
+	}, [data, affIdParam, searchAffiliateQuery]);
 
 	useEffect(() => {
 		if (!affiliates.length) return;
@@ -100,7 +109,8 @@ export default memo(function AffiliateList(props: Props) {
 		if (
 			affIdParam > 0 &&
 			affIdParam !== affIdParamPrev.current &&
-			affiliates.find((v) => v.id === +affIdParam)
+			affiliates.find((v) => v.id === +affIdParam) &&
+			!searchAffiliateQuery
 		) {
 			changeSelectedAff(
 				affiliates.find((v) => v.id === +affIdParam) ?? affiliates[0],
@@ -112,15 +122,16 @@ export default memo(function AffiliateList(props: Props) {
 					block: 'start',
 					inline: 'start',
 				});
-			}, 10);
+			}, 0);
+
+			affIdParamPrev.current = affIdParam;
 		}
 
 		affItemPrev.current = affiliates.length;
-		affIdParamPrev.current = affIdParam;
-	}, [affiliates, affIdParam]);
+	}, [affiliates, affIdParam, searchAffiliateQuery]);
 
 	useEffect(() => {
-		if (!selectedAff) return;
+		if (!selectedAff || !selectedAff.latestMessage) return;
 
 		markAsAllReadMutation.mutate(selectedAff?.id);
 		window.parent.postMessage(
@@ -130,6 +141,8 @@ export default memo(function AffiliateList(props: Props) {
 			},
 			'*',
 		);
+
+		dispatch(setAffIdParam(-1));
 	}, [selectedAff]);
 
 	return (

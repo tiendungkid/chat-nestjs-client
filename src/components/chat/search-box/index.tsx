@@ -4,16 +4,21 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	selectSearchAffiliateQuery,
+	setAffIdParam,
 	setSearchAffiliateQuery,
 } from 'store/reducers/conversationSlice';
 import { useDebounce } from 'ahooks';
 import { selectDeviceMode } from 'store/reducers/screenSlice';
+import { RootState } from 'store';
 
 export default memo(function SearchBox() {
 	const dispatch = useDispatch();
 	const deviceMode = useSelector(selectDeviceMode);
 	const [searchParams, setSearchParams] = useState(
 		useSelector(selectSearchAffiliateQuery),
+	);
+	const affIdParam = useSelector(
+		(state: RootState) => state.conversation.affIdParam,
 	);
 
 	const debouncedSearchParams = useDebounce(searchParams, {
@@ -25,7 +30,14 @@ export default memo(function SearchBox() {
 	};
 
 	useEffect(() => {
+		return () => {
+			setSearchParams('');
+		};
+	}, [affIdParam]);
+
+	useEffect(() => {
 		dispatch(setSearchAffiliateQuery(debouncedSearchParams));
+		if (debouncedSearchParams) setAffIdParam(-1);
 	}, [debouncedSearchParams]);
 
 	return (
