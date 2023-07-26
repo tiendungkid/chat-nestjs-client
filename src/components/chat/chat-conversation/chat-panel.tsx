@@ -179,6 +179,16 @@ const ChatPanel = (props: Props) => {
 						skinTonesDisabled
 						emojiStyle={EmojiStyle['NATIVE']}
 						previewConfig={{ showPreview: false }}
+						categories={
+							[
+								'smileys_people',
+								'animals_nature',
+								'food_drink',
+								'travel_places',
+								'activities',
+								'objects',
+							] as any
+						}
 					/>
 				</Popover>
 			</div>
